@@ -2,6 +2,11 @@ import csv
 import math
 from statistics import mean, stdev
 from config import Config
+from ib_valuation_framework import (
+	apply_investment_banking_adjustments,
+	classify_company,
+	get_industry_benchmark_multiples
+)
 
 def get_float(prompt):
 	while True:
@@ -131,15 +136,36 @@ def monte_carlo_valuation(base_value, growth_volatility, discount_volatility, it
 
 def enhanced_dcf_valuation(company_data):
 	"""Comprehensive DCF valuation with multi-stage growth"""
-	
+
+	# APPLY INVESTMENT BANKING FRAMEWORK
+	# This classifies the company and applies appropriate assumptions
+	company_data = apply_investment_banking_adjustments(company_data)
+
 	name = company_data['name']
 	sector = company_data['sector']
 	revenue = float(company_data['revenue'])
-	ebitda = float(company_data['ebitda'])
+
+	# Use normalized metrics if applicable (for distressed/cyclical companies)
+	if 'normalized_ebitda' in company_data:
+		ebitda = float(company_data['normalized_ebitda'])
+		print(f"  Using NORMALIZED EBITDA: ${ebitda:,.0f} (original: ${float(company_data['ebitda']):,.0f})")
+	else:
+		ebitda = float(company_data['ebitda'])
+
+	if 'normalized_profit_margin' in company_data:
+		profit_margin = float(company_data['normalized_profit_margin'])
+		print(f"  Using NORMALIZED Profit Margin: {profit_margin*100:.1f}% (original: {float(company_data['profit_margin'])*100:.1f}%)")
+	else:
+		profit_margin = float(company_data['profit_margin'])
+
+	if 'normalized_capex_pct' in company_data:
+		capex_pct = float(company_data['normalized_capex_pct'])
+		print(f"  Using NORMALIZED CapEx: {capex_pct*100:.1f}% (original: {float(company_data['capex_pct'])*100:.1f}%)")
+	else:
+		capex_pct = float(company_data['capex_pct'])
+
 	depreciation = float(company_data['depreciation'])
-	capex_pct = float(company_data['capex_pct'])
 	wc_change = float(company_data['working_capital_change'])
-	profit_margin = float(company_data['profit_margin'])
 	
 	# Multi-stage growth rates
 	growth_y1 = float(company_data['growth_rate_y1'])
