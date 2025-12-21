@@ -51,20 +51,43 @@ function updateMacroStatus(envName) {
 }
 
 function startRealtimePriceUpdates() {
-    console.log('⏰ Starting real-time price updates (every 10 minutes)...');
+    console.log('⏰ Starting daily price updates (once per day at market close)...');
 
-    // Immediate first update
-    updatePortfolioPrices();
+    // Check if market has closed today and update if needed
+    checkAndUpdatePrices();
 
-    // Then update every 10 minutes (600 seconds)
+    // Schedule daily updates at 4:05 PM ET (after market close at 4:00 PM ET)
+    // Check every hour if it's time to update
     if (priceUpdateInterval) {
         clearInterval(priceUpdateInterval);
     }
     priceUpdateInterval = setInterval(() => {
-        updatePortfolioPrices();
-    }, 600000); // 10 minutes = 600 seconds
+        checkAndUpdatePrices();
+    }, 3600000); // Check every 1 hour
 
-    console.log('✅ Price update interval started');
+    console.log('✅ Daily price update scheduler started');
+}
+
+function checkAndUpdatePrices() {
+    const now = new Date();
+    const lastUpdateKey = 'lastPriceUpdate';
+    const lastUpdate = localStorage.getItem(lastUpdateKey);
+
+    // Convert to ET timezone
+    const etTime = new Date(now.toLocaleString('en-US', { timeZone: 'America/New_York' }));
+    const etHour = etTime.getHours();
+    const etDay = etTime.toDateString();
+
+    // Market closes at 4:00 PM ET, we update at 4:05 PM ET
+    const shouldUpdate = etHour >= 16 && (!lastUpdate || new Date(lastUpdate).toDateString() !== etDay);
+
+    if (shouldUpdate) {
+        console.log(`📊 Market closed - updating prices at ${etTime.toLocaleTimeString('en-US', { timeZone: 'America/New_York' })} ET`);
+        updatePortfolioPrices();
+        localStorage.setItem(lastUpdateKey, now.toISOString());
+    } else {
+        console.log(`⏰ Next price update: Today at 4:05 PM ET (after market close)`);
+    }
 }
 
 async function updatePortfolioPrices() {
@@ -134,7 +157,7 @@ async function updatePortfolioPrices() {
 
         lastUpdate = now;
         console.log(`\n✅ Successfully updated ${updatedCount}/${data.prices.length} prices at ${now.toLocaleTimeString()}`);
-        console.log(`⏰ Next update in 10 minutes...`);
+        console.log(`⏰ Next update: Tomorrow at 4:05 PM ET (after market close)`);
 
         // Reload companies data to get the updated prices from database
         if (typeof loadCompanies === 'function') {

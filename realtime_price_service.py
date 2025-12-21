@@ -43,12 +43,9 @@ class RealtimePriceService:
             Current price or None if error
         """
         try:
-            # Add 2-second delay to avoid rate limiting
-            time.sleep(2)
-
-            # Let yfinance handle its own session (curl_cffi)
+            # Fetch closing price - no delay needed for daily updates
             stock = yf.Ticker(ticker)
-            data = stock.history(period='1d', interval='1m')
+            data = stock.history(period='1d')
 
             if data.empty:
                 # Fallback to info if history fails
