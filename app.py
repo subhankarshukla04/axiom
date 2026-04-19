@@ -20,6 +20,9 @@ from logger import setup_app_logger, get_logger, log_api_request, log_valuation
 from phase1_api_endpoints import register_phase1_routes
 from realtime_price_service import get_price_service
 
+# Advanced features: portfolio construction, universal import, assumption overrides
+from advanced_api_endpoints import register_advanced_routes
+
 # Initialize Flask app
 app = Flask(__name__)
 
@@ -40,6 +43,46 @@ data_integrator = DataIntegrator()
 # Register Phase 1 API routes (scenarios, macros, audit trail)
 register_phase1_routes(app)
 logger.info("Phase 1 API endpoints registered (31 endpoints)")
+
+# Register advanced API routes (portfolio, import, assumption overrides)
+register_advanced_routes(app)
+logger.info("Advanced API endpoints registered (ticker import, portfolio construction, assumption overrides)")
+
+# Register AXIOM Phase 1-5 routes (LBO, football field, sensitivity, exports, live stream)
+from axiom_api_endpoints import register_axiom_routes
+register_axiom_routes(app)
+logger.info("AXIOM Phase 1-5 routes registered (LBO, football field, sensitivity, exports, alerts, live stream)")
+
+# ── Daily end-of-day price update scheduler ───────────────────────────────────
+try:
+    from apscheduler.schedulers.background import BackgroundScheduler
+    from apscheduler.triggers.cron import CronTrigger
+    import pytz
+
+    def _scheduled_price_update():
+        """Run daily at 4:30 PM ET (after US market close) on weekdays."""
+        try:
+            logger.info("Scheduled price update starting...")
+            svc = get_price_service()
+            updated = svc.update_all_portfolio_prices()
+            logger.info(f"Scheduled price update complete: {len(updated)} companies updated")
+        except Exception as e:
+            logger.error(f"Scheduled price update failed: {e}")
+
+    _scheduler = BackgroundScheduler(timezone=pytz.utc)
+    # 4:30 PM Eastern = 21:30 UTC (EST) or 20:30 UTC (EDT) — use 21:30 UTC which covers both
+    _scheduler.add_job(
+        _scheduled_price_update,
+        CronTrigger(day_of_week='mon-fri', hour=21, minute=30, timezone='America/New_York'),
+        id='daily_price_update',
+        replace_existing=True
+    )
+    _scheduler.start()
+    logger.info("Daily price update scheduler started (runs Mon-Fri at 4:30 PM ET)")
+except ImportError:
+    logger.warning("APScheduler not installed — daily price updates disabled. Run: pip install apscheduler pytz")
+except Exception as e:
+    logger.error(f"Failed to start price scheduler: {e}")
 
 # Database connection helper (supports both PostgreSQL and SQLite)
 def get_db_connection():
@@ -301,12 +344,12 @@ def import_and_value():
 
         # Insert company
         if Config.DATABASE_TYPE == 'postgresql':
-            c.execute('INSERT INTO companies (name, sector) VALUES (%s, %s) RETURNING id',
-                      (company_data['name'], company_data['sector']))
+            c.execute('INSERT INTO companies (name, sector, ticker) VALUES (%s, %s, %s) RETURNING id',
+                      (company_data['name'], company_data['sector'], ticker))
             company_id = c.fetchone()['id']
         else:
-            c.execute('INSERT INTO companies (name, sector) VALUES (?, ?)',
-                      (company_data['name'], company_data['sector']))
+            c.execute('INSERT INTO companies (name, sector, ticker) VALUES (?, ?, ?)',
+                      (company_data['name'], company_data['sector'], ticker))
             company_id = c.lastrowid
 
         # Insert financials
@@ -394,9 +437,9 @@ def index():
 def get_companies():
     conn = get_db_connection()
     c = conn.cursor()
-    c.execute('''SELECT c.id, c.name, c.sector, c.created_at,
+    c.execute('''SELECT c.id, c.name, c.ticker, c.sector, c.created_at,
                  vr.final_equity_value, vr.recommendation, vr.upside_pct,
-                 vr.pe_ratio, vr.roe, vr.z_score, vr.market_cap, 
+                 vr.pe_ratio, vr.roe, vr.z_score, vr.market_cap,
                  vr.current_price, vr.wacc, vr.ev_ebitda, vr.roic,
                  vr.fcf_yield, vr.debt_to_equity
                  FROM companies c
@@ -410,6 +453,7 @@ def get_companies():
         companies.append({
             'id': r['id'],
             'name': r['name'],
+            'ticker': r.get('ticker'),
             'sector': r['sector'],
             'created_at': r['created_at'],
             # Show DCF price/share as the main 'Fair Value' on listing (falls back to composite)
@@ -575,13 +619,14 @@ def create_company():
         c = conn.cursor()
 
         # Insert company (use RETURNING for PostgreSQL)
+        ticker_val = data.get('ticker', '').upper().strip()
         if Config.DATABASE_TYPE == 'postgresql':
-            c.execute('INSERT INTO companies (name, sector) VALUES (%s, %s) RETURNING id',
-                      (company_data.name, company_data.sector))
+            c.execute('INSERT INTO companies (name, sector, ticker) VALUES (%s, %s, %s) RETURNING id',
+                      (company_data.name, company_data.sector, ticker_val or None))
             company_id = c.fetchone()['id']
         else:
-            c.execute('INSERT INTO companies (name, sector) VALUES (?, ?)',
-                      (company_data.name, company_data.sector))
+            c.execute('INSERT INTO companies (name, sector, ticker) VALUES (?, ?, ?)',
+                      (company_data.name, company_data.sector, ticker_val or None))
             company_id = c.lastrowid
 
         # Insert financials (use execute_query helper to handle placeholders)
@@ -633,20 +678,64 @@ def create_company():
 def update_company(company_id):
     try:
         data = request.json
-        
-        # Validate input with Pydantic
+        logger.debug(f"Received data for company update: {data}")
+
+        # Validate input with Pydantic (all fields optional)
         company_data = CompanyUpdate(**data)
-        logger.info(f"Updating company ID {company_id}: {company_data.name}")
-        
+        logger.info(f"Validated data for company ID {company_id}")
+
         conn = get_db_connection()
         c = conn.cursor()
-        
-        # Update company
-        execute_query(c, 'UPDATE companies SET name = %s, sector = %s, updated_at = %s WHERE id = %s',
-              (company_data.name, company_data.sector, datetime.now().isoformat(), company_id))
 
-        # Update financials
-        execute_query(c, '''UPDATE company_financials SET
+        # Fetch current data to merge with updates
+        placeholder = '%s' if Config.DATABASE_TYPE == 'postgresql' else '?'
+        c.execute(f'''
+            SELECT c.name, c.sector, cf.*
+            FROM companies c
+            JOIN company_financials cf ON c.id = cf.company_id
+            WHERE c.id = {placeholder}
+        ''', (company_id,))
+
+        current = c.fetchone()
+        if not current:
+            conn.close()
+            return jsonify({'error': 'Company not found'}), 404
+
+        current_data = dict(current)
+
+        # Merge: Only update fields that were provided (not None)
+        update_dict = company_data.model_dump(exclude_none=True)
+
+        # Update company table fields if provided
+        if 'name' in update_dict or 'sector' in update_dict:
+            name = update_dict.get('name', current_data['name'])
+            sector = update_dict.get('sector', current_data['sector'])
+
+            query_company = 'UPDATE companies SET name = %s, sector = %s, updated_at = %s WHERE id = %s'
+            execute_query(c, query_company, (name, sector, datetime.now().isoformat(), company_id))
+
+        # Update financials - only update fields that were provided
+        financial_fields = [
+            'revenue', 'ebitda', 'depreciation', 'capex_pct',
+            'working_capital_change', 'profit_margin', 'growth_rate_y1',
+            'growth_rate_y2', 'growth_rate_y3', 'terminal_growth',
+            'tax_rate', 'shares_outstanding', 'debt', 'cash',
+            'market_cap_estimate', 'beta', 'risk_free_rate',
+            'market_risk_premium', 'country_risk_premium', 'size_premium',
+            'comparable_ev_ebitda', 'comparable_pe', 'comparable_peg'
+        ]
+
+        # Build merged values (use update if provided, else current)
+        merged_values = []
+        for field in financial_fields:
+            if field in update_dict:
+                merged_values.append(update_dict[field])
+            else:
+                merged_values.append(current_data[field])
+
+        merged_values.append(company_id)  # WHERE clause
+
+        query_financials = '''UPDATE company_financials SET
                 revenue = %s, ebitda = %s, depreciation = %s, capex_pct = %s,
                 working_capital_change = %s, profit_margin = %s, growth_rate_y1 = %s,
                 growth_rate_y2 = %s, growth_rate_y3 = %s, terminal_growth = %s,
@@ -654,26 +743,17 @@ def update_company(company_id):
                 market_cap_estimate = %s, beta = %s, risk_free_rate = %s,
                 market_risk_premium = %s, country_risk_premium = %s, size_premium = %s,
                 comparable_ev_ebitda = %s, comparable_pe = %s, comparable_peg = %s
-                WHERE company_id = %s''',
-            (company_data.revenue, company_data.ebitda,
-             company_data.depreciation, company_data.capex_pct,
-             company_data.working_capital_change, company_data.profit_margin,
-             company_data.growth_rate_y1, company_data.growth_rate_y2,
-             company_data.growth_rate_y3, company_data.terminal_growth,
-             company_data.tax_rate, company_data.shares_outstanding,
-             company_data.debt, company_data.cash, company_data.market_cap_estimate,
-             company_data.beta, company_data.risk_free_rate,
-             company_data.market_risk_premium, company_data.country_risk_premium,
-             company_data.size_premium, company_data.comparable_ev_ebitda,
-             company_data.comparable_pe, company_data.comparable_peg, company_id))
-        
+                WHERE company_id = %s'''
+
+        execute_query(c, query_financials, tuple(merged_values))
+
         conn.commit()
         conn.close()
-        
+
         # 🚨 CRITICAL: Auto-revaluation after financial data update
         logger.info(f"Triggering automatic revaluation for company ID {company_id}")
         success, results, error_msg = valuation_service.valuate_company(company_id)
-        
+
         if success:
             logger.info(f"Auto-revaluation successful for company ID {company_id}")
             return jsonify({
@@ -686,7 +766,7 @@ def update_company(company_id):
                 'message': 'Company updated but revaluation failed',
                 'error': error_msg
             }), 207  # 207 Multi-Status: partial success
-            
+
     except ValidationError as e:
         logger.warning(f"Validation error updating company {company_id}: {str(e)}")
         # Convert Pydantic errors to JSON-serializable format
@@ -720,6 +800,77 @@ def delete_company(company_id):
     conn.close()
 
     return jsonify({'message': 'Company deleted successfully'})
+
+@app.route('/api/valuation/preview', methods=['POST'])
+def preview_valuation():
+    """
+    Run the full valuation engine without saving to DB.
+    Accepts JSON body with all company financial assumptions.
+    Returns fair value, upside %, WACC, method breakdown.
+    """
+    try:
+        data = request.json
+        if not data:
+            return jsonify({'error': 'Request body required'}), 400
+
+        # Build company_data dict from request (same shape as DB fetch)
+        company_data = {
+            'id': 0,
+            'name': data.get('name', 'Preview Company'),
+            'sector': data.get('sector', 'Unknown'),
+            'revenue': float(data.get('revenue', 0)),
+            'ebitda': float(data.get('ebitda', 0)),
+            'depreciation': float(data.get('depreciation', 0)),
+            'capex_pct': float(data.get('capex_pct', 0.05)),
+            'working_capital_change': float(data.get('working_capital_change', 0)),
+            'profit_margin': float(data.get('profit_margin', 0.10)),
+            'growth_rate_y1': float(data.get('growth_rate_y1', 0.10)),
+            'growth_rate_y2': float(data.get('growth_rate_y2', 0.08)),
+            'growth_rate_y3': float(data.get('growth_rate_y3', 0.06)),
+            'terminal_growth': float(data.get('terminal_growth', 0.025)),
+            'tax_rate': float(data.get('tax_rate', 0.21)),
+            'shares_outstanding': float(data.get('shares_outstanding', 1000000)),
+            'debt': float(data.get('debt', 0)),
+            'cash': float(data.get('cash', 0)),
+            'market_cap_estimate': float(data.get('market_cap_estimate', 0)),
+            'beta': float(data.get('beta', 1.0)),
+            'risk_free_rate': float(data.get('risk_free_rate', 0.045)),
+            'market_risk_premium': float(data.get('market_risk_premium', 0.065)),
+            'country_risk_premium': float(data.get('country_risk_premium', 0.0)),
+            'size_premium': float(data.get('size_premium', 0.0)),
+            'comparable_ev_ebitda': float(data.get('comparable_ev_ebitda', 10.0)),
+            'comparable_pe': float(data.get('comparable_pe', 20.0)),
+            'comparable_peg': float(data.get('comparable_peg', 1.5)),
+        }
+
+        # Run valuation (no DB write)
+        results = valuation_service.run_valuation(company_data)
+        if not results:
+            return jsonify({'error': 'Valuation failed - check input assumptions'}), 500
+
+        # Return standardized preview response
+        shares = company_data['shares_outstanding']
+        return jsonify({
+            'fair_value': round(results.get('dcf_price_per_share', 0), 2),
+            'upside_pct': round(results.get('upside_pct', 0), 2),
+            'wacc': round(results.get('wacc', 0), 4),
+            'dcf_value': round(results.get('dcf_price_per_share', 0), 2),
+            'comps_value': round(
+                (results.get('comp_ev_value', 0) + results.get('comp_pe_value', 0)) / 2 / shares
+                if shares > 0 else 0, 2
+            ),
+            'recommendation': results.get('recommendation', 'N/A'),
+            'dcf_equity_value': results.get('dcf_equity_value'),
+            'comp_ev_value': results.get('comp_ev_value'),
+            'comp_pe_value': results.get('comp_pe_value'),
+            'final_equity_value': results.get('final_equity_value'),
+            'final_price_per_share': results.get('final_price_per_share'),
+        })
+
+    except Exception as e:
+        logger.error(f'Error in preview valuation: {e}', exc_info=True)
+        return jsonify({'error': str(e)}), 500
+
 
 @app.route('/api/valuation/<int:company_id>', methods=['POST'])
 def run_valuation(company_id):
@@ -857,10 +1008,14 @@ def get_realtime_prices():
     """
     Get current market prices for all portfolio companies
     Called every minute by frontend
+    UPDATES THE DATABASE with latest prices from Yahoo Finance
     """
     try:
         price_service = get_price_service()
-        prices = price_service.get_portfolio_prices()
+        # USE UPDATE METHOD - this writes to database
+        prices = price_service.update_all_portfolio_prices()
+
+        logger.info(f"Updated {len(prices)} stock prices in real-time")
 
         return jsonify({
             'success': True,
@@ -1016,5 +1171,5 @@ def apply_scenario_to_company(company_id):
         conn.close()
 
 if __name__ == '__main__':
-    # Use port 5001 to avoid conflict with macOS AirPlay Receiver on port 5000
-    app.run(debug=True, port=5001)
+    # Use port 5002 to avoid conflict with other applications
+    app.run(debug=True, port=5002)

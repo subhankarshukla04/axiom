@@ -78,6 +78,18 @@ class Config:
     TERMINAL_MARGIN = float(os.environ.get('TERMINAL_MARGIN', '0.01'))
     ALT_ZSCORE_SELL_THRESHOLD = float(os.environ.get('ALT_ZSCORE_SELL_THRESHOLD', '1.81'))
     DEBT_EQUITY_DOWNGRADE = float(os.environ.get('DEBT_EQUITY_DOWNGRADE', '2.0'))
+    # Valuation accuracy guardrails
+    TERMINAL_GROWTH_MAX = 0.035   # 3.5% ceiling
+    TERMINAL_GROWTH_MIN = 0.005   # 0.5% floor
+    WACC_MIN = 0.05               # 5% floor
+    WACC_MAX = 0.25               # 25% ceiling
+    BETA_FALLBACK_WINDOW = '3y'   # Retry window if 5yr beta fails
+
+    # External Data API Keys (all free tiers)
+    FRED_API_KEY = os.environ.get('FRED_API_KEY', '')           # fred.stlouisfed.org
+    FINNHUB_API_KEY = os.environ.get('FINNHUB_API_KEY', '')     # finnhub.io (60 calls/min free)
+    FMP_API_KEY = os.environ.get('FMP_API_KEY', '')             # financialmodelingprep.com (250/day free)
+
 
     @staticmethod
     def get_db_connection_string() -> str:

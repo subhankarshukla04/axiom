@@ -13,6 +13,74 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+# Module-level cache for risk-free rate (shared across all callers)
+_rfr_cache = {'value': None, 'timestamp': 0}
+_RFR_CACHE_SECONDS = 4 * 3600  # 4 hours
+
+
+def get_risk_free_rate() -> float:
+    """
+    Fetch the current 10-year Treasury yield as risk-free rate.
+    - First tries FRED API (series DGS10) if FRED_API_KEY is set in env.
+    - Falls back to yfinance ^TNX if FRED is unavailable.
+    - Caches result for 4 hours.
+    Returns float (e.g., 0.0442 for 4.42%).
+    """
+    import os
+    import time as _time
+
+    now = _time.time()
+    # Return cached value if still fresh
+    if _rfr_cache['value'] is not None and now - _rfr_cache['timestamp'] < _RFR_CACHE_SECONDS:
+        cached_age = int(now - _rfr_cache['timestamp'])
+        logger.info(f'Using cached risk-free rate: {_rfr_cache["value"]*100:.2f}% (cached {cached_age}s ago)')
+        return _rfr_cache['value']
+
+    fred_key = os.environ.get('FRED_API_KEY')
+    rate = None
+
+    # Try FRED first
+    if fred_key:
+        try:
+            import urllib.request
+            import json as _json
+            url = (
+                f'https://api.stlouisfed.org/fred/series/observations'
+                f'?series_id=DGS10&api_key={fred_key}&sort_order=desc&limit=1&file_type=json'
+            )
+            with urllib.request.urlopen(url, timeout=5) as resp:
+                payload = _json.loads(resp.read().decode())
+            obs = payload.get('observations', [])
+            if obs:
+                val_str = obs[0].get('value', '.')
+                if val_str != '.':
+                    rate = float(val_str) / 100
+                    logger.info(f'Fetched risk-free rate from FRED: {rate*100:.2f}%')
+        except Exception as e:
+            logger.warning(f'FRED risk-free rate fetch failed: {e}')
+
+    # Fall back to yfinance ^TNX
+    if rate is None:
+        try:
+            import yfinance as yf
+            tnx = yf.Ticker('^TNX')
+            hist = tnx.history(period='5d')
+            if not hist.empty:
+                rate = hist['Close'].iloc[-1] / 100
+                logger.info(f'Fetched risk-free rate from yfinance ^TNX: {rate*100:.2f}%')
+        except Exception as e:
+            logger.warning(f'yfinance risk-free rate fetch failed: {e}')
+
+    if rate is None:
+        rate = 0.045  # Hard fallback: 4.5%
+        logger.warning('All risk-free rate sources failed; using default 4.5%')
+
+    # Update cache
+    _rfr_cache['value'] = rate
+    _rfr_cache['timestamp'] = now
+    return rate
+
+
 
 class DataIntegrator:
     """
@@ -26,8 +94,8 @@ class DataIntegrator:
     _TREASURY_CACHE_DURATION = 3600  # 1 hour in seconds
 
     def __init__(self):
-        self.risk_free_rate = self._get_risk_free_rate()
-        self.market_risk_premium = 0.065  # Historical US equity risk premium
+        self.risk_free_rate = get_risk_free_rate()
+        self.market_risk_premium = 0.0525  # Forward-looking MRP (Damodaran 2024)
 
     def _get_risk_free_rate(self) -> float:
         """Get current 10-year Treasury rate as risk-free rate (with 1-hour caching)"""
@@ -105,34 +173,60 @@ class DataIntegrator:
 
                 data['revenue'] = latest_financials.get('Total Revenue', 0)
                 data['ebitda'] = latest_financials.get('EBITDA', 0)
+                data['operating_income'] = latest_financials.get('Operating Income', 0)
 
-                # Calculate net income / profit margin
                 net_income = latest_financials.get('Net Income', 0)
+                data['net_income'] = net_income
                 data['profit_margin'] = net_income / data['revenue'] if data['revenue'] > 0 else 0.10
+
+                # 3-year EBITDA history for smart normalization
+                data['ebitda_history'] = [
+                    float(financials.iloc[:, i].get('EBITDA', 0) or 0)
+                    for i in range(min(3, len(financials.columns)))
+                ]
 
             else:
                 logger.warning(f"No financials found for {ticker}")
                 data['revenue'] = info.get('totalRevenue', 0)
                 data['ebitda'] = info.get('ebitda', 0)
+                data['operating_income'] = 0
+                data['net_income'] = 0
                 data['profit_margin'] = 0.10
+                data['ebitda_history'] = []
 
             # Balance sheet items
             if not balance_sheet.empty:
                 latest_bs = balance_sheet.iloc[:, 0]
                 data['debt'] = latest_bs.get('Total Debt', latest_bs.get('Long Term Debt', 0))
                 data['cash'] = latest_bs.get('Cash And Cash Equivalents', 0)
+                data['book_value'] = (
+                    latest_bs.get('Stockholders Equity') or
+                    latest_bs.get('Total Stockholder Equity') or
+                    latest_bs.get('Common Stock Equity') or 0
+                )
             else:
                 data['debt'] = info.get('totalDebt', 0)
                 data['cash'] = info.get('totalCash', 0)
+                data['book_value'] = 0
+
+            # Fallback: compute from info dict if BS didn't have it
+            if not data.get('book_value') and info.get('bookValue') and info.get('sharesOutstanding'):
+                data['book_value'] = info['bookValue'] * info['sharesOutstanding']
 
             # Cash flow items
             if not cash_flow.empty:
+                import math as _math
                 latest_cf = cash_flow.iloc[:, 0]
 
-                data['depreciation'] = abs(latest_cf.get('Depreciation And Amortization', 0))
-                capex = abs(latest_cf.get('Capital Expenditure', 0))
+                def _cf(key, default=0):
+                    v = latest_cf.get(key, default)
+                    return default if (v is None or (isinstance(v, float) and _math.isnan(v))) else v
+
+                raw_da = _cf('Depreciation And Amortization') or _cf('Depreciation Amortization Depletion') or _cf('Depreciation')
+                data['depreciation'] = abs(raw_da)
+                capex = abs(_cf('Capital Expenditure'))
                 data['capex_pct'] = capex / data['revenue'] if data['revenue'] > 0 else 0.05
-                data['working_capital_change'] = latest_cf.get('Change In Working Capital', 0)
+                data['working_capital_change'] = _cf('Change In Working Capital')
             else:
                 data['depreciation'] = data['ebitda'] * 0.05 if data['ebitda'] > 0 else 0
                 data['capex_pct'] = 0.05
@@ -153,7 +247,7 @@ class DataIntegrator:
 
             # Risk parameters
             data['beta'] = self._calculate_beta(hist, ticker)
-            data['risk_free_rate'] = self.risk_free_rate
+            data['risk_free_rate'] = get_risk_free_rate()
             data['market_risk_premium'] = self.market_risk_premium
             data['country_risk_premium'] = 0.0  # US = 0, adjust for international
             data['size_premium'] = self._estimate_size_premium(data['market_cap'])
@@ -163,6 +257,22 @@ class DataIntegrator:
             data['comparable_ev_ebitda'] = comp_multiples['ev_ebitda']
             data['comparable_pe'] = comp_multiples['pe']
             data['comparable_peg'] = comp_multiples['peg']
+
+            # Additional fields for calibration layer
+            data['forward_pe'] = info.get('forwardPE', 0) or 0
+            data['industry'] = info.get('industry', '')
+
+            # Analyst signals (best-effort, non-blocking)
+            try:
+                from market_signal_collector import get_or_collect
+                signals = get_or_collect(ticker)
+                data['analyst_target'] = signals.get('analyst_target_mean')
+                data['analyst_recommendation'] = signals.get('recommendation_mean')
+                data['implied_growth_rate'] = signals.get('implied_growth_rate')
+            except Exception:
+                data['analyst_target'] = None
+                data['analyst_recommendation'] = None
+                data['implied_growth_rate'] = None
 
             # Additional metadata
             data['data_source'] = 'Yahoo Finance'
@@ -178,26 +288,43 @@ class DataIntegrator:
     def _get_growth_estimates(self, info: dict, financials: pd.DataFrame) -> Dict[str, float]:
         """
         Estimate revenue growth rates from analyst estimates and historical trends.
+        Uses 2yr CAGR fallback when yfinance revenueGrowth is zero/negative.
         """
         try:
-            # Try to get analyst growth estimates
             analyst_growth = info.get('revenueGrowth')
-            if analyst_growth and analyst_growth > 0:
-                y1_growth = min(analyst_growth, 0.50)  # Cap at 50%
-            else:
-                # Calculate historical growth
-                if not financials.empty and len(financials.columns) >= 2:
-                    recent_revenue = financials.iloc[:, 0].get('Total Revenue', 0)
-                    prior_revenue = financials.iloc[:, 1].get('Total Revenue', 1)
-                    y1_growth = (recent_revenue / prior_revenue - 1) if prior_revenue > 0 else 0.10
-                else:
-                    y1_growth = 0.10  # Default 10%
 
-            # Multi-stage growth (declining over time)
-            y1_growth = max(0, min(y1_growth, 0.50))  # Between 0% and 50%
-            y2_growth = y1_growth * 0.85  # Moderate to 85% of Y1
-            y3_growth = y1_growth * 0.70  # Further moderate to 70% of Y1
-            terminal_growth = 0.025  # Long-term GDP growth
+            # 2yr CAGR from financials (more reliable than 1yr for cyclical/reset years)
+            cagr_2yr = None
+            if not financials.empty and len(financials.columns) >= 3:
+                r0 = financials.iloc[:, 0].get('Total Revenue', 0)
+                r2 = financials.iloc[:, 2].get('Total Revenue', 0)
+                if r0 and r2 and r2 > 0 and r0 > 0:
+                    cagr_2yr = (r0 / r2) ** 0.5 - 1
+
+            # 1yr historical as secondary fallback
+            hist_1yr = None
+            if not financials.empty and len(financials.columns) >= 2:
+                r0 = financials.iloc[:, 0].get('Total Revenue', 0)
+                r1 = financials.iloc[:, 1].get('Total Revenue', 1)
+                if r0 and r1 and r1 > 0:
+                    hist_1yr = r0 / r1 - 1
+
+            # Pick best estimate
+            if analyst_growth and analyst_growth > 0:
+                y1_growth = analyst_growth
+            elif cagr_2yr and cagr_2yr > 0:
+                y1_growth = cagr_2yr
+            elif hist_1yr and hist_1yr > 0:
+                y1_growth = hist_1yr
+            else:
+                # Growth is negative or missing — use floor
+                net_income = info.get('netIncomeToCommon', 0) or 0
+                y1_growth = 0.03 if net_income > 0 else 0.0
+
+            y1_growth = max(0.0, min(y1_growth, 0.60))
+            y2_growth = y1_growth * 0.85
+            y3_growth = y1_growth * 0.70
+            terminal_growth = 0.025
 
             return {
                 'y1': y1_growth,
@@ -207,7 +334,7 @@ class DataIntegrator:
             }
         except Exception as e:
             logger.warning(f"Could not estimate growth rates: {e}")
-            return {'y1': 0.10, 'y2': 0.08, 'y3': 0.06, 'terminal': 0.025}
+            return {'y1': 0.08, 'y2': 0.06, 'y3': 0.05, 'terminal': 0.025}
 
     def _estimate_tax_rate(self, financials: pd.DataFrame, info: dict) -> float:
         """Calculate effective tax rate from financial statements"""
@@ -258,8 +385,12 @@ class DataIntegrator:
             variance = merged['spy_ret'].var()
             beta = covariance / variance if variance > 0 else 1.0
 
+            # Blume adjustment: shrinks extreme betas toward 1.0
+            # (0.67 × raw + 0.33 × 1.0) — reduces systematic WACC overstatement
+            beta = 0.67 * beta + 0.33
+
             # Reasonable bounds
-            beta = max(-2.0, min(beta, 5.0))
+            beta = max(0.3, min(beta, 3.5))
 
             logger.info(f"Calculated beta for {ticker}: {beta:.2f}")
             return beta

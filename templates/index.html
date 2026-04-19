@@ -3,28 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional Investment Valuation Platform</title>
+    <title>AXIOM — Institutional Investment Intelligence</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_professional.css') }}?v=3">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/ticker_add.css') }}?v=1">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <!-- Chart.js for visualizations -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <!-- Plotly for football field chart -->
+    <script src="https://cdn.plot.ly/plotly-2.26.0.min.js"></script>
 </head>
 <body>
     <nav class="navbar">
         <div class="container">
-            <h1 class="logo">📊 Investment Analytics Platform</h1>
+            <h1 class="logo" style="font-weight:800;letter-spacing:2px;">AXIOM</h1>
             <div class="nav-links">
                 <a href="#" onclick="showView('dashboard')" class="nav-link active" data-view="dashboard">Dashboard</a>
                 <a href="#" onclick="showView('companies')" class="nav-link" data-view="companies">Portfolio</a>
+                <a href="#" onclick="showView('scenarios')" class="nav-link" data-view="scenarios">Scenarios</a>
                 <a href="#" onclick="exportCSV()" class="nav-link">Export Data</a>
-                <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark mode">🌓</button>
+                <a href="#" onclick="refreshPrices()" class="nav-link" id="refresh-prices-btn" title="Fetch latest closing prices from Yahoo Finance">&#x21BB; Prices</a>
+                <span id="alerts-badge" onclick="showView('alerts')" style="display:none;cursor:pointer;background:#ef4444;color:white;border-radius:12px;padding:2px 10px;font-size:12px;font-weight:700;margin-left:4px;" title="Unread alerts">0</span>
+                <span style="font-size:12px;color:var(--text-muted);margin-right:4px;" id="mode-label">Student</span>
+                <label style="cursor:pointer;position:relative;display:inline-block;width:42px;height:22px;margin-right:8px;" title="Toggle Student/Professional mode">
+                    <input type="checkbox" id="mode-toggle" onchange="toggleMode()" style="opacity:0;width:0;height:0;">
+                    <span style="position:absolute;inset:0;background:#3b82f6;border-radius:34px;transition:.3s;"></span>
+                    <span id="mode-thumb" style="position:absolute;height:16px;width:16px;left:3px;bottom:3px;background:white;border-radius:50%;transition:.3s;"></span>
+                </label>
+                <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark mode">&#9681;</button>
                 <button class="btn-secondary" onclick="showSettingsModal()" title="Portfolio Settings">⚙️ Settings</button>
             </div>
         </div>
     </nav>
 
-    <div class="container main-content">
+
+    <!-- AXIOM Live Rates Bar -->
+    <div id="axiom-rates-bar" style="background:var(--bg-secondary);border-bottom:1px solid var(--border-color);padding:6px 24px;display:flex;gap:24px;align-items:center;font-size:12px;font-family:'Courier New',monospace;">
+        <span style="color:var(--text-muted);font-family:inherit;font-size:11px;letter-spacing:1px;">LIVE RATES</span>
+        <span id="rate-10y">10Y: <strong>—</strong></span>
+        <span id="rate-2y">2Y: <strong>—</strong></span>
+        <span id="rate-hy">HY: <strong>—</strong></span>
+        <span id="rate-fed">Fed: <strong>—</strong></span>
+        <span id="rate-vix">VIX: <strong>—</strong></span>
+        <span style="margin-left:auto;color:var(--text-muted);font-size:11px;" id="rates-source">FRED</span>
+        <span style="color:var(--text-muted);font-size:11px;" id="rates-age"></span>
+    </div>
+
+    <!-- Three-pane workspace -->
+    <div class="workspace">
+        <!-- Left: Company Sidebar -->
+        <div class="workspace-left" id="workspace-left">
+            <div class="workspace-left-header">
+                <span>Portfolio</span>
+                <button class="pane-toggle-btn" onclick="toggleLeftPane()" title="Collapse sidebar">&#x25C0;</button>
+            </div>
+            <div class="sidebar-search">
+                <input type="text" id="sidebar-search-input" placeholder="Search companies..." oninput="filterSidebar(this.value)">
+            </div>
+            <div class="workspace-left-body" id="sidebar-company-list">
+                <p style="padding:16px;color:var(--text-muted);font-size:12px;">Loading...</p>
+            </div>
+        </div>
+
+        <!-- Center: Main Content -->
+        <div class="workspace-center" id="workspace-center">
         <!-- Dashboard View -->
         <div id="dashboard-view" class="view-section active">
             <!-- Macro Environment Control Panel - Phase 1 -->
@@ -236,11 +277,158 @@
                 <h2 class="page-title">Portfolio Companies (<span id="companies-count">0</span>)</h2>
             </div>
 
+            <!-- Portfolio Optimization Panel -->
+            <div style="background:var(--card-bg,#161b22);border:1px solid var(--border-color,#30363d);border-radius:8px;padding:1.25rem;margin-bottom:1.5rem">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem">
+                    <h3 style="margin:0;font-size:0.95rem">Portfolio Optimization</h3>
+                    <button id="axiom-portfolio-optimize-btn" onclick="runPortfolioOptimize()"
+                            style="background:#238636;border:none;border-radius:6px;padding:0.4rem 1rem;color:#fff;cursor:pointer;font-size:0.85rem">
+                        Optimize Portfolio
+                    </button>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:0.75rem;margin-bottom:1rem">
+                    <div>
+                        <label style="font-size:0.75rem;color:var(--muted-text,#8b949e);display:block;margin-bottom:0.25rem">Max Single Position</label>
+                        <input id="po-max-pos" type="number" value="0.20" min="0.01" max="1" step="0.01"
+                               style="width:100%;background:var(--input-bg,#0d1117);border:1px solid var(--border-color,#30363d);border-radius:4px;padding:0.3rem 0.5rem;color:var(--text-primary,#e6edf3);font-size:0.85rem;box-sizing:border-box">
+                    </div>
+                    <div>
+                        <label style="font-size:0.75rem;color:var(--muted-text,#8b949e);display:block;margin-bottom:0.25rem">Target Holdings</label>
+                        <input id="po-num-hold" type="number" value="15" min="5" max="50"
+                               style="width:100%;background:var(--input-bg,#0d1117);border:1px solid var(--border-color,#30363d);border-radius:4px;padding:0.3rem 0.5rem;color:var(--text-primary,#e6edf3);font-size:0.85rem;box-sizing:border-box">
+                    </div>
+                    <div>
+                        <label style="font-size:0.75rem;color:var(--muted-text,#8b949e);display:block;margin-bottom:0.25rem">Risk Tolerance</label>
+                        <select id="po-risk-tol"
+                                style="width:100%;background:var(--input-bg,#0d1117);border:1px solid var(--border-color,#30363d);border-radius:4px;padding:0.3rem 0.5rem;color:var(--text-primary,#e6edf3);font-size:0.85rem">
+                            <option value="Conservative">Conservative</option>
+                            <option value="Moderate" selected>Moderate</option>
+                            <option value="Aggressive">Aggressive</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="font-size:0.75rem;color:var(--muted-text,#8b949e);display:block;margin-bottom:0.25rem">Target Value ($)</label>
+                        <input id="po-target-val" type="number" value="1000000" step="100000"
+                               style="width:100%;background:var(--input-bg,#0d1117);border:1px solid var(--border-color,#30363d);border-radius:4px;padding:0.3rem 0.5rem;color:var(--text-primary,#e6edf3);font-size:0.85rem;box-sizing:border-box">
+                    </div>
+                </div>
+                <div id="axiom-portfolio-results"></div>
+            </div>
+
             <div class="companies-grid" id="companies-grid">
                 <!-- Companies will be loaded here -->
             </div>
         </div>
+
+        <!-- Scenarios View -->
+    <div id="scenarios-view" class="view-section" style="display: none;">
+        <div class="dashboard-header" style="margin-bottom: 24px;">
+            <h2>Scenario Analysis</h2>
+            <p style="color: var(--text-muted);">Bear / Base / Bull scenario comparison by company</p>
+        </div>
+
+        <!-- Company Selector -->
+        <div class="card" style="margin-bottom: 20px; padding: 20px;">
+            <label style="font-weight: 600; margin-right: 12px;">Select Company:</label>
+            <select id="scenario-company-select" onchange="loadScenariosForCompany()" style="padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); font-size: 14px; min-width: 260px;">
+                <option value="">-- Choose a company --</option>
+            </select>
+        </div>
+
+        <!-- Scenario Tabs -->
+        <div id="scenario-tabs-container" style="display: none;">
+            <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+                <button class="scenario-tab-btn active" onclick="selectScenarioTab('bear')" id="tab-bear" style="padding: 8px 20px; border-radius: 6px; border: 1px solid #ef4444; background: transparent; cursor: pointer; font-weight: 600; color: #ef4444;">Bear</button>
+                <button class="scenario-tab-btn" onclick="selectScenarioTab('base')" id="tab-base" style="padding: 8px 20px; border-radius: 6px; border: 1px solid #3b82f6; background: transparent; cursor: pointer; font-weight: 600; color: #3b82f6;">Base</button>
+                <button class="scenario-tab-btn" onclick="selectScenarioTab('bull')" id="tab-bull" style="padding: 8px 20px; border-radius: 6px; border: 1px solid #22c55e; background: transparent; cursor: pointer; font-weight: 600; color: #22c55e;">Bull</button>
+                <button onclick="compareAllScenarios()" style="margin-left: auto; padding: 8px 20px; border-radius: 6px; border: none; background: #6366f1; color: white; cursor: pointer; font-weight: 600;">Compare All</button>
+            </div>
+
+            <!-- Single Scenario Card -->
+            <div id="scenario-single-card" class="card" style="padding: 24px; margin-bottom: 20px;">
+                <div id="scenario-card-content">
+                    <p style="color: var(--text-muted);">Loading scenario...</p>
+                </div>
+            </div>
+
+            <!-- Comparison Table (hidden by default) -->
+            <div id="scenario-compare-table" style="display: none; margin-bottom: 20px;">
+                <div class="card" style="padding: 24px;">
+                    <h3 style="margin-bottom: 16px;">Side-by-Side Comparison</h3>
+                    <div id="scenario-compare-content"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Apply Macro Environment -->
+        <div class="card" style="padding: 20px; margin-bottom: 20px;">
+            <h3 style="margin-bottom: 12px;">Apply Macro Environment to Portfolio</h3>
+            <div style="display: flex; gap: 12px; align-items: center;">
+                <select id="macro-env-select" style="padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); font-size: 14px; min-width: 240px;">
+                    <option value="">-- Select macro environment --</option>
+                </select>
+                <button onclick="applyMacroToPortfolio()" style="padding: 8px 20px; border-radius: 6px; border: none; background: #0f766e; color: white; cursor: pointer; font-weight: 600;">Apply to Portfolio</button>
+            </div>
+            <div id="macro-apply-result" style="margin-top: 12px;"></div>
+        </div>
+
+        <!-- Audit Trail -->
+        <div class="card" style="padding: 20px;">
+            <h3 style="margin-bottom: 12px;">Audit Trail <span style="font-size: 13px; color: var(--text-muted); font-weight: 400;">(last 10 changes)</span></h3>
+            <div id="audit-trail-content">
+                <p style="color: var(--text-muted);">Loading...</p>
+            </div>
+        </div>
     </div>
+
+
+    <!-- Alerts View (AXIOM) -->
+    <div id="alerts-view" class="container" style="display:none; padding-top:20px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+            <h2>Alerts</h2>
+            <button onclick="axiomMarkAllRead()" style="padding:6px 16px;background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:6px;cursor:pointer;font-size:13px;">Mark All Read</button>
+        </div>
+        <div id="axiom-alerts-list" style="display:flex;flex-direction:column;gap:12px;">
+            <p style="color:var(--text-muted);">Loading alerts...</p>
+        </div>
+    </div>
+
+        </div><!-- end workspace-center -->
+
+        <!-- Right: Quick Panel -->
+        <div class="workspace-right" id="workspace-right">
+            <div class="workspace-right-header">
+                <span>Quick Panel</span>
+                <button class="pane-toggle-btn" onclick="toggleRightPane()" title="Collapse panel">&#x25B6;</button>
+            </div>
+            <div class="workspace-right-body">
+                <!-- Portfolio Stats -->
+                <div class="right-panel-section">
+                    <h4>Portfolio Stats</h4>
+                    <div id="right-portfolio-stats" style="font-size:13px;color:var(--text-muted);">Loading...</div>
+                </div>
+                <!-- Quick Add -->
+                <div class="right-panel-section">
+                    <h4>Quick Add</h4>
+                    <div style="display:flex;gap:8px;">
+                        <input type="text" id="right-quick-ticker" placeholder="AAPL" style="flex:1;padding:6px 8px;border:1px solid var(--border-color);border-radius:5px;background:var(--bg-primary);color:var(--text-primary);font-size:12px;">
+                        <button onclick="quickAddFromSidebar()" style="padding:6px 12px;background:#3b82f6;color:white;border:none;border-radius:5px;cursor:pointer;font-size:12px;font-weight:600;">Add</button>
+                    </div>
+                    <div id="right-quick-result" style="margin-top:8px;font-size:12px;"></div>
+                </div>
+                <!-- Navigation shortcuts -->
+                <div class="right-panel-section">
+                    <h4>Navigate</h4>
+                    <div style="display:flex;flex-direction:column;gap:8px;">
+                        <button onclick="showView('scenarios')" style="width:100%;padding:8px;background:var(--bg-primary);border:1px solid var(--border-color);border-radius:5px;cursor:pointer;color:var(--text-primary);font-size:12px;text-align:left;">&#128202; Scenarios</button>
+                        <button onclick="showView('alerts')" style="width:100%;padding:8px;background:var(--bg-primary);border:1px solid var(--border-color);border-radius:5px;cursor:pointer;color:var(--text-primary);font-size:12px;text-align:left;">&#128276; Alerts</button>
+                        <button onclick="showView('dashboard')" style="width:100%;padding:8px;background:var(--bg-primary);border:1px solid var(--border-color);border-radius:5px;cursor:pointer;color:var(--text-primary);font-size:12px;text-align:left;">&#127968; Dashboard</button>
+                        <button onclick="showView('companies')" style="width:100%;padding:8px;background:var(--bg-primary);border:1px solid var(--border-color);border-radius:5px;cursor:pointer;color:var(--text-primary);font-size:12px;text-align:left;">&#128188; Portfolio Grid</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><!-- end workspace -->
 
     <!-- Add/Edit Company Modal -->
     <div id="company-modal" class="modal">
@@ -266,59 +454,6 @@
                             </div>
                         </div>
                     </div>
-
-                            <!-- Settings Modal -->
-                            <div id="settings-modal" class="modal">
-                                <div class="modal-content small">
-                                    <div class="modal-header">
-                                        <h2>Portfolio Settings</h2>
-                                        <span class="close" onclick="closeSettingsModal()">&times;</span>
-                                    </div>
-                                    <div class="modal-body">
-                                        <form id="settings-form">
-                                            <div class="form-group">
-                                                <label>Strong Buy Threshold (%)</label>
-                                                <input type="number" step="0.1" id="th-strong-buy">
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Buy Threshold (%)</label>
-                                                <input type="number" step="0.1" id="th-buy">
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Hold Threshold (%)</label>
-                                                <input type="number" step="0.1" id="th-hold">
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Underweight Threshold (%)</label>
-                                                <input type="number" step="0.1" id="th-underweight">
-                                            </div>
-
-                                            <div class="form-group">
-                                                <label>DCF Weight</label>
-                                                <input type="number" step="0.01" id="w-dcf">
-                                            </div>
-                                            <div class="form-group">
-                                                <label>EV/EBITDA Weight</label>
-                                                <input type="number" step="0.01" id="w-ev-ebitda">
-                                            </div>
-                                            <div class="form-group">
-                                                <label>P/E Weight</label>
-                                                <input type="number" step="0.01" id="w-pe">
-                                            </div>
-
-                                            <div class="form-group">
-                                                <label><input type="checkbox" id="recompute-on-save"> Recompute valuation on save</label>
-                                                <p class="small">When enabled, saving a company will automatically run the valuation and show results.</p>
-                                            </div>
-
-                                            <div class="form-actions">
-                                                <button type="button" class="btn-cancel" onclick="closeSettingsModal()">Cancel</button>
-                                                <button type="submit" class="btn-submit">Save Settings</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
 
                     <div class="form-section">
                         <h3>Financial Data</h3>
@@ -442,9 +577,133 @@
                         </div>
                     </div>
 
+                    <!-- Live Valuation Preview -->
+                    <div class="form-section valuation-preview" id="valuation-preview-section" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; padding: 20px; color: white; display: none;">
+                        <h3 style="color: white; margin-bottom: 15px;">💡 Estimated Impact on Fair Value</h3>
+                        <div class="preview-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
+                            <div class="preview-item">
+                                <div style="font-size: 12px; opacity: 0.9;">Current Fair Value</div>
+                                <div id="preview-current-value" style="font-size: 24px; font-weight: bold;">--</div>
+                            </div>
+                            <div class="preview-item">
+                                <div style="font-size: 12px; opacity: 0.9;">Estimated New Value</div>
+                                <div id="preview-new-value" style="font-size: 24px; font-weight: bold; color: #4ade80;">--</div>
+                            </div>
+                            <div class="preview-item">
+                                <div style="font-size: 12px; opacity: 0.9;">Change</div>
+                                <div id="preview-change" style="font-size: 24px; font-weight: bold;">--</div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 15px; font-size: 13px; opacity: 0.85;">
+                            ℹ️ This is a simplified estimate. Save to see full DCF analysis with updated fair value.
+                        </div>
+                    </div>
+
+                    <!-- Live Preview (Sprint 0) -->
+                    <div id="valuation-live-preview" class="form-section" style="background: linear-gradient(135deg, #1e3a5f 0%, #2d6a4f 100%); border-radius: 12px; padding: 20px; color: white; display: none;">
+                        <h3 style="color: white; margin-bottom: 12px;">Live Preview (API-based)</h3>
+                        <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 12px;">
+                            <div>
+                                <div style="font-size: 11px; opacity: 0.8;">Fair Value / Share</div>
+                                <div id="live-preview-fair-value" style="font-size: 20px; font-weight: bold;">--</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 11px; opacity: 0.8;">Upside</div>
+                                <div id="live-preview-upside" style="font-size: 20px; font-weight: bold;">--</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 11px; opacity: 0.8;">WACC</div>
+                                <div id="live-preview-wacc" style="font-size: 20px; font-weight: bold;">--</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 11px; opacity: 0.8;">DCF / Share</div>
+                                <div id="live-preview-dcf" style="font-size: 18px; font-weight: 600;">--</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 11px; opacity: 0.8;">Comps / Share</div>
+                                <div id="live-preview-comps" style="font-size: 18px; font-weight: 600;">--</div>
+                            </div>
+                        </div>
+                        <div id="live-preview-wacc-warning" style="display: none; background: rgba(239,68,68,0.25); border: 1px solid #ef4444; border-radius: 6px; padding: 8px; font-size: 13px; margin-bottom: 6px;">
+                            &#9888; WACC below 5% &mdash; verify cost of debt
+                        </div>
+                        <div id="live-preview-tg-warning" style="display: none; background: rgba(234,179,8,0.25); border: 1px solid #eab308; border-radius: 6px; padding: 8px; font-size: 13px;">
+                            &#9888; Terminal growth above GDP &mdash; review assumption
+                        </div>
+                    </div>
+
+
+                    <!-- Anomaly Warnings (AXIOM) -->
+                    <div id="axiom-anomaly-panel" style="display:none;" class="form-section">
+                        <div style="background:rgba(251,191,36,0.1);border:1px solid #fbbf24;border-radius:8px;padding:16px;">
+                            <h3 style="color:#fbbf24;margin-bottom:12px;font-size:14px;">Assumption Anomalies Detected</h3>
+                            <div id="axiom-anomaly-list" style="font-size:13px;display:flex;flex-direction:column;gap:8px;"></div>
+                        </div>
+                    </div>
                     <div class="form-actions">
                         <button type="button" class="btn-cancel" onclick="closeModal()">Cancel</button>
-                        <button type="submit" class="btn-submit">Save Company</button>
+                        <button type="submit" class="btn-submit" id="save-company-btn">Save &amp; Recalculate</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal">
+        <div class="modal-content small">
+            <div class="modal-header">
+                <h2>Portfolio Settings</h2>
+                <span class="close" onclick="closeSettingsModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="settings-form">
+                    <div class="form-group">
+                        <label>Strong Buy Threshold (%)</label>
+                        <input type="number" step="0.1" id="th-strong-buy">
+                    </div>
+                    <div class="form-group">
+                        <label>Buy Threshold (%)</label>
+                        <input type="number" step="0.1" id="th-buy">
+                    </div>
+                    <div class="form-group">
+                        <label>Hold Threshold (%)</label>
+                        <input type="number" step="0.1" id="th-hold">
+                    </div>
+                    <div class="form-group">
+                        <label>Underweight Threshold (%)</label>
+                        <input type="number" step="0.1" id="th-underweight">
+                    </div>
+
+                    <div class="form-group">
+                        <label>DCF Weight</label>
+                        <input type="number" step="0.01" id="w-dcf">
+                    </div>
+                    <div class="form-group">
+                        <label>EV/EBITDA Weight</label>
+                        <input type="number" step="0.01" id="w-ev-ebitda">
+                    </div>
+                    <div class="form-group">
+                        <label>P/E Weight</label>
+                        <input type="number" step="0.01" id="w-pe">
+                    </div>
+
+                    <div class="form-group">
+                        <label><input type="checkbox" id="recompute-on-save"> Recompute valuation on save</label>
+                        <p class="small">When enabled, saving a company will automatically run the valuation and show results.</p>
+                    </div>
+
+
+                    <!-- Anomaly Warnings (AXIOM) -->
+                    <div id="axiom-anomaly-panel" style="display:none;" class="form-section">
+                        <div style="background:rgba(251,191,36,0.1);border:1px solid #fbbf24;border-radius:8px;padding:16px;">
+                            <h3 style="color:#fbbf24;margin-bottom:12px;font-size:14px;">Assumption Anomalies Detected</h3>
+                            <div id="axiom-anomaly-list" style="font-size:13px;display:flex;flex-direction:column;gap:8px;"></div>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn-cancel" onclick="closeSettingsModal()">Cancel</button>
+                        <button type="submit" class="btn-submit">Save Settings</button>
                     </div>
                 </form>
             </div>
@@ -459,7 +718,124 @@
                 <span class="close" onclick="closeValuationModal()">&times;</span>
             </div>
             <div class="modal-body">
-                <div id="valuation-results"></div>
+                <!-- AXIOM Valuation Tabs -->
+                <div style="display:flex;gap:0;border-bottom:2px solid var(--border-color);margin-bottom:20px;overflow-x:auto;">
+                    <button class="axiom-vtab active" data-tab="vtab-dcf" onclick="switchValTab('vtab-dcf',this)" style="padding:8px 20px;border:none;background:transparent;cursor:pointer;font-weight:600;border-bottom:2px solid #3b82f6;color:#3b82f6;white-space:nowrap;">DCF Analysis</button>
+                    <button class="axiom-vtab" data-tab="vtab-lbo" onclick="switchValTab('vtab-lbo',this)" style="padding:8px 20px;border:none;background:transparent;cursor:pointer;color:var(--text-muted);white-space:nowrap;">LBO Model</button>
+                    <button class="axiom-vtab" data-tab="vtab-ff" onclick="switchValTab('vtab-ff',this)" style="padding:8px 20px;border:none;background:transparent;cursor:pointer;color:var(--text-muted);white-space:nowrap;">Football Field</button>
+                    <button class="axiom-vtab" data-tab="vtab-sens" onclick="switchValTab('vtab-sens',this)" style="padding:8px 20px;border:none;background:transparent;cursor:pointer;color:var(--text-muted);white-space:nowrap;">Sensitivity</button>
+                    <button class="axiom-vtab" data-tab="vtab-peers" onclick="switchValTab('vtab-peers',this)" style="padding:8px 20px;border:none;background:transparent;cursor:pointer;color:var(--text-muted);white-space:nowrap;">Peers</button>
+                    <button class="axiom-vtab" data-tab="vtab-ai" onclick="switchValTab('vtab-ai',this)" style="padding:8px 20px;border:none;background:transparent;cursor:pointer;color:var(--text-muted);white-space:nowrap;">&#129302; AI Analyst</button>
+                    <div style="margin-left:auto;display:flex;gap:8px;align-items:center;padding:0 8px;">
+                        <button onclick="axiomExportExcel(currentValuationCompanyId)" style="padding:4px 12px;background:#1a6b3a;color:white;border:none;border-radius:5px;cursor:pointer;font-size:12px;font-weight:600;">Excel</button>
+                        <button onclick="axiomExportPDF(currentValuationCompanyId)" style="padding:4px 12px;background:#7c3aed;color:white;border:none;border-radius:5px;cursor:pointer;font-size:12px;font-weight:600;">PDF</button>
+                        <button id="axiom-share-btn" onclick="axiomCreateShareLink(currentValuationCompanyId)" style="padding:4px 12px;background:#0e4a6e;color:white;border:none;border-radius:5px;cursor:pointer;font-size:12px;font-weight:600;">Share</button>
+                    </div>
+                </div>
+
+                <div id="vtab-dcf" class="axiom-vtab-pane">
+                    <div id="axiom-inst-score" style="margin-bottom:12px;"></div>
+                    <div id="valuation-results"></div>
+                </div>
+
+                <div id="vtab-lbo" class="axiom-vtab-pane" style="display:none;">
+                    <div id="axiom-lbo-container">
+                        <div style="display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap;margin-bottom:20px;padding:16px;background:var(--bg-secondary);border-radius:8px;">
+                            <div>
+                                <label style="font-size:12px;color:var(--text-muted);">Entry EV/EBITDA</label>
+                                <input type="number" id="lbo-entry-mult" value="10" step="0.5" style="display:block;padding:6px 10px;border:1px solid var(--border-color);border-radius:5px;width:100px;margin-top:4px;">
+                            </div>
+                            <div>
+                                <label style="font-size:12px;color:var(--text-muted);">Leverage (Debt/EBITDA)</label>
+                                <input type="number" id="lbo-leverage" value="5" step="0.5" style="display:block;padding:6px 10px;border:1px solid var(--border-color);border-radius:5px;width:100px;margin-top:4px;">
+                            </div>
+                            <div>
+                                <label style="font-size:12px;color:var(--text-muted);">Exit Multiple</label>
+                                <input type="number" id="lbo-exit-mult" value="10" step="0.5" style="display:block;padding:6px 10px;border:1px solid var(--border-color);border-radius:5px;width:100px;margin-top:4px;">
+                            </div>
+                            <div>
+                                <label style="font-size:12px;color:var(--text-muted);">Hold Period (yrs)</label>
+                                <input type="number" id="lbo-hold" value="5" min="3" max="10" style="display:block;padding:6px 10px;border:1px solid var(--border-color);border-radius:5px;width:80px;margin-top:4px;">
+                            </div>
+                            <button onclick="runLBOAnalysis()" style="padding:8px 20px;background:#1d4ed8;color:white;border:none;border-radius:6px;cursor:pointer;font-weight:600;height:36px;align-self:flex-end;">Run LBO</button>
+                        </div>
+                        <div id="axiom-lbo-results" style="color:var(--text-muted);font-size:14px;">Enter inputs above and click Run LBO.</div>
+                    </div>
+                </div>
+
+                <div id="vtab-ff" class="axiom-vtab-pane" style="display:none;">
+                    <div id="axiom-ff-container">
+                        <div id="axiom-ff-chart" style="height:320px;"></div>
+                        <div id="axiom-ff-table" style="margin-top:16px;"></div>
+                    </div>
+                </div>
+
+                <div id="vtab-sens" class="axiom-vtab-pane" style="display:none;">
+                    <div id="axiom-sens-container">
+                        <p style="color:var(--text-muted);font-size:13px;margin-bottom:12px;">WACC (columns) vs Terminal Growth Rate (rows) — implied share price. Green = buy, yellow = hold, red = sell vs current price.</p>
+                        <div id="axiom-sens-table" style="overflow-x:auto;"></div>
+                    </div>
+                </div>
+                <div id="vtab-peers" class="axiom-vtab-pane" style="display:none;">
+                    <div id="axiom-peers-container">
+                        <p style="color:var(--text-muted);font-size:13px;margin-bottom:12px;">Peer companies identified via SEC EDGAR SIC code matching.</p>
+                        <div id="axiom-peers-table" style="overflow-x:auto;"></div>
+                    </div>
+                </div>
+
+                <div id="vtab-ai" class="axiom-vtab-pane" style="display:none;">
+                    <div id="axiom-ai-container" style="padding:16px;">
+                        <!-- Thesis Panel -->
+                        <div style="margin-bottom:20px;">
+                            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+                                <h4 style="margin:0;font-size:14px;color:var(--text-primary);">Investment Thesis</h4>
+                                <button onclick="generateThesis()" id="btn-thesis" style="padding:6px 16px;background:var(--accent-blue);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:12px;">Generate Thesis</button>
+                            </div>
+                            <div id="thesis-result" style="background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:8px;padding:14px;min-height:80px;font-size:13px;color:var(--text-muted);">
+                                Click "Generate Thesis" to get AI bull/bear analysis.
+                            </div>
+                        </div>
+
+                        <!-- Commentary Panel -->
+                        <div style="margin-bottom:20px;">
+                            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+                                <h4 style="margin:0;font-size:14px;color:var(--text-primary);">Valuation Commentary</h4>
+                                <button onclick="generateCommentary()" id="btn-commentary" style="padding:6px 16px;background:var(--accent-blue);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:12px;">Generate</button>
+                            </div>
+                            <div id="commentary-result" style="background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:8px;padding:14px;min-height:60px;font-size:13px;color:var(--text-muted);white-space:pre-line;">
+                                Click "Generate" for plain-English DCF commentary.
+                            </div>
+                        </div>
+
+                        <!-- Agent Panel -->
+                        <div style="margin-bottom:20px;">
+                            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+                                <h4 style="margin:0;font-size:14px;color:var(--text-primary);">&#129302; AI Analyst Agent</h4>
+                                <button onclick="runAgentAnalysis()" id="btn-agent" style="padding:6px 16px;background:#7c3aed;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:12px;">Run Full Analysis</button>
+                            </div>
+                            <textarea id="agent-query" placeholder="e.g. Analyze this company as a PE buyout target with 5x leverage" style="width:100%;box-sizing:border-box;padding:10px;background:var(--bg-tertiary);border:1px solid var(--border-color);border-radius:6px;color:var(--text-primary);font-size:13px;resize:vertical;min-height:50px;margin-bottom:8px;"></textarea>
+                            <div id="agent-steps" style="font-size:11px;color:var(--text-muted);margin-bottom:8px;min-height:20px;"></div>
+                            <div id="agent-result" style="background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:8px;padding:14px;min-height:80px;font-size:13px;color:var(--text-muted);white-space:pre-line;">
+                                Run Full Analysis to get an AI-generated investment memo.
+                            </div>
+                        </div>
+
+                        <!-- RAG Panel -->
+                        <div>
+                            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+                                <h4 style="margin:0;font-size:14px;color:var(--text-primary);">Ask the 10-K</h4>
+                                <button onclick="ingestDocs()" id="btn-ingest" style="padding:6px 14px;background:var(--bg-tertiary);color:var(--text-muted);border:1px solid var(--border-color);border-radius:6px;cursor:pointer;font-size:11px;">Ingest 10-K</button>
+                            </div>
+                            <div style="display:flex;gap:8px;margin-bottom:8px;">
+                                <input id="rag-question" type="text" placeholder="What does management say about revenue growth?" style="flex:1;padding:8px 12px;background:var(--bg-tertiary);border:1px solid var(--border-color);border-radius:6px;color:var(--text-primary);font-size:13px;" onkeydown="if(event.key==='Enter')askFiling()">
+                                <button onclick="askFiling()" style="padding:8px 16px;background:var(--accent-blue);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:12px;">Ask</button>
+                            </div>
+                            <div id="rag-result" style="background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:8px;padding:14px;min-height:60px;font-size:13px;color:var(--text-muted);">
+                                Ingest a 10-K first, then ask questions grounded in actual filings.
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -472,8 +848,9 @@
         </div>
     </div>
 
-    <script src="{{ url_for('static', filename='js/app.js') }}?v=3"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}?v=8"></script>
     <script src="{{ url_for('static', filename='js/ticker_add.js') }}?v=1"></script>
     <script src="{{ url_for('static', filename='js/macro_controls.js') }}?v=1"></script>
+    <script src="{{ url_for('static', filename='js/axiom_ui.js') }}?v=1"></script>
 </body>
 </html>

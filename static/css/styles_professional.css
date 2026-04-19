@@ -1568,3 +1568,261 @@ canvas {
         color: black;
     }
 }
+
+/* ═══════════════════════════════════════════════════════
+   AXIOM Phase 3 — Additional CSS
+   ═══════════════════════════════════════════════════════ */
+
+/* Number font for all financial figures */
+:root {
+    --num-font: 'Courier New', 'JetBrains Mono', monospace;
+    --signal-buy:  rgba(34, 197, 94, 0.18);
+    --signal-hold: rgba(251, 191, 36, 0.25);
+    --signal-sell: rgba(239, 68, 68, 0.18);
+    --source-badge-bg: rgba(59, 130, 246, 0.12);
+}
+
+/* Source attribution badge */
+.source-badge {
+    display: inline-block;
+    font-size: 10px;
+    color: #3b82f6;
+    background: var(--source-badge-bg);
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-family: var(--num-font);
+    letter-spacing: 0.3px;
+}
+.source-badge.fallback {
+    color: var(--text-muted);
+    background: var(--bg-secondary);
+}
+.source-badge.gap {
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.08);
+}
+
+/* Mode toggle thumb */
+#mode-toggle:checked ~ span#mode-thumb {
+    transform: translateX(20px);
+}
+
+/* Valuation tabs */
+.axiom-vtab {
+    transition: color 0.15s, border-bottom 0.15s;
+    margin-bottom: -2px;
+    background: transparent;
+}
+.axiom-vtab:hover { color: var(--primary) !important; }
+.axiom-vtab-pane { animation: fadeIn 0.15s ease; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* LBO table */
+.axiom-lbo-table td, .axiom-lbo-table th {
+    font-family: var(--num-font);
+    font-size: 12px;
+}
+
+/* Sensitivity table cells */
+#axiom-sens-table td {
+    transition: background 0.1s;
+}
+
+/* Rates bar numbers */
+#axiom-rates-bar strong {
+    font-family: var(--num-font);
+}
+
+/* Alert items */
+#axiom-alerts-list > div {
+    transition: opacity 0.2s;
+}
+
+/* Anomaly panel */
+#axiom-anomaly-panel { animation: fadeIn 0.2s ease; }
+
+/* Professional mode: show raw data toggle */
+body[data-mode="professional"] .pro-only { display: block !important; }
+body[data-mode="student"] .pro-only { display: none !important; }
+body[data-mode="student"] .student-only { display: block !important; }
+body[data-mode="professional"] .student-only { display: none !important; }
+
+
+/* ── Three-Pane Workspace ─────────────────────────────────────────────── */
+.workspace {
+    display: flex;
+    height: calc(100vh - 96px); /* subtract navbar + rates bar */
+    overflow: hidden;
+}
+
+/* Left sidebar */
+.workspace-left {
+    width: 260px;
+    min-width: 260px;
+    max-width: 260px;
+    background: var(--bg-secondary);
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: width 0.25s ease, min-width 0.25s ease;
+}
+.workspace-left.collapsed {
+    width: 0;
+    min-width: 0;
+}
+.workspace-left-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    flex-shrink: 0;
+}
+.workspace-left-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px 0;
+}
+.sidebar-search {
+    padding: 8px 12px;
+    flex-shrink: 0;
+}
+.sidebar-search input {
+    width: 100%;
+    padding: 6px 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: 12px;
+    box-sizing: border-box;
+}
+.sidebar-company-item {
+    padding: 10px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border-color);
+    transition: background 0.15s;
+}
+.sidebar-company-item:hover {
+    background: var(--hover-bg, rgba(255,255,255,0.04));
+}
+.sidebar-company-item.active {
+    background: rgba(59,130,246,0.1);
+    border-left: 3px solid #3b82f6;
+}
+.sidebar-company-name {
+    font-weight: 600;
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.sidebar-company-meta {
+    font-size: 11px;
+    color: var(--text-muted);
+    display: flex;
+    justify-content: space-between;
+    margin-top: 3px;
+}
+.sidebar-company-upside {
+    font-size: 11px;
+    font-weight: 700;
+}
+.sidebar-company-upside.positive { color: #22c55e; }
+.sidebar-company-upside.negative { color: #ef4444; }
+
+/* Center main content */
+.workspace-center {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 24px;
+    min-width: 0;
+}
+
+/* Right panel */
+.workspace-right {
+    width: 300px;
+    min-width: 300px;
+    max-width: 300px;
+    background: var(--bg-secondary);
+    border-left: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: width 0.25s ease, min-width 0.25s ease;
+}
+.workspace-right.collapsed {
+    width: 0;
+    min-width: 0;
+}
+.workspace-right-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    flex-shrink: 0;
+}
+.workspace-right-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+}
+
+/* Collapse toggle button */
+.pane-toggle-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted);
+    font-size: 14px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    line-height: 1;
+}
+.pane-toggle-btn:hover {
+    background: var(--hover-bg, rgba(255,255,255,0.06));
+}
+
+/* Right panel sections */
+.right-panel-section {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+.right-panel-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+.right-panel-section h4 {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin: 0 0 12px 0;
+}
+
+/* Responsive: collapse panels on small screens */
+@media (max-width: 1200px) {
+    .workspace-right { display: none; }
+}
+@media (max-width: 900px) {
+    .workspace-left { display: none; }
+    .workspace-center { padding: 16px; }
+}

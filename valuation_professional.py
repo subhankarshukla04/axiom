@@ -7,6 +7,11 @@ from ib_valuation_framework import (
 	classify_company,
 	get_industry_benchmark_multiples
 )
+try:
+	import ml_engine as _ml
+	_ML_AVAILABLE = True
+except Exception:
+	_ML_AVAILABLE = False
 
 def get_float(prompt):
 	while True:
@@ -22,8 +27,9 @@ def get_choice(prompt, valid_choices):
 			return choice
 		print(f"Please enter one of: {', '.join(valid_choices)}")
 
-def calculate_wacc(risk_free_rate, beta, market_risk_premium, debt, equity_value, tax_rate, country_risk=0, size_premium=0):
-	"""Calculate Weighted Average Cost of Capital using CAPM"""
+def calculate_wacc(risk_free_rate, beta, market_risk_premium, debt, equity_value, tax_rate,
+                   country_risk=0, size_premium=0, leverage_penalty=0):
+	"""Calculate Weighted Average Cost of Capital using CAPM + Blume-adjusted beta"""
 	# Cost of Equity using CAPM
 	cost_of_equity = risk_free_rate + beta * market_risk_premium + country_risk + size_premium
 	
@@ -40,7 +46,8 @@ def calculate_wacc(risk_free_rate, beta, market_risk_premium, debt, equity_value
 	weight_debt = debt / total_value
 	
 	wacc = (weight_equity * cost_of_equity) + (weight_debt * cost_of_debt * (1 - tax_rate))
-	
+	wacc += leverage_penalty  # telecom/high-leverage penalty
+
 	return wacc, cost_of_equity, cost_of_debt
 
 def calculate_financial_ratios(revenue, ebitda, profit, debt, cash, equity_value, shares, fcf):
@@ -138,8 +145,67 @@ def enhanced_dcf_valuation(company_data):
 	"""Comprehensive DCF valuation with multi-stage growth"""
 
 	# APPLY INVESTMENT BANKING FRAMEWORK
-	# This classifies the company and applies appropriate assumptions
 	company_data = apply_investment_banking_adjustments(company_data)
+
+	# APPLY ML CALIBRATION LAYER (sub-sector tagging, EBITDA/capex normalization,
+	# adaptive blend weights, analyst signals)
+	if _ML_AVAILABLE:
+		company_data = _ml.calibrate(company_data)
+
+		# Check for alternative model (banks, REITs, growth_loss)
+		tag = company_data.get('sub_sector_tag', '')
+		alt_price = _ml.run_alternative_model(tag, company_data)
+		if alt_price is not None and alt_price > 0:
+			shares = float(company_data.get('shares_outstanding', 1))
+			market_cap = float(company_data.get('market_cap_estimate', 0))
+			current_price = market_cap / shares if shares > 0 else 0
+			analyst_target = company_data.get('analyst_target')
+			# Anchor alt model to analyst consensus
+			final_price = _ml.apply_analyst_anchor(alt_price, analyst_target,
+			                                        company_data.get('company_type', 'STABLE_VALUE'))
+			upside = ((final_price * shares - market_cap) / market_cap * 100) if market_cap > 0 else 0
+			final_price = _ml.apply_ml_correction(final_price, company_data)
+			company_data['dcf_price_per_share'] = alt_price
+			company_data['ev_price_per_share'] = alt_price
+			company_data['pe_price_per_share'] = alt_price
+			_ml.log_prediction(
+				company_data.get('ticker', company_data.get('name', '')),
+				final_price, company_data
+			)
+			rec_map = [("STRONG BUY", 20), ("BUY", 10), ("HOLD", -10), ("UNDERWEIGHT", -20)]
+			recommendation = "SELL"
+			for label, thresh in rec_map:
+				if upside > thresh:
+					recommendation = label
+					break
+			return {
+				'name': company_data['name'],
+				'sector': company_data.get('sector', ''),
+				'dcf_equity_value': final_price * shares,
+				'dcf_price_per_share': alt_price,
+				'comp_ev_value': final_price * shares,
+				'comp_pe_value': final_price * shares,
+				'final_equity_value': final_price * shares,
+				'final_price_per_share': final_price,
+				'market_cap': market_cap,
+				'current_price': current_price,
+				'upside_pct': upside,
+				'recommendation': recommendation,
+				'wacc': 0.095,
+				'ev_ebitda': 0,
+				'pe_ratio': 0,
+				'fcf_yield': 0,
+				'roe': 0,
+				'roic': 0,
+				'debt_to_equity': 0,
+				'z_score': 2.5,
+				'mc_p10': final_price * shares * 0.75,
+				'mc_p90': final_price * shares * 1.25,
+				'sub_sector_tag': tag,
+				'company_type': company_data.get('company_type'),
+				'ebitda_method': company_data.get('ebitda_method'),
+				'analyst_target': analyst_target,
+			}
 
 	name = company_data['name']
 	sector = company_data['sector']
@@ -197,9 +263,15 @@ def enhanced_dcf_valuation(company_data):
 	print(f"{'=' * 80}")
 	
 	# Calculate WACC
+	leverage_penalty = float(company_data.get('leverage_wacc_penalty', 0))
 	wacc, cost_of_equity, cost_of_debt = calculate_wacc(
-		rf_rate, beta, mrp, debt, market_cap, tax_rate, country_risk, size_premium
+		rf_rate, beta, mrp, debt, market_cap, tax_rate, country_risk, size_premium,
+		leverage_penalty=leverage_penalty
 	)
+
+	# Apply guardrails (clamp WACC and terminal growth to safe ranges)
+	wacc = max(Config.WACC_MIN, min(Config.WACC_MAX, wacc))
+	terminal_growth = max(Config.TERMINAL_GROWTH_MIN, min(Config.TERMINAL_GROWTH_MAX, terminal_growth))
 	
 	print(f"\n--- Cost of Capital Analysis ---")
 	print(f"  Risk-Free Rate:        {rf_rate*100:.2f}%")
@@ -300,11 +372,20 @@ def enhanced_dcf_valuation(company_data):
 	print(f"  Company PEG Ratio:            {implied_peg:.2f}")
 	print(f"  Industry PEG:                 {comp_peg:.2f}")
 	
-	# Weighted Valuation (configurable weights)
-	w = Config.VALUATION_WEIGHTS
-	weight_dcf = w.get('dcf', 0.5)
-	weight_ev_ebitda = w.get('ev_ebitda', 0.25)
-	weight_pe = w.get('pe', 0.25)
+	# Adaptive blend weights from ML calibration layer
+	if _ML_AVAILABLE and 'blend_weights' in company_data:
+		bw = _ml.get_blend_weights(
+			company_data.get('company_type', 'STABLE_VALUE'),
+			dcf_equity_value
+		)
+		weight_dcf = bw['dcf']
+		weight_ev_ebitda = bw['ev']
+		weight_pe = bw['pe']
+	else:
+		w = Config.VALUATION_WEIGHTS
+		weight_dcf = w.get('dcf', 0.45)
+		weight_ev_ebitda = w.get('ev_ebitda', 0.30)
+		weight_pe = w.get('pe', 0.25)
 
 	final_equity_value = (
 		dcf_equity_value * weight_dcf +
@@ -312,6 +393,16 @@ def enhanced_dcf_valuation(company_data):
 		comp_pe_method * weight_pe
 	)
 	final_price_per_share = final_equity_value / shares
+
+	# Analyst consensus anchor + ML correction
+	if _ML_AVAILABLE:
+		analyst_target = company_data.get('analyst_target')
+		company_type = company_data.get('company_type', 'STABLE_VALUE')
+		final_price_per_share = _ml.apply_analyst_anchor(
+			final_price_per_share, analyst_target, company_type
+		)
+		final_price_per_share = _ml.apply_ml_correction(final_price_per_share, company_data)
+		final_equity_value = final_price_per_share * shares
 	
 	# Calculate comprehensive ratios
 	fcf_current = projected_fcf[0]
@@ -446,6 +537,17 @@ def enhanced_dcf_valuation(company_data):
 	
 	print(f"{'=' * 80}\n")
 	
+	# Log prediction for ML training pipeline
+	if _ML_AVAILABLE:
+		company_data['dcf_price_per_share'] = dcf_price_per_share
+		company_data['ev_price_per_share'] = comp_equity_ev / shares if shares > 0 else 0
+		company_data['pe_price_per_share'] = comp_pe_method / shares if shares > 0 else 0
+		company_data['wacc'] = wacc
+		_ml.log_prediction(
+			company_data.get('ticker', name),
+			final_price_per_share, company_data
+		)
+
 	return {
 		'name': name,
 		'sector': sector,
@@ -468,6 +570,10 @@ def enhanced_dcf_valuation(company_data):
 		'debt_to_equity': ratios['debt_to_equity'],
 		'z_score': z_score,
 		'mc_p10': mc_results['p10'],
+		'sub_sector_tag': company_data.get('sub_sector_tag'),
+		'company_type': company_data.get('company_type'),
+		'ebitda_method': company_data.get('ebitda_method'),
+		'analyst_target': company_data.get('analyst_target'),
 		'mc_p90': mc_results['p90']
 	}
 
@@ -484,11 +590,13 @@ def process_enhanced_csv(filename):
 		print(f"PROCESSING {len(companies)} COMPANIES - ENHANCED CFA-LEVEL ANALYSIS")
 		print("=" * 80)
 		
-		for company in companies:
+		for i, company in enumerate(companies, 1):
+			print(f"\n[{i}/{len(companies)}] Processing {company.get('name', 'Unknown')}...")
 			result = enhanced_dcf_valuation(company)
 			results.append(result)
-			
-			input("\nPress Enter to continue to next company...")
+
+			# Auto-continue without requiring user input
+			print(f"\n[{i}/{len(companies)}] Completed {company.get('name', 'Unknown')}")
 		
 		# Comprehensive Summary
 		print("\n" + "=" * 120)
@@ -525,13 +633,22 @@ def process_enhanced_csv(filename):
 
 # Main program
 if __name__ == "__main__":
-	print("=" * 80)
-	print("     CFA-LEVEL COMPANY VALUATION TOOL")
-	print("     Professional DCF, Comparables & Risk Analysis")
-	print("=" * 80)
-	
-	csv_file = input("\nEnter CSV filename (default: companies_enhanced.csv): ").strip()
-	if not csv_file:
-		csv_file = "companies_enhanced.csv"
-	
-	process_enhanced_csv(csv_file)
+    import sys
+
+    print("=" * 80)
+    print("     CFA-LEVEL COMPANY VALUATION TOOL")
+    print("     Professional DCF, Comparables & Risk Analysis")
+    print("=" * 80)
+
+    # Accept filename from command line or use default
+    if len(sys.argv) > 1:
+        csv_file = sys.argv[1]
+    else:
+        csv_file = "companies_enhanced.csv"
+
+    print(f"\nProcessing file: {csv_file}")
+
+    try:
+        process_enhanced_csv(csv_file)
+    except OSError as e:
+        print(f"Error: Unable to process file due to {e}")

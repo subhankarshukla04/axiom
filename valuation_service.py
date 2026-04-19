@@ -145,6 +145,15 @@ class ValuationService:
                 logger.info(f"Valuation completed for {company_name}: "
                           f"Fair Value ${result['final_equity_value']:,.0f}, "
                           f"Recommendation: {result['recommendation']}")
+
+                # Append institutional quality/complexity score (non-blocking)
+                try:
+                    from axiom_api_endpoints import compute_institutional_score
+                    inst = compute_institutional_score(company_data)
+                    result['institutional_score'] = inst
+                except Exception as inst_err:
+                    logger.debug(f"Institutional score skipped: {inst_err}")
+
                 return result
             else:
                 logger.error(f"Valuation returned None for {company_name}")

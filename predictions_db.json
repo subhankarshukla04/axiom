@@ -1,0 +1,4388 @@
+{
+  "MSFT": {
+    "ticker": "MSFT",
+    "model_price": 598.45,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "cloud_software",
+    "analyst_target": 579.5731,
+    "wacc": 0.09875491749818639,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 422.79,
+        "gap_pct": -29.4
+      }
+    }
+  },
+  "AAPL": {
+    "ticker": "AAPL",
+    "model_price": 286.43,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "cloud_software",
+    "analyst_target": 297.4555,
+    "wacc": 0.1012023750321167,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 270.23,
+        "gap_pct": -5.7
+      }
+    }
+  },
+  "JPM": {
+    "ticker": "JPM",
+    "model_price": 211.97,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "commercial_bank",
+    "analyst_target": 338.45456,
+    "wacc": 0.095,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 310.29,
+        "gap_pct": 46.4
+      }
+    }
+  },
+  "XOM": {
+    "ticker": "XOM",
+    "model_price": 174.38,
+    "company_type": "CYCLICAL",
+    "sub_tag": "energy_major",
+    "analyst_target": 165.375,
+    "wacc": 0.07435341501769403,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 146.44,
+        "gap_pct": -16.0
+      }
+    }
+  },
+  "WMT": {
+    "ticker": "WMT",
+    "model_price": 88.54,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "retail_bigbox",
+    "analyst_target": 136.43903,
+    "wacc": 0.07339570215675617,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 127.5,
+        "gap_pct": 44.0
+      }
+    }
+  },
+  "COST": {
+    "ticker": "COST",
+    "model_price": 1087.78,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "membership_retail",
+    "analyst_target": 1072.1562,
+    "wacc": 0.08484441922072265,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 999.89,
+        "gap_pct": -8.1
+      }
+    }
+  },
+  "V": {
+    "ticker": "V",
+    "model_price": 490.15,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "payment_net",
+    "analyst_target": 393.42886,
+    "wacc": 0.08788796782363312,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 317.02,
+        "gap_pct": -35.3
+      }
+    }
+  },
+  "HD": {
+    "ticker": "HD",
+    "model_price": 385.5,
+    "company_type": "STABLE_VALUE_LOWGROWTH",
+    "sub_tag": "retail_bigbox",
+    "analyst_target": 408.21213,
+    "wacc": 0.08223564753357206,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 349.4,
+        "gap_pct": -9.4
+      }
+    }
+  },
+  "ABBV": {
+    "ticker": "ABBV",
+    "model_price": 259.13,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "pharma",
+    "analyst_target": 249.0,
+    "wacc": 0.06648018623296538,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 208.38,
+        "gap_pct": -19.6
+      }
+    }
+  },
+  "T": {
+    "ticker": "T",
+    "model_price": 52.84,
+    "company_type": "STABLE_VALUE_LOWGROWTH",
+    "sub_tag": "telecom_carrier",
+    "analyst_target": 30.3913,
+    "wacc": 0.07564471263137107,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 26.51,
+        "gap_pct": -49.8
+      }
+    }
+  },
+  "NVDA": {
+    "ticker": "NVDA",
+    "model_price": 430.29,
+    "company_type": "HYPERGROWTH",
+    "sub_tag": "fabless_semi",
+    "analyst_target": 268.6148,
+    "wacc": 0.1342891070401869,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 201.68,
+        "gap_pct": -53.1
+      }
+    }
+  },
+  "AMZN": {
+    "ticker": "AMZN",
+    "model_price": 317.11,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "ecommerce_cloud",
+    "analyst_target": 281.1797,
+    "wacc": 0.10882037152703215,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 250.56,
+        "gap_pct": -21.0
+      }
+    }
+  },
+  "META": {
+    "ticker": "META",
+    "model_price": 1095.4,
+    "company_type": "HYPERGROWTH",
+    "sub_tag": "digital_platform",
+    "analyst_target": 855.9293,
+    "wacc": 0.11280327771277408,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 688.55,
+        "gap_pct": -37.1
+      }
+    }
+  },
+  "BRK-B": {
+    "ticker": "BRK-B",
+    "model_price": 927.72,
+    "company_type": "STABLE_VALUE_LOWGROWTH",
+    "sub_tag": "commercial_bank",
+    "analyst_target": 523.0,
+    "wacc": 0.095,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 474.58,
+        "gap_pct": -48.8
+      }
+    }
+  },
+  "LLY": {
+    "ticker": "LLY",
+    "model_price": 1458.59,
+    "company_type": "HYPERGROWTH",
+    "sub_tag": "pharma",
+    "analyst_target": 1209.862,
+    "wacc": 0.07903575207135652,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 927.03,
+        "gap_pct": -36.4
+      }
+    }
+  },
+  "UNH": {
+    "ticker": "UNH",
+    "model_price": 258.75,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "health_insurance",
+    "analyst_target": 360.46155,
+    "wacc": 0.06986971681863034,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 324.63,
+        "gap_pct": 25.5
+      }
+    }
+  },
+  "TSLA": {
+    "ticker": "TSLA",
+    "model_price": 343.1,
+    "company_type": "STORY",
+    "sub_tag": "story_auto",
+    "analyst_target": 414.58926,
+    "wacc": 0.12840395076747949,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 400.62,
+        "gap_pct": 16.8
+      }
+    }
+  },
+  "MA": {
+    "ticker": "MA",
+    "model_price": 952.65,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "payment_net",
+    "analyst_target": 654.65717,
+    "wacc": 0.09071003079286512,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 521.3,
+        "gap_pct": -45.3
+      }
+    }
+  },
+  "PG": {
+    "ticker": "PG",
+    "model_price": 136.76,
+    "company_type": "STABLE_VALUE_LOWGROWTH",
+    "sub_tag": "consumer_staples",
+    "analyst_target": 164.18182,
+    "wacc": 0.06802162687603908,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 146.93,
+        "gap_pct": 7.4
+      }
+    }
+  },
+  "JNJ": {
+    "ticker": "JNJ",
+    "model_price": 623.65,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "pharma",
+    "analyst_target": 251.08333,
+    "wacc": 0.06519581057410614,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 234.18,
+        "gap_pct": -62.5
+      }
+    }
+  },
+  "MRK": {
+    "ticker": "MRK",
+    "model_price": 277.07,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "pharma",
+    "analyst_target": 129.8148,
+    "wacc": 0.06716674721653906,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 119.07,
+        "gap_pct": -57.0
+      }
+    }
+  },
+  "CVX": {
+    "ticker": "CVX",
+    "model_price": 216.48,
+    "company_type": "CYCLICAL",
+    "sub_tag": "energy_major",
+    "analyst_target": 213.29167,
+    "wacc": 0.07491329722092048,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 183.99,
+        "gap_pct": -15.0
+      }
+    }
+  },
+  "BAC": {
+    "ticker": "BAC",
+    "model_price": 60.68,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "commercial_bank",
+    "analyst_target": 62.32609,
+    "wacc": 0.095,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 53.91,
+        "gap_pct": -11.2
+      }
+    }
+  },
+  "KO": {
+    "ticker": "KO",
+    "model_price": 74.08,
+    "company_type": "STABLE_VALUE_LOWGROWTH",
+    "sub_tag": "consumer_staples",
+    "analyst_target": 83.6687,
+    "wacc": 0.06748210381309139,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 75.74,
+        "gap_pct": 2.2
+      }
+    }
+  },
+  "PEP": {
+    "ticker": "PEP",
+    "model_price": 270.18,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "consumer_staples",
+    "analyst_target": 171.57143,
+    "wacc": 0.06610646330838768,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 157.67,
+        "gap_pct": -41.6
+      }
+    }
+  },
+  "ADBE": {
+    "ticker": "ADBE",
+    "model_price": 432.07,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "cloud_saas",
+    "analyst_target": 329.27853,
+    "wacc": 0.09996101877305838,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 244.45,
+        "gap_pct": -43.4
+      }
+    }
+  },
+  "TMO": {
+    "ticker": "TMO",
+    "model_price": 705.42,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "pharma",
+    "analyst_target": 648.28,
+    "wacc": 0.08393916178778671,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 526.6,
+        "gap_pct": -25.3
+      }
+    }
+  },
+  "CSCO": {
+    "ticker": "CSCO",
+    "model_price": 100.43,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "cloud_software",
+    "analyst_target": 89.09,
+    "wacc": 0.08634049791679654,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 86.25,
+        "gap_pct": -14.1
+      }
+    }
+  },
+  "MCD": {
+    "ticker": "MCD",
+    "model_price": 474.15,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "franchise_rest",
+    "analyst_target": 344.66666,
+    "wacc": 0.06795182067314201,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 311.36,
+        "gap_pct": -34.3
+      }
+    }
+  },
+  "CRM": {
+    "ticker": "CRM",
+    "model_price": 273.04,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "cloud_saas",
+    "analyst_target": 268.8725,
+    "wacc": 0.09880292417651751,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 182.14,
+        "gap_pct": -33.3
+      }
+    }
+  },
+  "NFLX": {
+    "ticker": "NFLX",
+    "model_price": 175.07,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "streaming_media",
+    "analyst_target": 114.53133,
+    "wacc": 0.10076807843663063,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 97.31,
+        "gap_pct": -44.4
+      }
+    }
+  },
+  "ACN": {
+    "ticker": "ACN",
+    "model_price": 419.4,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "cloud_software",
+    "analyst_target": 250.51407,
+    "wacc": 0.09139756543822097,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 197.65,
+        "gap_pct": -52.9
+      }
+    }
+  },
+  "LIN": {
+    "ticker": "LIN",
+    "model_price": 475.23,
+    "company_type": "CYCLICAL",
+    "sub_tag": "industrial_cong",
+    "analyst_target": 521.3292,
+    "wacc": 0.08099081707748422,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 492.23,
+        "gap_pct": 3.6
+      }
+    }
+  },
+  "AMD": {
+    "ticker": "AMD",
+    "model_price": 194.49,
+    "company_type": "HYPERGROWTH",
+    "sub_tag": "fabless_semi",
+    "analyst_target": 291.52173,
+    "wacc": 0.1305749905054378,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 278.39,
+        "gap_pct": 43.1
+      }
+    }
+  },
+  "AVGO": {
+    "ticker": "AVGO",
+    "model_price": 314.11,
+    "company_type": "HYPERGROWTH",
+    "sub_tag": "fabless_semi",
+    "analyst_target": 475.49295,
+    "wacc": 0.11460122826194702,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 406.54,
+        "gap_pct": 29.4
+      }
+    }
+  },
+  "TXN": {
+    "ticker": "TXN",
+    "model_price": 157.0,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "mature_semi",
+    "analyst_target": 223.89343,
+    "wacc": 0.09886552194045597,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 229.82,
+        "gap_pct": 46.4
+      }
+    }
+  },
+  "DHR": {
+    "ticker": "DHR",
+    "model_price": 188.64,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "pharma",
+    "analyst_target": 256.04544,
+    "wacc": 0.08662174610533721,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 194.75,
+        "gap_pct": 3.2
+      }
+    }
+  },
+  "ABT": {
+    "ticker": "ABT",
+    "model_price": 184.89,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "biotech_device",
+    "analyst_target": 122.12,
+    "wacc": 0.07609351081977588,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 96.81,
+        "gap_pct": -47.6
+      }
+    }
+  },
+  "WFC": {
+    "ticker": "WFC",
+    "model_price": 114.47,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "commercial_bank",
+    "analyst_target": 96.17391,
+    "wacc": 0.095,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 81.41,
+        "gap_pct": -28.9
+      }
+    }
+  },
+  "NEE": {
+    "ticker": "NEE",
+    "model_price": 68.3,
+    "company_type": "HYPERGROWTH",
+    "sub_tag": "telecom_carrier",
+    "analyst_target": 95.29364,
+    "wacc": 0.08691864714375326,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 91.98,
+        "gap_pct": 34.7
+      }
+    }
+  },
+  "PM": {
+    "ticker": "PM",
+    "model_price": 223.46,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "tobacco",
+    "analyst_target": 192.6,
+    "wacc": 0.06665298854877422,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 157.79,
+        "gap_pct": -29.4
+      }
+    }
+  },
+  "INTC": {
+    "ticker": "INTC",
+    "model_price": 28.57,
+    "company_type": "DISTRESSED",
+    "sub_tag": "IDM_semi",
+    "analyst_target": 52.13537,
+    "wacc": 0.10214757492738138,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 68.5,
+        "gap_pct": 139.8
+      }
+    }
+  },
+  "QCOM": {
+    "ticker": "QCOM",
+    "model_price": 141.24,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "mature_semi",
+    "analyst_target": 151.17857,
+    "wacc": 0.10668329210414146,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 136.2,
+        "gap_pct": -3.6
+      }
+    }
+  },
+  "IBM": {
+    "ticker": "IBM",
+    "model_price": 342.17,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "cloud_software",
+    "analyst_target": 298.8265,
+    "wacc": 0.07688716657378711,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 253.47,
+        "gap_pct": -25.9
+      }
+    }
+  },
+  "CAT": {
+    "ticker": "CAT",
+    "model_price": 1029.28,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "heavy_machinery",
+    "analyst_target": 754.3292,
+    "wacc": 0.09010516698577625,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 794.65,
+        "gap_pct": -22.8
+      }
+    }
+  },
+  "GE": {
+    "ticker": "GE",
+    "model_price": 468.3,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "industrial_cong",
+    "analyst_target": 350.65,
+    "wacc": 0.09495813356056598,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 304.13,
+        "gap_pct": -35.1
+      }
+    }
+  },
+  "HON": {
+    "ticker": "HON",
+    "model_price": 223.28,
+    "company_type": "CYCLICAL",
+    "sub_tag": "industrial_cong",
+    "analyst_target": 251.4988,
+    "wacc": 0.07942806498236771,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 233.55,
+        "gap_pct": 4.6
+      }
+    }
+  },
+  "INTU": {
+    "ticker": "INTU",
+    "model_price": 872.29,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "cloud_saas",
+    "analyst_target": 599.5053,
+    "wacc": 0.10310194202554143,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 393.25,
+        "gap_pct": -54.9
+      }
+    }
+  },
+  "SPGI": {
+    "ticker": "SPGI",
+    "model_price": 630.35,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "data_analytics",
+    "analyst_target": 534.0476,
+    "wacc": 0.08696448791107193,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 442.57,
+        "gap_pct": -29.8
+      }
+    }
+  },
+  "AMAT": {
+    "ticker": "AMAT",
+    "model_price": 243.04,
+    "company_type": "STABLE_VALUE_LOWGROWTH",
+    "sub_tag": "fabless_semi",
+    "analyst_target": 422.96875,
+    "wacc": 0.12071512153702398,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 396.94,
+        "gap_pct": 63.3
+      }
+    }
+  },
+  "ORCL": {
+    "ticker": "ORCL",
+    "model_price": 202.68,
+    "company_type": "HYPERGROWTH",
+    "sub_tag": "cloud_saas",
+    "analyst_target": 243.86552,
+    "wacc": 0.0917332499094566,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 175.06,
+        "gap_pct": -13.6
+      }
+    }
+  },
+  "LRCX": {
+    "ticker": "LRCX",
+    "model_price": 175.04,
+    "company_type": "HYPERGROWTH",
+    "sub_tag": "fabless_semi",
+    "analyst_target": 281.2258,
+    "wacc": 0.1250108042606105,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 267.6,
+        "gap_pct": 52.9
+      }
+    }
+  },
+  "KLAC": {
+    "ticker": "KLAC",
+    "model_price": 884.18,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "fabless_semi",
+    "analyst_target": 1700.3103,
+    "wacc": 0.11999479890846278,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 1791.44,
+        "gap_pct": 102.6
+      }
+    }
+  },
+  "SNPS": {
+    "ticker": "SNPS",
+    "model_price": 887.54,
+    "company_type": "HYPERGROWTH",
+    "sub_tag": "cloud_software",
+    "analyst_target": 535.6781,
+    "wacc": 0.10286948347891348,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 449.58,
+        "gap_pct": -49.3
+      }
+    }
+  },
+  "CDNS": {
+    "ticker": "CDNS",
+    "model_price": 163.24,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "cloud_saas",
+    "analyst_target": 371.67776,
+    "wacc": 0.10741883809317489,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 311.03,
+        "gap_pct": 90.5
+      }
+    }
+  },
+  "MU": {
+    "ticker": "MU",
+    "model_price": 868.67,
+    "company_type": "HYPERGROWTH",
+    "sub_tag": "fabless_semi",
+    "analyst_target": 533.725,
+    "wacc": 0.11991375661981402,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 455.07,
+        "gap_pct": -47.6
+      }
+    }
+  },
+  "ADI": {
+    "ticker": "ADI",
+    "model_price": 229.59,
+    "company_type": "HYPERGROWTH",
+    "sub_tag": "mature_semi",
+    "analyst_target": 387.375,
+    "wacc": 0.10601875906462029,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 371.45,
+        "gap_pct": 61.8
+      }
+    }
+  },
+  "MCHP": {
+    "ticker": "MCHP",
+    "model_price": 30.25,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "mature_semi",
+    "analyst_target": 86.66667,
+    "wacc": 0.11245515213461132,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 78.76,
+        "gap_pct": 160.4
+      }
+    }
+  },
+  "NXPI": {
+    "ticker": "NXPI",
+    "model_price": 255.43,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "fabless_semi",
+    "analyst_target": 258.67743,
+    "wacc": 0.10407825851845418,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 216.03,
+        "gap_pct": -15.4
+      }
+    }
+  },
+  "HPQ": {
+    "ticker": "HPQ",
+    "model_price": 85.42,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "cloud_software",
+    "analyst_target": 19.43125,
+    "wacc": 0.08905790157031225,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 19.88,
+        "gap_pct": -76.7
+      }
+    }
+  },
+  "HPE": {
+    "ticker": "HPE",
+    "model_price": 116.62,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "cloud_software",
+    "analyst_target": 26.43053,
+    "wacc": 0.08001602656323623,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 26.44,
+        "gap_pct": -77.3
+      }
+    }
+  },
+  "STX": {
+    "ticker": "STX",
+    "model_price": 330.13,
+    "company_type": "HYPERGROWTH",
+    "sub_tag": "cloud_software",
+    "analyst_target": 508.47415,
+    "wacc": 0.10600262240746909,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 547.75,
+        "gap_pct": 65.9
+      }
+    }
+  },
+  "WDC": {
+    "ticker": "WDC",
+    "model_price": 176.54,
+    "company_type": "HYPERGROWTH",
+    "sub_tag": "cloud_software",
+    "analyst_target": 347.26086,
+    "wacc": 0.11372989029121157,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 372.52,
+        "gap_pct": 111.0
+      }
+    }
+  },
+  "KEYS": {
+    "ticker": "KEYS",
+    "model_price": 262.08,
+    "company_type": "HYPERGROWTH",
+    "sub_tag": "cloud_software",
+    "analyst_target": 315.15384,
+    "wacc": 0.101529905100593,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 334.34,
+        "gap_pct": 27.6
+      }
+    }
+  },
+  "FTNT": {
+    "ticker": "FTNT",
+    "model_price": 82.2,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "cloud_software",
+    "analyst_target": 89.0,
+    "wacc": 0.10532422471342212,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 81.84,
+        "gap_pct": -0.4
+      }
+    }
+  },
+  "PANW": {
+    "ticker": "PANW",
+    "model_price": 73.63,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "cloud_software",
+    "analyst_target": 205.96,
+    "wacc": 0.1008034252333822,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 167.85,
+        "gap_pct": 128.0
+      }
+    }
+  },
+  "CRWD": {
+    "ticker": "CRWD",
+    "model_price": 117.5,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "cloud_software",
+    "analyst_target": 489.8584,
+    "wacc": 0.11468084915339613,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 423.95,
+        "gap_pct": 260.8
+      }
+    }
+  },
+  "ZS": {
+    "ticker": "ZS",
+    "model_price": 51.79,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "cloud_saas",
+    "analyst_target": 230.45222,
+    "wacc": 0.12254558427016587,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 134.68,
+        "gap_pct": 160.1
+      }
+    }
+  },
+  "NET": {
+    "ticker": "NET",
+    "model_price": 170.87,
+    "company_type": "STORY",
+    "sub_tag": "cloud_software",
+    "analyst_target": 231.85484,
+    "wacc": 0.1326346491823465,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 200.99,
+        "gap_pct": 17.6
+      }
+    }
+  },
+  "DDOG": {
+    "ticker": "DDOG",
+    "model_price": 53.43,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "cloud_saas",
+    "analyst_target": 179.32777,
+    "wacc": 0.11826833318967564,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 126.61,
+        "gap_pct": 137.0
+      }
+    }
+  },
+  "SNOW": {
+    "ticker": "SNOW",
+    "model_price": 132.55,
+    "company_type": "DISTRESSED",
+    "sub_tag": "cloud_saas",
+    "analyst_target": 236.61105,
+    "wacc": 0.1186489382706157,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 143.98,
+        "gap_pct": 8.6
+      }
+    }
+  },
+  "PLTR": {
+    "ticker": "PLTR",
+    "model_price": 196.76,
+    "company_type": "STORY",
+    "sub_tag": "growth_loss",
+    "analyst_target": 186.21846,
+    "wacc": 0.095,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 146.39,
+        "gap_pct": -25.6
+      }
+    }
+  },
+  "GS": {
+    "ticker": "GS",
+    "model_price": 892.32,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "invest_bank",
+    "analyst_target": 933.25,
+    "wacc": 0.095,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 925.95,
+        "gap_pct": 3.8
+      }
+    }
+  },
+  "MS": {
+    "ticker": "MS",
+    "model_price": 160.18,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "invest_bank",
+    "analyst_target": 195.14285,
+    "wacc": 0.095,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 188.82,
+        "gap_pct": 17.9
+      }
+    }
+  },
+  "C": {
+    "ticker": "C",
+    "model_price": 214.36,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "commercial_bank",
+    "analyst_target": 141.19048,
+    "wacc": 0.095,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 132.18,
+        "gap_pct": -38.3
+      }
+    }
+  },
+  "BLK": {
+    "ticker": "BLK",
+    "model_price": 1769.33,
+    "company_type": "HYPERGROWTH",
+    "sub_tag": "asset_mgmt",
+    "analyst_target": 1251.875,
+    "wacc": 0.09701258708614782,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 1052.14,
+        "gap_pct": -40.5
+      }
+    }
+  },
+  "SCHW": {
+    "ticker": "SCHW",
+    "model_price": 70.91,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "invest_bank",
+    "analyst_target": 115.35,
+    "wacc": 0.095,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 92.28,
+        "gap_pct": 30.1
+      }
+    }
+  },
+  "AXP": {
+    "ticker": "AXP",
+    "model_price": 270.48,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "payment_net",
+    "analyst_target": 356.1539,
+    "wacc": 0.09012869424904921,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 331.69,
+        "gap_pct": 22.6
+      }
+    }
+  },
+  "COF": {
+    "ticker": "COF",
+    "model_price": 437.79,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "commercial_bank",
+    "analyst_target": 256.61905,
+    "wacc": 0.095,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 206.47,
+        "gap_pct": -52.8
+      }
+    }
+  },
+  "USB": {
+    "ticker": "USB",
+    "model_price": 78.73,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "commercial_bank",
+    "analyst_target": 62.75,
+    "wacc": 0.095,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 56.93,
+        "gap_pct": -27.7
+      }
+    }
+  },
+  "TFC": {
+    "ticker": "TFC",
+    "model_price": 96.18,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "commercial_bank",
+    "analyst_target": 54.81579,
+    "wacc": 0.095,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 50.57,
+        "gap_pct": -47.4
+      }
+    }
+  },
+  "PNC": {
+    "ticker": "PNC",
+    "model_price": 253.36,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "commercial_bank",
+    "analyst_target": 253.325,
+    "wacc": 0.095,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 224.81,
+        "gap_pct": -11.3
+      }
+    }
+  },
+  "FITB": {
+    "ticker": "FITB",
+    "model_price": 45.07,
+    "company_type": "HYPERGROWTH",
+    "sub_tag": "commercial_bank",
+    "analyst_target": 56.575,
+    "wacc": 0.095,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 50.34,
+        "gap_pct": 11.7
+      }
+    }
+  },
+  "RF": {
+    "ticker": "RF",
+    "model_price": 42.07,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "commercial_bank",
+    "analyst_target": 30.215,
+    "wacc": 0.095,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 28.13,
+        "gap_pct": -33.1
+      }
+    }
+  },
+  "KEY": {
+    "ticker": "KEY",
+    "model_price": 26.35,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "commercial_bank",
+    "analyst_target": 24.60526,
+    "wacc": 0.095,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 21.8,
+        "gap_pct": -17.3
+      }
+    }
+  },
+  "CFG": {
+    "ticker": "CFG",
+    "model_price": 99.01,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "commercial_bank",
+    "analyst_target": 72.88235,
+    "wacc": 0.095,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 64.45,
+        "gap_pct": -34.9
+      }
+    }
+  },
+  "HBAN": {
+    "ticker": "HBAN",
+    "model_price": 22.84,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "commercial_bank",
+    "analyst_target": 19.69444,
+    "wacc": 0.095,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 16.85,
+        "gap_pct": -26.2
+      }
+    }
+  },
+  "MTB": {
+    "ticker": "MTB",
+    "model_price": 368.44,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "commercial_bank",
+    "analyst_target": 233.76315,
+    "wacc": 0.095,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 218.79,
+        "gap_pct": -40.6
+      }
+    }
+  },
+  "ZION": {
+    "ticker": "ZION",
+    "model_price": 79.5,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "commercial_bank",
+    "analyst_target": 65.6,
+    "wacc": 0.095,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 62.73,
+        "gap_pct": -21.1
+      }
+    }
+  },
+  "MCO": {
+    "ticker": "MCO",
+    "model_price": 520.57,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "data_analytics",
+    "analyst_target": 534.05,
+    "wacc": 0.09321329828966854,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 455.35,
+        "gap_pct": -12.5
+      }
+    }
+  },
+  "ICE": {
+    "ticker": "ICE",
+    "model_price": 257.38,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "data_analytics",
+    "analyst_target": 198.8,
+    "wacc": 0.07599261077048151,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 161.24,
+        "gap_pct": -37.4
+      }
+    }
+  },
+  "CME": {
+    "ticker": "CME",
+    "model_price": 188.12,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "commercial_bank",
+    "analyst_target": 312.93332,
+    "wacc": 0.095,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 287.65,
+        "gap_pct": 52.9
+      }
+    }
+  },
+  "CBOE": {
+    "ticker": "CBOE",
+    "model_price": 135.7,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "commercial_bank",
+    "analyst_target": 298.85715,
+    "wacc": 0.095,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 299.94,
+        "gap_pct": 121.0
+      }
+    }
+  },
+  "BX": {
+    "ticker": "BX",
+    "model_price": 95.72,
+    "company_type": "HYPERGROWTH",
+    "sub_tag": "asset_mgmt",
+    "analyst_target": 145.6,
+    "wacc": 0.11224934580375971,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 129.08,
+        "gap_pct": 34.9
+      }
+    }
+  },
+  "KKR": {
+    "ticker": "KKR",
+    "model_price": 526.2,
+    "company_type": "HYPERGROWTH",
+    "sub_tag": "asset_mgmt",
+    "analyst_target": 123.65947,
+    "wacc": 0.09357907118569975,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 103.6,
+        "gap_pct": -80.3
+      }
+    }
+  },
+  "ARES": {
+    "ticker": "ARES",
+    "model_price": 279.94,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "asset_mgmt",
+    "analyst_target": 146.70589,
+    "wacc": 0.09561808463169824,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 117.78,
+        "gap_pct": -57.9
+      }
+    }
+  },
+  "TPG": {
+    "ticker": "TPG",
+    "model_price": 77.73,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "asset_mgmt",
+    "analyst_target": 56.75,
+    "wacc": 0.11504994475385333,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 44.98,
+        "gap_pct": -42.1
+      }
+    }
+  },
+  "PFE": {
+    "ticker": "PFE",
+    "model_price": 37.89,
+    "company_type": "STABLE_VALUE_LOWGROWTH",
+    "sub_tag": "pharma",
+    "analyst_target": 28.96556,
+    "wacc": 0.0693930633183531,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 27.56,
+        "gap_pct": -27.3
+      }
+    }
+  },
+  "BMY": {
+    "ticker": "BMY",
+    "model_price": 71.5,
+    "company_type": "STABLE_VALUE_LOWGROWTH",
+    "sub_tag": "pharma",
+    "analyst_target": 63.04,
+    "wacc": 0.06267389091046262,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 60.17,
+        "gap_pct": -15.8
+      }
+    }
+  },
+  "AMGN": {
+    "ticker": "AMGN",
+    "model_price": 765.83,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "pharma",
+    "analyst_target": 352.0345,
+    "wacc": 0.06966247685374452,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 355.3,
+        "gap_pct": -53.6
+      }
+    }
+  },
+  "GILD": {
+    "ticker": "GILD",
+    "model_price": 216.44,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "pharma",
+    "analyst_target": 158.35715,
+    "wacc": 0.07141796262714395,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 137.64,
+        "gap_pct": -36.4
+      }
+    }
+  },
+  "ELV": {
+    "ticker": "ELV",
+    "model_price": 1076.34,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "health_insurance",
+    "analyst_target": 378.38095,
+    "wacc": 0.06704355325825483,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 323.05,
+        "gap_pct": -70.0
+      }
+    }
+  },
+  "CI": {
+    "ticker": "CI",
+    "model_price": 1064.09,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "health_insurance",
+    "analyst_target": 338.41666,
+    "wacc": 0.06601854184628593,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 278.64,
+        "gap_pct": -73.8
+      }
+    }
+  },
+  "HUM": {
+    "ticker": "HUM",
+    "model_price": 849.07,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "health_insurance",
+    "analyst_target": 210.45833,
+    "wacc": 0.0722968412256465,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 205.14,
+        "gap_pct": -75.8
+      }
+    }
+  },
+  "CVS": {
+    "ticker": "CVS",
+    "model_price": 83.62,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "health_insurance",
+    "analyst_target": 96.57692,
+    "wacc": 0.0627896631452647,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 77.3,
+        "gap_pct": -7.6
+      }
+    }
+  },
+  "ZTS": {
+    "ticker": "ZTS",
+    "model_price": 159.3,
+    "company_type": "STABLE_VALUE_LOWGROWTH",
+    "sub_tag": "pharma",
+    "analyst_target": 150.29411,
+    "wacc": 0.08226671645801532,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 122.38,
+        "gap_pct": -23.2
+      }
+    }
+  },
+  "VRTX": {
+    "ticker": "VRTX",
+    "model_price": 558.09,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "pharma",
+    "analyst_target": 548.4483,
+    "wacc": 0.07912686341841048,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 441.2,
+        "gap_pct": -20.9
+      }
+    }
+  },
+  "REGN": {
+    "ticker": "REGN",
+    "model_price": 963.8,
+    "company_type": "STABLE_VALUE_LOWGROWTH",
+    "sub_tag": "pharma",
+    "analyst_target": 875.4489,
+    "wacc": 0.07953083781792683,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 750.57,
+        "gap_pct": -22.1
+      }
+    }
+  },
+  "BIIB": {
+    "ticker": "BIIB",
+    "model_price": 222.15,
+    "company_type": "STABLE_VALUE_LOWGROWTH",
+    "sub_tag": "pharma",
+    "analyst_target": 207.694,
+    "wacc": 0.0777120907912354,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 177.35,
+        "gap_pct": -20.2
+      }
+    }
+  },
+  "ILMN": {
+    "ticker": "ILMN",
+    "model_price": 88.14,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "pharma",
+    "analyst_target": 136.11111,
+    "wacc": 0.10607730307227424,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 134.5,
+        "gap_pct": 52.6
+      }
+    }
+  },
+  "IDXX": {
+    "ticker": "IDXX",
+    "model_price": 550.47,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "pharma",
+    "analyst_target": 733.4286,
+    "wacc": 0.09983000173577428,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 589.25,
+        "gap_pct": 7.0
+      }
+    }
+  },
+  "EW": {
+    "ticker": "EW",
+    "model_price": 93.54,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "biotech_device",
+    "analyst_target": 96.33333,
+    "wacc": 0.08900437015575105,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 80.99,
+        "gap_pct": -13.4
+      }
+    }
+  },
+  "BDX": {
+    "ticker": "BDX",
+    "model_price": 282.69,
+    "company_type": "STABLE_VALUE_LOWGROWTH",
+    "sub_tag": "biotech_device",
+    "analyst_target": 191.46153,
+    "wacc": 0.07033159359679796,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 158.54,
+        "gap_pct": -43.9
+      }
+    }
+  },
+  "SYK": {
+    "ticker": "SYK",
+    "model_price": 376.41,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "biotech_device",
+    "analyst_target": 419.11334,
+    "wacc": 0.08404775261739371,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 343.32,
+        "gap_pct": -8.8
+      }
+    }
+  },
+  "MDT": {
+    "ticker": "MDT",
+    "model_price": 195.51,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "biotech_device",
+    "analyst_target": 109.08,
+    "wacc": 0.07289472435519007,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 86.19,
+        "gap_pct": -55.9
+      }
+    }
+  },
+  "BSX": {
+    "ticker": "BSX",
+    "model_price": 126.3,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "biotech_device",
+    "analyst_target": 96.65625,
+    "wacc": 0.08012437016791922,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 64.23,
+        "gap_pct": -49.1
+      }
+    }
+  },
+  "DXCM": {
+    "ticker": "DXCM",
+    "model_price": 95.45,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "biotech_device",
+    "analyst_target": 86.875,
+    "wacc": 0.10593344298999265,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 63.98,
+        "gap_pct": -33.0
+      }
+    }
+  },
+  "HOLX": {
+    "ticker": "HOLX",
+    "model_price": 97.08,
+    "company_type": "STABLE_VALUE_LOWGROWTH",
+    "sub_tag": "biotech_device",
+    "analyst_target": 76.66667,
+    "wacc": 0.08129488847437694,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 76.01,
+        "gap_pct": -21.7
+      }
+    }
+  },
+  "MRNA": {
+    "ticker": "MRNA",
+    "model_price": 28.27,
+    "company_type": "DISTRESSED",
+    "sub_tag": "pharma",
+    "analyst_target": 46.1,
+    "wacc": 0.11163587609734485,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 53.72,
+        "gap_pct": 90.0
+      }
+    }
+  },
+  "SBUX": {
+    "ticker": "SBUX",
+    "model_price": 72.62,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "franchise_rest",
+    "analyst_target": 100.38235,
+    "wacc": 0.085016521538598,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 100.0,
+        "gap_pct": 37.7
+      }
+    }
+  },
+  "NKE": {
+    "ticker": "NKE",
+    "model_price": 83.31,
+    "company_type": "STABLE_VALUE_LOWGROWTH",
+    "sub_tag": "apparel_brand",
+    "analyst_target": 62.36667,
+    "wacc": 0.09111027490663634,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 46.03,
+        "gap_pct": -44.7
+      }
+    }
+  },
+  "TJX": {
+    "ticker": "TJX",
+    "model_price": 180.33,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "retail_bigbox",
+    "analyst_target": 171.77779,
+    "wacc": 0.0814015719504098,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 160.68,
+        "gap_pct": -10.9
+      }
+    }
+  },
+  "LOW": {
+    "ticker": "LOW",
+    "model_price": 461.47,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "retail_bigbox",
+    "analyst_target": 285.57578,
+    "wacc": 0.07892801016320164,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 251.72,
+        "gap_pct": -45.5
+      }
+    }
+  },
+  "TGT": {
+    "ticker": "TGT",
+    "model_price": 211.03,
+    "company_type": "STABLE_VALUE_LOWGROWTH",
+    "sub_tag": "retail_bigbox",
+    "analyst_target": 124.71875,
+    "wacc": 0.08092155410136799,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 127.84,
+        "gap_pct": -39.4
+      }
+    }
+  },
+  "ORLY": {
+    "ticker": "ORLY",
+    "model_price": 76.27,
+    "company_type": "CYCLICAL",
+    "sub_tag": "auto_legacy",
+    "analyst_target": 105.66667,
+    "wacc": 0.07203699156077263,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 93.71,
+        "gap_pct": 22.9
+      }
+    }
+  },
+  "AZO": {
+    "ticker": "AZO",
+    "model_price": 4690.87,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "auto_legacy",
+    "analyst_target": 4204.7393,
+    "wacc": 0.07108000909310164,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 3572.38,
+        "gap_pct": -23.8
+      }
+    }
+  },
+  "TSCO": {
+    "ticker": "TSCO",
+    "model_price": 47.91,
+    "company_type": "STABLE_VALUE_LOWGROWTH",
+    "sub_tag": "retail_bigbox",
+    "analyst_target": 56.33333,
+    "wacc": 0.0863456333815972,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 45.01,
+        "gap_pct": -6.1
+      }
+    }
+  },
+  "DG": {
+    "ticker": "DG",
+    "model_price": 150.5,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "consumer_staples",
+    "analyst_target": 148.42857,
+    "wacc": 0.06240246553647647,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 126.68,
+        "gap_pct": -15.8
+      }
+    }
+  },
+  "DLTR": {
+    "ticker": "DLTR",
+    "model_price": 181.59,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "consumer_staples",
+    "analyst_target": 125.26087,
+    "wacc": 0.08123127338253233,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 105.93,
+        "gap_pct": -41.7
+      }
+    }
+  },
+  "KR": {
+    "ticker": "KR",
+    "model_price": 78.78,
+    "company_type": "STABLE_VALUE_LOWGROWTH",
+    "sub_tag": "retail_bigbox",
+    "analyst_target": 75.45455,
+    "wacc": 0.05885017361010364,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 68.19,
+        "gap_pct": -13.4
+      }
+    }
+  },
+  "SYY": {
+    "ticker": "SYY",
+    "model_price": 107.58,
+    "company_type": "STABLE_VALUE_LOWGROWTH",
+    "sub_tag": "consumer_staples",
+    "analyst_target": 87.73333,
+    "wacc": 0.0705604980003871,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 76.27,
+        "gap_pct": -29.1
+      }
+    }
+  },
+  "YUM": {
+    "ticker": "YUM",
+    "model_price": 173.29,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "franchise_rest",
+    "analyst_target": 172.04167,
+    "wacc": 0.07099929384916139,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 162.79,
+        "gap_pct": -6.1
+      }
+    }
+  },
+  "DPZ": {
+    "ticker": "DPZ",
+    "model_price": 471.34,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "franchise_rest",
+    "analyst_target": 468.0,
+    "wacc": 0.07930581305671185,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 372.06,
+        "gap_pct": -21.1
+      }
+    }
+  },
+  "CMG": {
+    "ticker": "CMG",
+    "model_price": 30.63,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "franchise_rest",
+    "analyst_target": 43.8,
+    "wacc": 0.09135345241686497,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 35.83,
+        "gap_pct": 17.0
+      }
+    }
+  },
+  "HLT": {
+    "ticker": "HLT",
+    "model_price": 194.68,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "franchise_rest",
+    "analyst_target": 330.75,
+    "wacc": 0.08800055584918487,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 341.03,
+        "gap_pct": 75.2
+      }
+    }
+  },
+  "MAR": {
+    "ticker": "MAR",
+    "model_price": 289.17,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "franchise_rest",
+    "analyst_target": 361.25,
+    "wacc": 0.09038861386007058,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 377.93,
+        "gap_pct": 30.7
+      }
+    }
+  },
+  "LVS": {
+    "ticker": "LVS",
+    "model_price": 173.95,
+    "company_type": "HYPERGROWTH",
+    "sub_tag": "franchise_rest",
+    "analyst_target": 69.45789,
+    "wacc": 0.08398167501704173,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 57.64,
+        "gap_pct": -66.9
+      }
+    }
+  },
+  "WYNN": {
+    "ticker": "WYNN",
+    "model_price": 118.15,
+    "company_type": "STABLE_VALUE_LOWGROWTH",
+    "sub_tag": "franchise_rest",
+    "analyst_target": 140.61111,
+    "wacc": 0.08247192339336067,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 109.19,
+        "gap_pct": -7.6
+      }
+    }
+  },
+  "MGM": {
+    "ticker": "MGM",
+    "model_price": 19.51,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "franchise_rest",
+    "analyst_target": 42.88889,
+    "wacc": 0.08048112643007409,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 38.59,
+        "gap_pct": 97.8
+      }
+    }
+  },
+  "DIS": {
+    "ticker": "DIS",
+    "model_price": 108.36,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "media_cable",
+    "analyst_target": 128.42413,
+    "wacc": 0.08852599156184118,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 106.29,
+        "gap_pct": -1.9
+      }
+    }
+  },
+  "CMCSA": {
+    "ticker": "CMCSA",
+    "model_price": 87.44,
+    "company_type": "STABLE_VALUE_LOWGROWTH",
+    "sub_tag": "media_cable",
+    "analyst_target": 32.68182,
+    "wacc": 0.0649192536139424,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 29.63,
+        "gap_pct": -66.1
+      }
+    }
+  },
+  "MO": {
+    "ticker": "MO",
+    "model_price": 83.39,
+    "company_type": "STABLE_VALUE_LOWGROWTH",
+    "sub_tag": "tobacco",
+    "analyst_target": 65.58333,
+    "wacc": 0.06260454814016324,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 64.17,
+        "gap_pct": -23.0
+      }
+    }
+  },
+  "MDLZ": {
+    "ticker": "MDLZ",
+    "model_price": 117.73,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "consumer_staples",
+    "analyst_target": 66.36,
+    "wacc": 0.06519038394506001,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 57.25,
+        "gap_pct": -51.4
+      }
+    }
+  },
+  "GIS": {
+    "ticker": "GIS",
+    "model_price": 76.76,
+    "company_type": "STABLE_VALUE_LOWGROWTH",
+    "sub_tag": "consumer_staples",
+    "analyst_target": 40.78947,
+    "wacc": 0.06124235591875064,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 35.5,
+        "gap_pct": -53.8
+      }
+    }
+  },
+  "CPB": {
+    "ticker": "CPB",
+    "model_price": 83.83,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "consumer_staples",
+    "analyst_target": 24.64706,
+    "wacc": 0.06191177804297199,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 20.99,
+        "gap_pct": -75.0
+      }
+    }
+  },
+  "CAG": {
+    "ticker": "CAG",
+    "model_price": 41.93,
+    "company_type": "STABLE_VALUE_LOWGROWTH",
+    "sub_tag": "consumer_staples",
+    "analyst_target": 16.45882,
+    "wacc": 0.07171319680020433,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 14.86,
+        "gap_pct": -64.6
+      }
+    }
+  },
+  "SJM": {
+    "ticker": "SJM",
+    "model_price": 165.25,
+    "company_type": "DISTRESSED",
+    "sub_tag": "consumer_staples",
+    "analyst_target": 120.25,
+    "wacc": 0.06308478871406313,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 95.5,
+        "gap_pct": -42.2
+      }
+    }
+  },
+  "HRL": {
+    "ticker": "HRL",
+    "model_price": 26.18,
+    "company_type": "STABLE_VALUE_LOWGROWTH",
+    "sub_tag": "consumer_staples",
+    "analyst_target": 26.75,
+    "wacc": 0.06899878552772581,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 21.19,
+        "gap_pct": -19.1
+      }
+    }
+  },
+  "MKC": {
+    "ticker": "MKC",
+    "model_price": 132.96,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "consumer_staples",
+    "analyst_target": 62.69231,
+    "wacc": 0.0732873861671842,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 54.33,
+        "gap_pct": -59.1
+      }
+    }
+  },
+  "CLX": {
+    "ticker": "CLX",
+    "model_price": 96.2,
+    "company_type": "STABLE_VALUE_LOWGROWTH",
+    "sub_tag": "consumer_staples",
+    "analyst_target": 117.76471,
+    "wacc": 0.07348048793625882,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 104.58,
+        "gap_pct": 8.7
+      }
+    }
+  },
+  "CL": {
+    "ticker": "CL",
+    "model_price": 97.45,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "consumer_staples",
+    "analyst_target": 95.42105,
+    "wacc": 0.06511118021896478,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 85.81,
+        "gap_pct": -11.9
+      }
+    }
+  },
+  "CHD": {
+    "ticker": "CHD",
+    "model_price": 88.41,
+    "company_type": "STABLE_VALUE_LOWGROWTH",
+    "sub_tag": "consumer_staples",
+    "analyst_target": 101.52632,
+    "wacc": 0.07422721446291697,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 96.88,
+        "gap_pct": 9.6
+      }
+    }
+  },
+  "COTY": {
+    "ticker": "COTY",
+    "model_price": 1.27,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "consumer_staples",
+    "analyst_target": 3.18773,
+    "wacc": 0.07658285134374981,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 2.36,
+        "gap_pct": 85.8
+      }
+    }
+  },
+  "EL": {
+    "ticker": "EL",
+    "model_price": 128.82,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "consumer_staples",
+    "analyst_target": 97.27273,
+    "wacc": 0.09001685058542148,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 76.2,
+        "gap_pct": -40.8
+      }
+    }
+  },
+  "ULTA": {
+    "ticker": "ULTA",
+    "model_price": 847.91,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "retail_bigbox",
+    "analyst_target": 673.5,
+    "wacc": 0.09720700297405496,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 553.36,
+        "gap_pct": -34.7
+      }
+    }
+  },
+  "HELE": {
+    "ticker": "HELE",
+    "model_price": 128.76,
+    "company_type": "STABLE_VALUE_LOWGROWTH",
+    "sub_tag": "consumer_staples",
+    "analyst_target": 24.66667,
+    "wacc": 0.08632841520487672,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 18.86,
+        "gap_pct": -85.4
+      }
+    }
+  },
+  "DE": {
+    "ticker": "DE",
+    "model_price": 502.65,
+    "company_type": "CYCLICAL",
+    "sub_tag": "heavy_machinery",
+    "analyst_target": 665.09955,
+    "wacc": 0.07533220074630906,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 590.46,
+        "gap_pct": 17.5
+      }
+    }
+  },
+  "RTX": {
+    "ticker": "RTX",
+    "model_price": 158.49,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "defense",
+    "analyst_target": 216.01865,
+    "wacc": 0.07633016066529334,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 196.42,
+        "gap_pct": 23.9
+      }
+    }
+  },
+  "LMT": {
+    "ticker": "LMT",
+    "model_price": 909.76,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "defense",
+    "analyst_target": 667.85,
+    "wacc": 0.06580555068431675,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 592.19,
+        "gap_pct": -34.9
+      }
+    }
+  },
+  "NOC": {
+    "ticker": "NOC",
+    "model_price": 1091.68,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "defense",
+    "analyst_target": 736.1009,
+    "wacc": 0.06458935325265913,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 665.26,
+        "gap_pct": -39.1
+      }
+    }
+  },
+  "GD": {
+    "ticker": "GD",
+    "model_price": 423.65,
+    "company_type": "CYCLICAL",
+    "sub_tag": "defense",
+    "analyst_target": 393.07382,
+    "wacc": 0.07668779691683697,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 336.29,
+        "gap_pct": -20.6
+      }
+    }
+  },
+  "BA": {
+    "ticker": "BA",
+    "model_price": 78.72,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "defense",
+    "analyst_target": 265.92,
+    "wacc": 0.08778549321772791,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 223.38,
+        "gap_pct": 183.8
+      }
+    }
+  },
+  "TDG": {
+    "ticker": "TDG",
+    "model_price": 1390.82,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "defense",
+    "analyst_target": 1537.9524,
+    "wacc": 0.0799714478944012,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 1265.88,
+        "gap_pct": -9.0
+      }
+    }
+  },
+  "ETN": {
+    "ticker": "ETN",
+    "model_price": 319.92,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "industrial_cong",
+    "analyst_target": 412.95178,
+    "wacc": 0.09748717745125435,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 406.21,
+        "gap_pct": 27.0
+      }
+    }
+  },
+  "EMR": {
+    "ticker": "EMR",
+    "model_price": 104.05,
+    "company_type": "CYCLICAL",
+    "sub_tag": "industrial_cong",
+    "analyst_target": 164.16888,
+    "wacc": 0.08962062945821253,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 146.35,
+        "gap_pct": 40.7
+      }
+    }
+  },
+  "PH": {
+    "ticker": "PH",
+    "model_price": 932.05,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "industrial_cong",
+    "analyst_target": 1034.8275,
+    "wacc": 0.09815867616223993,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 988.8,
+        "gap_pct": 6.1
+      }
+    }
+  },
+  "ITW": {
+    "ticker": "ITW",
+    "model_price": 242.98,
+    "company_type": "CYCLICAL",
+    "sub_tag": "industrial_cong",
+    "analyst_target": 275.875,
+    "wacc": 0.08358107483228243,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 272.26,
+        "gap_pct": 12.1
+      }
+    }
+  },
+  "DOV": {
+    "ticker": "DOV",
+    "model_price": 293.98,
+    "company_type": "CYCLICAL",
+    "sub_tag": "industrial_cong",
+    "analyst_target": 231.95905,
+    "wacc": 0.08999060847202354,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 219.07,
+        "gap_pct": -25.5
+      }
+    }
+  },
+  "AME": {
+    "ticker": "AME",
+    "model_price": 212.81,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "heavy_machinery",
+    "analyst_target": 250.0,
+    "wacc": 0.0877407654796022,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 236.26,
+        "gap_pct": 11.0
+      }
+    }
+  },
+  "ROK": {
+    "ticker": "ROK",
+    "model_price": 239.09,
+    "company_type": "CYCLICAL",
+    "sub_tag": "industrial_cong",
+    "analyst_target": 421.5684,
+    "wacc": 0.09699564467301887,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 415.73,
+        "gap_pct": 73.9
+      }
+    }
+  },
+  "SWK": {
+    "ticker": "SWK",
+    "model_price": 77.48,
+    "company_type": "CYCLICAL",
+    "sub_tag": "industrial_cong",
+    "analyst_target": 89.43929,
+    "wacc": 0.09382230123014448,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 71.34,
+        "gap_pct": -7.9
+      }
+    }
+  },
+  "IR": {
+    "ticker": "IR",
+    "model_price": 86.42,
+    "company_type": "CYCLICAL",
+    "sub_tag": "industrial_cong",
+    "analyst_target": 98.93333,
+    "wacc": 0.09432736654323384,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 85.8,
+        "gap_pct": -0.7
+      }
+    }
+  },
+  "WM": {
+    "ticker": "WM",
+    "model_price": 272.81,
+    "company_type": "CYCLICAL",
+    "sub_tag": "industrial_cong",
+    "analyst_target": 254.8,
+    "wacc": 0.06700013918072331,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 223.95,
+        "gap_pct": -17.9
+      }
+    }
+  },
+  "RSG": {
+    "ticker": "RSG",
+    "model_price": 183.38,
+    "company_type": "CYCLICAL",
+    "sub_tag": "industrial_cong",
+    "analyst_target": 245.875,
+    "wacc": 0.06963988949817793,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 207.66,
+        "gap_pct": 13.2
+      }
+    }
+  },
+  "CTAS": {
+    "ticker": "CTAS",
+    "model_price": 167.27,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "industrial_cong",
+    "analyst_target": 212.41176,
+    "wacc": 0.08766456343137635,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 179.17,
+        "gap_pct": 7.1
+      }
+    }
+  },
+  "FAST": {
+    "ticker": "FAST",
+    "model_price": 31.07,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "industrial_cong",
+    "analyst_target": 46.49167,
+    "wacc": 0.08769792789754648,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 45.78,
+        "gap_pct": 47.3
+      }
+    }
+  },
+  "GWW": {
+    "ticker": "GWW",
+    "model_price": 961.07,
+    "company_type": "CYCLICAL",
+    "sub_tag": "industrial_cong",
+    "analyst_target": 1158.6,
+    "wacc": 0.08493191713182913,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 1162.94,
+        "gap_pct": 21.0
+      }
+    }
+  },
+  "MSC": {
+    "ticker": "MSC",
+    "model_price": 16.81,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "franchise_rest",
+    "analyst_target": null,
+    "wacc": 0.06310228515739005,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 2.64,
+        "gap_pct": -84.3
+      }
+    }
+  },
+  "NSC": {
+    "ticker": "NSC",
+    "model_price": 211.3,
+    "company_type": "CYCLICAL",
+    "sub_tag": "industrial_cong",
+    "analyst_target": 311.21054,
+    "wacc": 0.0792573818800373,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 302.38,
+        "gap_pct": 43.1
+      }
+    }
+  },
+  "UNP": {
+    "ticker": "UNP",
+    "model_price": 203.19,
+    "company_type": "CYCLICAL",
+    "sub_tag": "industrial_cong",
+    "analyst_target": 272.70834,
+    "wacc": 0.07728470074406615,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 251.14,
+        "gap_pct": 23.6
+      }
+    }
+  },
+  "CSX": {
+    "ticker": "CSX",
+    "model_price": 39.1,
+    "company_type": "CYCLICAL",
+    "sub_tag": "industrial_cong",
+    "analyst_target": 42.10417,
+    "wacc": 0.07934808560416032,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 43.32,
+        "gap_pct": 10.8
+      }
+    }
+  },
+  "CP": {
+    "ticker": "CP",
+    "model_price": 84.96,
+    "company_type": "CYCLICAL",
+    "sub_tag": "industrial_cong",
+    "analyst_target": 91.08675,
+    "wacc": 0.07691296339768385,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 81.48,
+        "gap_pct": -4.1
+      }
+    }
+  },
+  "UPS": {
+    "ticker": "UPS",
+    "model_price": 171.47,
+    "company_type": "CYCLICAL",
+    "sub_tag": "logistics",
+    "analyst_target": 112.64286,
+    "wacc": 0.07857501578726253,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 106.44,
+        "gap_pct": -37.9
+      }
+    }
+  },
+  "FDX": {
+    "ticker": "FDX",
+    "model_price": 752.41,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "logistics",
+    "analyst_target": 403.07144,
+    "wacc": 0.07922706163222006,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 392.38,
+        "gap_pct": -47.9
+      }
+    }
+  },
+  "XPO": {
+    "ticker": "XPO",
+    "model_price": 85.54,
+    "company_type": "CYCLICAL",
+    "sub_tag": "logistics",
+    "analyst_target": 207.04167,
+    "wacc": 0.10570440727321628,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 225.02,
+        "gap_pct": 163.1
+      }
+    }
+  },
+  "JBHT": {
+    "ticker": "JBHT",
+    "model_price": 178.9,
+    "company_type": "CYCLICAL",
+    "sub_tag": "logistics",
+    "analyst_target": 230.3913,
+    "wacc": 0.10005507524786884,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 245.08,
+        "gap_pct": 37.0
+      }
+    }
+  },
+  "SAIA": {
+    "ticker": "SAIA",
+    "model_price": 181.77,
+    "company_type": "CYCLICAL",
+    "sub_tag": "logistics",
+    "analyst_target": 397.1905,
+    "wacc": 0.12056626046889643,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 434.22,
+        "gap_pct": 138.9
+      }
+    }
+  },
+  "ODFL": {
+    "ticker": "ODFL",
+    "model_price": 107.74,
+    "company_type": "CYCLICAL",
+    "sub_tag": "logistics",
+    "analyst_target": 201.79167,
+    "wacc": 0.10191069867790122,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 217.76,
+        "gap_pct": 102.1
+      }
+    }
+  },
+  "COP": {
+    "ticker": "COP",
+    "model_price": 154.81,
+    "company_type": "CYCLICAL",
+    "sub_tag": "energy_ep",
+    "analyst_target": 136.88889,
+    "wacc": 0.07756541232145114,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 116.04,
+        "gap_pct": -25.0
+      }
+    }
+  },
+  "EOG": {
+    "ticker": "EOG",
+    "model_price": 200.3,
+    "company_type": "CYCLICAL",
+    "sub_tag": "energy_ep",
+    "analyst_target": 152.53333,
+    "wacc": 0.07898239145928859,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 128.43,
+        "gap_pct": -35.9
+      }
+    }
+  },
+  "DVN": {
+    "ticker": "DVN",
+    "model_price": 108.09,
+    "company_type": "CYCLICAL",
+    "sub_tag": "energy_ep",
+    "analyst_target": 57.23077,
+    "wacc": 0.08263964389453533,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 44.23,
+        "gap_pct": -59.1
+      }
+    }
+  },
+  "FANG": {
+    "ticker": "FANG",
+    "model_price": 201.78,
+    "company_type": "HYPERGROWTH",
+    "sub_tag": "energy_ep",
+    "analyst_target": 216.6129,
+    "wacc": 0.0802247602173433,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 180.27,
+        "gap_pct": -10.7
+      }
+    }
+  },
+  "MPC": {
+    "ticker": "MPC",
+    "model_price": 391.47,
+    "company_type": "CYCLICAL",
+    "sub_tag": "energy_ep",
+    "analyst_target": 245.55556,
+    "wacc": 0.07285706616652869,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 213.69,
+        "gap_pct": -45.4
+      }
+    }
+  },
+  "PSX": {
+    "ticker": "PSX",
+    "model_price": 192.61,
+    "company_type": "CYCLICAL",
+    "sub_tag": "energy_ep",
+    "analyst_target": 180.55,
+    "wacc": 0.07662641521229548,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 156.37,
+        "gap_pct": -18.8
+      }
+    }
+  },
+  "VLO": {
+    "ticker": "VLO",
+    "model_price": 330.34,
+    "company_type": "CYCLICAL",
+    "sub_tag": "energy_ep",
+    "analyst_target": 249.55556,
+    "wacc": 0.07851431420061622,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 223.65,
+        "gap_pct": -32.3
+      }
+    }
+  },
+  "SLB": {
+    "ticker": "SLB",
+    "model_price": 54.79,
+    "company_type": "CYCLICAL",
+    "sub_tag": "oilfield_svc",
+    "analyst_target": 56.36071,
+    "wacc": 0.08451277055116309,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 52.66,
+        "gap_pct": -3.9
+      }
+    }
+  },
+  "HAL": {
+    "ticker": "HAL",
+    "model_price": 23.61,
+    "company_type": "CYCLICAL",
+    "sub_tag": "oilfield_svc",
+    "analyst_target": 38.8592,
+    "wacc": 0.08261856216543827,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 37.15,
+        "gap_pct": 57.3
+      }
+    }
+  },
+  "BKR": {
+    "ticker": "BKR",
+    "model_price": 31.06,
+    "company_type": "CYCLICAL",
+    "sub_tag": "oilfield_svc",
+    "analyst_target": 63.47619,
+    "wacc": 0.08663003474808678,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 59.78,
+        "gap_pct": 92.5
+      }
+    }
+  },
+  "OXY": {
+    "ticker": "OXY",
+    "model_price": 310.38,
+    "company_type": "HYPERGROWTH",
+    "sub_tag": "energy_ep",
+    "analyst_target": 62.32,
+    "wacc": 0.07219355681623045,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 53.79,
+        "gap_pct": -82.7
+      }
+    }
+  },
+  "APA": {
+    "ticker": "APA",
+    "model_price": 75.08,
+    "company_type": "CYCLICAL",
+    "sub_tag": "energy_ep",
+    "analyst_target": 39.89286,
+    "wacc": 0.09062140035999067,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 35.74,
+        "gap_pct": -52.4
+      }
+    }
+  },
+  "CTRA": {
+    "ticker": "CTRA",
+    "model_price": 61.54,
+    "company_type": "HYPERGROWTH",
+    "sub_tag": "energy_ep",
+    "analyst_target": 37.77273,
+    "wacc": 0.08529586269421152,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 30.89,
+        "gap_pct": -49.8
+      }
+    }
+  },
+  "RRC": {
+    "ticker": "RRC",
+    "model_price": 64.24,
+    "company_type": "CYCLICAL",
+    "sub_tag": "energy_ep",
+    "analyst_target": 45.45833,
+    "wacc": 0.09593477425536143,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 41.71,
+        "gap_pct": -35.1
+      }
+    }
+  },
+  "AR": {
+    "ticker": "AR",
+    "model_price": 40.1,
+    "company_type": "CYCLICAL",
+    "sub_tag": "energy_ep",
+    "analyst_target": 48.61905,
+    "wacc": 0.09131190779472712,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 36.68,
+        "gap_pct": -8.5
+      }
+    }
+  },
+  "APD": {
+    "ticker": "APD",
+    "model_price": 191.03,
+    "company_type": "CYCLICAL",
+    "sub_tag": "industrial_cong",
+    "analyst_target": 311.1424,
+    "wacc": 0.07625384990468144,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 291.81,
+        "gap_pct": 52.8
+      }
+    }
+  },
+  "ECL": {
+    "ticker": "ECL",
+    "model_price": 198.34,
+    "company_type": "CYCLICAL",
+    "sub_tag": "industrial_cong",
+    "analyst_target": 318.57144,
+    "wacc": 0.08561190960970165,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 274.8,
+        "gap_pct": 38.5
+      }
+    }
+  },
+  "SHW": {
+    "ticker": "SHW",
+    "model_price": 285.66,
+    "company_type": "CYCLICAL",
+    "sub_tag": "industrial_cong",
+    "analyst_target": 379.42856,
+    "wacc": 0.08296328209430778,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 345.55,
+        "gap_pct": 21.0
+      }
+    }
+  },
+  "NEM": {
+    "ticker": "NEM",
+    "model_price": 197.29,
+    "company_type": "HYPERGROWTH",
+    "sub_tag": "industrial_cong",
+    "analyst_target": 140.113,
+    "wacc": 0.07628539434161304,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 116.5,
+        "gap_pct": -40.9
+      }
+    }
+  },
+  "FCX": {
+    "ticker": "FCX",
+    "model_price": 88.9,
+    "company_type": "CYCLICAL",
+    "sub_tag": "industrial_cong",
+    "analyst_target": 68.59048,
+    "wacc": 0.1045322885320635,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 70.21,
+        "gap_pct": -21.0
+      }
+    }
+  },
+  "NUE": {
+    "ticker": "NUE",
+    "model_price": 406.88,
+    "company_type": "CYCLICAL",
+    "sub_tag": "industrial_cong",
+    "analyst_target": 190.62846,
+    "wacc": 0.09310172963991262,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 195.87,
+        "gap_pct": -51.9
+      }
+    }
+  },
+  "STLD": {
+    "ticker": "STLD",
+    "model_price": 345.96,
+    "company_type": "CYCLICAL",
+    "sub_tag": "industrial_cong",
+    "analyst_target": 192.70273,
+    "wacc": 0.09358428876822704,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 200.32,
+        "gap_pct": -42.1
+      }
+    }
+  },
+  "RS": {
+    "ticker": "RS",
+    "model_price": 510.55,
+    "company_type": "CYCLICAL",
+    "sub_tag": "industrial_cong",
+    "analyst_target": 328.875,
+    "wacc": 0.0940119858259311,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 325.54,
+        "gap_pct": -36.2
+      }
+    }
+  },
+  "VMC": {
+    "ticker": "VMC",
+    "model_price": 205.49,
+    "company_type": "CYCLICAL",
+    "sub_tag": "industrial_cong",
+    "analyst_target": 323.5,
+    "wacc": 0.08674890706417553,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 291.71,
+        "gap_pct": 42.0
+      }
+    }
+  },
+  "PKG": {
+    "ticker": "PKG",
+    "model_price": 380.15,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "franchise_rest",
+    "analyst_target": 225.1,
+    "wacc": 0.08594083251397835,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 213.39,
+        "gap_pct": -43.9
+      }
+    }
+  },
+  "IP": {
+    "ticker": "IP",
+    "model_price": 324.57,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "franchise_rest",
+    "analyst_target": 43.42727,
+    "wacc": 0.08066168301495251,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 37.13,
+        "gap_pct": -88.6
+      }
+    }
+  },
+  "SEE": {
+    "ticker": "SEE",
+    "model_price": 75.51,
+    "company_type": "STABLE_VALUE_LOWGROWTH",
+    "sub_tag": "franchise_rest",
+    "analyst_target": 46.0,
+    "wacc": 0.08355407457772142,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 42.15,
+        "gap_pct": -44.2
+      }
+    }
+  },
+  "CCK": {
+    "ticker": "CCK",
+    "model_price": 256.45,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "franchise_rest",
+    "analyst_target": 125.84615,
+    "wacc": 0.07882379319201654,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 107.15,
+        "gap_pct": -58.2
+      }
+    }
+  },
+  "SON": {
+    "ticker": "SON",
+    "model_price": 299.15,
+    "company_type": "HYPERGROWTH",
+    "sub_tag": "franchise_rest",
+    "analyst_target": 63.66667,
+    "wacc": 0.07138783430624339,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 57.41,
+        "gap_pct": -80.8
+      }
+    }
+  },
+  "AVY": {
+    "ticker": "AVY",
+    "model_price": 270.59,
+    "company_type": "STABLE_VALUE_LOWGROWTH",
+    "sub_tag": "franchise_rest",
+    "analyst_target": 207.54546,
+    "wacc": 0.08706498013927835,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 172.48,
+        "gap_pct": -36.3
+      }
+    }
+  },
+  "PLD": {
+    "ticker": "PLD",
+    "model_price": 172.14,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "reit",
+    "analyst_target": 144.85,
+    "wacc": 0.095,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 145.1,
+        "gap_pct": -15.7
+      }
+    }
+  },
+  "AMT": {
+    "ticker": "AMT",
+    "model_price": 253.87,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "reit",
+    "analyst_target": 215.45454,
+    "wacc": 0.095,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 182.36,
+        "gap_pct": -28.2
+      }
+    }
+  },
+  "EQIX": {
+    "ticker": "EQIX",
+    "model_price": 994.27,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "reit",
+    "analyst_target": 1066.5358,
+    "wacc": 0.095,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 1088.62,
+        "gap_pct": 9.5
+      }
+    }
+  },
+  "CCI": {
+    "ticker": "CCI",
+    "model_price": 73.13,
+    "company_type": "STABLE_VALUE_LOWGROWTH",
+    "sub_tag": "reit",
+    "analyst_target": 97.92,
+    "wacc": 0.095,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 88.71,
+        "gap_pct": 21.3
+      }
+    }
+  },
+  "PSA": {
+    "ticker": "PSA",
+    "model_price": 406.61,
+    "company_type": "STABLE_VALUE_LOWGROWTH",
+    "sub_tag": "reit",
+    "analyst_target": 312.1875,
+    "wacc": 0.095,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 309.22,
+        "gap_pct": -24.0
+      }
+    }
+  },
+  "EXR": {
+    "ticker": "EXR",
+    "model_price": 195.88,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "reit",
+    "analyst_target": 152.1,
+    "wacc": 0.095,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 145.36,
+        "gap_pct": -25.8
+      }
+    }
+  },
+  "AVB": {
+    "ticker": "AVB",
+    "model_price": 329.23,
+    "company_type": "STABLE_VALUE_LOWGROWTH",
+    "sub_tag": "reit",
+    "analyst_target": 193.65,
+    "wacc": 0.095,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 173.89,
+        "gap_pct": -47.2
+      }
+    }
+  },
+  "EQR": {
+    "ticker": "EQR",
+    "model_price": 131.61,
+    "company_type": "STABLE_VALUE_LOWGROWTH",
+    "sub_tag": "reit",
+    "analyst_target": 69.78571,
+    "wacc": 0.095,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 62.68,
+        "gap_pct": -52.4
+      }
+    }
+  },
+  "MAA": {
+    "ticker": "MAA",
+    "model_price": 217.13,
+    "company_type": "STABLE_VALUE_LOWGROWTH",
+    "sub_tag": "reit",
+    "analyst_target": 142.6875,
+    "wacc": 0.095,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 127.94,
+        "gap_pct": -41.1
+      }
+    }
+  },
+  "UDR": {
+    "ticker": "UDR",
+    "model_price": 74.32,
+    "company_type": "STABLE_VALUE_LOWGROWTH",
+    "sub_tag": "reit",
+    "analyst_target": 40.52381,
+    "wacc": 0.095,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 35.28,
+        "gap_pct": -52.5
+      }
+    }
+  },
+  "SPG": {
+    "ticker": "SPG",
+    "model_price": 369.58,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "reit",
+    "analyst_target": 208.55,
+    "wacc": 0.095,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 206.23,
+        "gap_pct": -44.2
+      }
+    }
+  },
+  "O": {
+    "ticker": "O",
+    "model_price": 90.99,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "reit",
+    "analyst_target": 68.15,
+    "wacc": 0.095,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 65.09,
+        "gap_pct": -28.5
+      }
+    }
+  },
+  "NNN": {
+    "ticker": "NNN",
+    "model_price": 85.44,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "reit",
+    "analyst_target": 45.3,
+    "wacc": 0.095,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 45.14,
+        "gap_pct": -47.2
+      }
+    }
+  },
+  "VICI": {
+    "ticker": "VICI",
+    "model_price": 60.32,
+    "company_type": "STABLE_VALUE_LOWGROWTH",
+    "sub_tag": "reit",
+    "analyst_target": 34.21739,
+    "wacc": 0.095,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 29.01,
+        "gap_pct": -51.9
+      }
+    }
+  },
+  "GLPI": {
+    "ticker": "GLPI",
+    "model_price": 91.76,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "reit",
+    "analyst_target": 54.36957,
+    "wacc": 0.095,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 47.73,
+        "gap_pct": -48.0
+      }
+    }
+  },
+  "VTR": {
+    "ticker": "VTR",
+    "model_price": 85.15,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "reit",
+    "analyst_target": 93.1,
+    "wacc": 0.095,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 85.1,
+        "gap_pct": -0.1
+      }
+    }
+  },
+  "WELL": {
+    "ticker": "WELL",
+    "model_price": 115.5,
+    "company_type": "HYPERGROWTH",
+    "sub_tag": "reit",
+    "analyst_target": 229.25,
+    "wacc": 0.095,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 210.52,
+        "gap_pct": 82.3
+      }
+    }
+  },
+  "DUK": {
+    "ticker": "DUK",
+    "model_price": 173.36,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "telecom_carrier",
+    "analyst_target": 139.82353,
+    "wacc": 0.07465061192023802,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 128.03,
+        "gap_pct": -26.1
+      }
+    }
+  },
+  "SO": {
+    "ticker": "SO",
+    "model_price": 85.96,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "telecom_carrier",
+    "analyst_target": 102.11111,
+    "wacc": 0.07534450576035036,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 94.51,
+        "gap_pct": 9.9
+      }
+    }
+  },
+  "D": {
+    "ticker": "D",
+    "model_price": 46.46,
+    "company_type": "HYPERGROWTH",
+    "sub_tag": "telecom_carrier",
+    "analyst_target": 66.25,
+    "wacc": 0.07617976883679951,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 62.42,
+        "gap_pct": 34.4
+      }
+    }
+  },
+  "AEP": {
+    "ticker": "AEP",
+    "model_price": 120.86,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "telecom_carrier",
+    "analyst_target": 138.36842,
+    "wacc": 0.07957291688085727,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 133.66,
+        "gap_pct": 10.6
+      }
+    }
+  },
+  "EXC": {
+    "ticker": "EXC",
+    "model_price": 56.76,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "telecom_carrier",
+    "analyst_target": 51.0,
+    "wacc": 0.07895997405922235,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 47.02,
+        "gap_pct": -17.2
+      }
+    }
+  },
+  "SRE": {
+    "ticker": "SRE",
+    "model_price": 38.48,
+    "company_type": "STABLE_VALUE_LOWGROWTH",
+    "sub_tag": "telecom_carrier",
+    "analyst_target": 104.125,
+    "wacc": 0.07905073470691787,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 94.02,
+        "gap_pct": 144.3
+      }
+    }
+  },
+  "XEL": {
+    "ticker": "XEL",
+    "model_price": 56.56,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "telecom_carrier",
+    "analyst_target": 89.94118,
+    "wacc": 0.08076245897721791,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 81.08,
+        "gap_pct": 43.4
+      }
+    }
+  },
+  "ES": {
+    "ticker": "ES",
+    "model_price": 110.11,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "telecom_carrier",
+    "analyst_target": 72.84615,
+    "wacc": 0.08281810499523777,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 69.25,
+        "gap_pct": -37.1
+      }
+    }
+  },
+  "ETR": {
+    "ticker": "ETR",
+    "model_price": 90.19,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "telecom_carrier",
+    "analyst_target": 115.55545,
+    "wacc": 0.0790780482039071,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 115.52,
+        "gap_pct": 28.1
+      }
+    }
+  },
+  "AWK": {
+    "ticker": "AWK",
+    "model_price": 105.38,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "telecom_carrier",
+    "analyst_target": 138.3,
+    "wacc": 0.07661127568883509,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 131.61,
+        "gap_pct": 24.9
+      }
+    }
+  },
+  "PPL": {
+    "ticker": "PPL",
+    "model_price": 20.43,
+    "company_type": "STABLE_VALUE_LOWGROWTH",
+    "sub_tag": "telecom_carrier",
+    "analyst_target": 42.0,
+    "wacc": 0.07798987626865227,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 39.02,
+        "gap_pct": 91.0
+      }
+    }
+  },
+  "FE": {
+    "ticker": "FE",
+    "model_price": 37.93,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "telecom_carrier",
+    "analyst_target": 53.0,
+    "wacc": 0.07492038494881889,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 50.1,
+        "gap_pct": 32.1
+      }
+    }
+  },
+  "CNP": {
+    "ticker": "CNP",
+    "model_price": 31.12,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "telecom_carrier",
+    "analyst_target": 45.86667,
+    "wacc": 0.07753738012700107,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 43.0,
+        "gap_pct": 38.2
+      }
+    }
+  },
+  "NI": {
+    "ticker": "NI",
+    "model_price": 35.5,
+    "company_type": "CYCLICAL",
+    "sub_tag": "energy_ep",
+    "analyst_target": 49.42857,
+    "wacc": 0.07016188671747617,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 48.31,
+        "gap_pct": 36.1
+      }
+    }
+  },
+  "AES": {
+    "ticker": "AES",
+    "model_price": 10.11,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "telecom_carrier",
+    "analyst_target": 15.11111,
+    "wacc": 0.0921069095386713,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 14.47,
+        "gap_pct": 43.1
+      }
+    }
+  },
+  "CMS": {
+    "ticker": "CMS",
+    "model_price": 57.62,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "telecom_carrier",
+    "analyst_target": 80.76923,
+    "wacc": 0.07981673834454057,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 77.75,
+        "gap_pct": 34.9
+      }
+    }
+  },
+  "WEC": {
+    "ticker": "WEC",
+    "model_price": 87.52,
+    "company_type": "STABLE_VALUE",
+    "sub_tag": "telecom_carrier",
+    "analyst_target": 123.08824,
+    "wacc": 0.07857637487806209,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 115.87,
+        "gap_pct": 32.4
+      }
+    }
+  },
+  "DTE": {
+    "ticker": "DTE",
+    "model_price": 157.85,
+    "company_type": "HYPERGROWTH",
+    "sub_tag": "telecom_carrier",
+    "analyst_target": 158.1923,
+    "wacc": 0.07899727463272989,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 146.98,
+        "gap_pct": -6.9
+      }
+    }
+  },
+  "VZ": {
+    "ticker": "VZ",
+    "model_price": 53.73,
+    "company_type": "STABLE_VALUE_LOWGROWTH",
+    "sub_tag": "telecom_carrier",
+    "analyst_target": 51.58182,
+    "wacc": 0.07165390535336802,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 46.55,
+        "gap_pct": -13.4
+      }
+    }
+  },
+  "TMUS": {
+    "ticker": "TMUS",
+    "model_price": 260.84,
+    "company_type": "GROWTH_TECH",
+    "sub_tag": "telecom_carrier",
+    "analyst_target": 268.34616,
+    "wacc": 0.07944341665747398,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 197.67,
+        "gap_pct": -24.2
+      }
+    }
+  },
+  "CHTR": {
+    "ticker": "CHTR",
+    "model_price": 161.65,
+    "company_type": "STABLE_VALUE_LOWGROWTH",
+    "sub_tag": "telecom_carrier",
+    "analyst_target": 275.46667,
+    "wacc": 0.0757061953190833,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 236.62,
+        "gap_pct": 46.4
+      }
+    }
+  },
+  "LUMN": {
+    "ticker": "LUMN",
+    "model_price": 4.34,
+    "company_type": "DISTRESSED",
+    "sub_tag": "telecom_carrier",
+    "analyst_target": 7.675,
+    "wacc": 0.09151213480935629,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 8.57,
+        "gap_pct": 97.5
+      }
+    }
+  },
+  "WBD": {
+    "ticker": "WBD",
+    "model_price": 75.62,
+    "company_type": "STABLE_VALUE_LOWGROWTH",
+    "sub_tag": "media_cable",
+    "analyst_target": 29.59615,
+    "wacc": 0.08575176871428908,
+    "growth_y1": null,
+    "first_run": "2026-04-19",
+    "last_updated": "2026-04-19",
+    "monthly_actuals": {
+      "2026-04": {
+        "price": 27.47,
+        "gap_pct": -63.7
+      }
+    }
+  }
+}

@@ -89,10 +89,16 @@ class CompanyFinancials(BaseModel):
         """Ensure growth rates follow a logical progression"""
         if self.growth_rate_y1 > 1.0 and self.growth_rate_y2 > self.growth_rate_y1:
             raise ValueError('High growth rates should moderate over time')
-        
-        if self.terminal_growth >= min(self.growth_rate_y1, self.growth_rate_y2, self.growth_rate_y3):
-            raise ValueError('Terminal growth should be lower than short-term growth rates')
-        
+
+        # Terminal growth should be lower than the lowest short-term growth rate
+        min_growth = min(self.growth_rate_y1, self.growth_rate_y2, self.growth_rate_y3)
+        if self.terminal_growth >= min_growth:
+            raise ValueError(
+                f'Terminal growth ({self.terminal_growth*100:.1f}%) must be lower than all short-term growth rates. '
+                f'Minimum short-term growth is {min_growth*100:.1f}%. '
+                f'Please reduce terminal growth to below {min_growth*100:.1f}% or increase short-term growth rates.'
+            )
+
         return self
     
     @model_validator(mode='after')
@@ -172,9 +178,49 @@ class CompanyCreate(CompanyBase, CompanyFinancials):
     pass
 
 
-class CompanyUpdate(CompanyFinancials):
-    """Schema for updating company financials"""
-    pass
+class CompanyUpdate(BaseModel):
+    """Schema for updating company financials - all fields optional for partial updates"""
+
+    # Basic Information
+    name: Optional[str] = Field(None, min_length=1, max_length=200, description="Company name")
+    sector: Optional[str] = Field(None, min_length=1, max_length=100, description="Industry sector")
+
+    # Income Statement (in actual dollars, not millions)
+    revenue: Optional[float] = Field(None, gt=0, description="Annual revenue must be positive")
+    ebitda: Optional[float] = Field(None, description="Earnings before interest, taxes, depreciation, amortization")
+    depreciation: Optional[float] = Field(None, ge=0, description="Annual depreciation expense")
+
+    # Cash Flow Components
+    capex_pct: Optional[float] = Field(None, ge=0, le=1, description="CapEx as % of revenue (0-100%)")
+    working_capital_change: Optional[float] = Field(None, description="Change in working capital")
+    profit_margin: Optional[float] = Field(None, ge=-1, le=1, description="Net profit margin (-100% to 100%)")
+
+    # Growth Assumptions
+    growth_rate_y1: Optional[float] = Field(None, ge=-0.5, le=2.0, description="Year 1 growth rate (-50% to 200%)")
+    growth_rate_y2: Optional[float] = Field(None, ge=-0.5, le=2.0, description="Year 2 growth rate (-50% to 200%)")
+    growth_rate_y3: Optional[float] = Field(None, ge=-0.5, le=2.0, description="Year 3 growth rate (-50% to 200%)")
+    terminal_growth: Optional[float] = Field(None, ge=-0.1, le=0.15, description="Terminal growth rate (-10% to 15%)")
+
+    # Tax & Capital Structure
+    tax_rate: Optional[float] = Field(None, ge=0, le=1, description="Corporate tax rate (0-100%)")
+    shares_outstanding: Optional[float] = Field(None, gt=0, description="Number of shares outstanding")
+    debt: Optional[float] = Field(None, ge=0, description="Total debt")
+    cash: Optional[float] = Field(None, ge=0, description="Cash and equivalents")
+
+    # Market Data
+    market_cap_estimate: Optional[float] = Field(None, gt=0, description="Estimated market capitalization")
+    beta: Optional[float] = Field(None, ge=-3, le=5, description="Beta coefficient (-3 to 5)")
+
+    # Risk Parameters
+    risk_free_rate: Optional[float] = Field(None, ge=0, le=0.2, description="Risk-free rate (0-20%)")
+    market_risk_premium: Optional[float] = Field(None, ge=0, le=0.3, description="Market risk premium (0-30%)")
+    country_risk_premium: Optional[float] = Field(None, ge=0, le=0.25, description="Country risk premium (0-25%)")
+    size_premium: Optional[float] = Field(None, ge=0, le=0.2, description="Size premium (0-20%)")
+
+    # Comparable Company Multiples
+    comparable_ev_ebitda: Optional[float] = Field(None, ge=0, le=100, description="EV/EBITDA multiple (0-100x)")
+    comparable_pe: Optional[float] = Field(None, ge=0, le=200, description="P/E multiple (0-200x)")
+    comparable_peg: Optional[float] = Field(None, ge=0, le=10, description="PEG ratio (0-10)")
 
 
 class ValuationResult(BaseModel):
