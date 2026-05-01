@@ -7,11 +7,34 @@ import yfinance as yf
 import pandas as pd
 import numpy as np
 import time
+import requests
 from datetime import datetime, timedelta
 from typing import Dict, Optional, List
 import logging
 
 logger = logging.getLogger(__name__)
+
+
+def _yf_session() -> requests.Session:
+    """
+    Browser-like session for yfinance.
+    Yahoo Finance blocks plain AWS/Lambda IPs — spoofing a real browser
+    User-Agent bypasses the block and avoids 429 / empty-JSON errors.
+    """
+    s = requests.Session()
+    s.headers.update({
+        'User-Agent': (
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) '
+            'AppleWebKit/537.36 (KHTML, like Gecko) '
+            'Chrome/122.0.0.0 Safari/537.36'
+        ),
+        'Accept': '*/*',
+        'Accept-Language': 'en-US,en;q=0.9',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Referer': 'https://finance.yahoo.com/',
+        'Origin': 'https://finance.yahoo.com',
+    })
+    return s
 
 # Module-level cache for risk-free rate (shared across all callers)
 _rfr_cache = {'value': None, 'timestamp': 0}
@@ -142,7 +165,8 @@ class DataIntegrator:
             logger.info(f"Fetching data for ticker: {ticker}")
 
             from concurrent.futures import ThreadPoolExecutor
-            stock = yf.Ticker(ticker)
+            session = _yf_session()
+            stock = yf.Ticker(ticker, session=session)
 
             # Fetch all data sources in parallel — reduces 15-20s sequential to ~5s
             def _info():       return stock.info
@@ -157,11 +181,11 @@ class DataIntegrator:
                 f_bal   = ex.submit(_balance)
                 f_cf    = ex.submit(_cashflow)
                 f_hist  = ex.submit(_history)
-                info        = f_info.result(timeout=8)
-                financials  = f_fin.result(timeout=8)
-                balance_sheet = f_bal.result(timeout=8)
-                cash_flow   = f_cf.result(timeout=8)
-                hist        = f_hist.result(timeout=8)
+                info        = f_info.result(timeout=20)
+                financials  = f_fin.result(timeout=20)
+                balance_sheet = f_bal.result(timeout=20)
+                cash_flow   = f_cf.result(timeout=20)
+                hist        = f_hist.result(timeout=20)
 
             # Verify ticker is valid
             if not info or 'symbol' not in info:
