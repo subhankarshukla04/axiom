@@ -19,7 +19,12 @@ class MacroService:
         self.db_connection_string = db_connection_string or Config.get_db_connection_string()
 
     def get_connection(self):
-        """Get database connection"""
+        """Get database connection — SQLite on Vercel, PostgreSQL elsewhere."""
+        if Config.DATABASE_TYPE != 'postgresql':
+            import sqlite3
+            conn = sqlite3.connect(Config.SQLITE_DB)
+            conn.row_factory = sqlite3.Row
+            return conn
         return psycopg2.connect(
             self.db_connection_string,
             cursor_factory=RealDictCursor

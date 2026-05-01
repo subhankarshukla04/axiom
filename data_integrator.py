@@ -212,14 +212,25 @@ class DataIntegrator:
             session = _yf_session()
             stock   = yf.Ticker(ticker, session=session)
 
-            # Use direct quoteSummary API for .info — avoids the broken
-            # yfinance crumb scraper that gets 429'd on AWS Lambda IPs.
-            def _info():
-                raw = _yahoo_quote_summary(ticker, session)
-                if raw:
-                    return raw
-                # Fallback: try yfinance .info (works if not rate-limited)
-                return stock.info
+            # Yahoo Finance's quoteSummary / .info endpoint is rate-limited
+            # on AWS Lambda IPs. Use fast_info + download() instead — these
+            # hit the /v8/finance/chart/ endpoint which is not blocked.
+            def _fast_info():
+                fi = stock.fast_info
+                # Also try direct quoteSummary as a bonus (may work sometimes)
+                extra = {}
+                try:
+                    extra = _yahoo_quote_summary(ticker, session)
+                    if 'quoteType' in extra:
+                        flat: dict = {}
+                        for v in extra.values():
+                            if isinstance(v, dict):
+                                flat.update(v)
+                        flat.update(extra)
+                        extra = flat
+                except Exception:
+                    pass
+                return fi, extra
 
             def _financials(): return stock.financials
             def _balance():    return stock.balance_sheet
@@ -227,29 +238,42 @@ class DataIntegrator:
             def _history():    return stock.history(period="2y")
 
             with ThreadPoolExecutor(max_workers=5) as ex:
-                f_info  = ex.submit(_info)
+                f_fast  = ex.submit(_fast_info)
                 f_fin   = ex.submit(_financials)
                 f_bal   = ex.submit(_balance)
                 f_cf    = ex.submit(_cashflow)
                 f_hist  = ex.submit(_history)
-                info          = f_info.result(timeout=25)
+                fast_info_obj, extra_info = f_fast.result(timeout=25)
                 financials    = f_fin.result(timeout=25)
                 balance_sheet = f_bal.result(timeout=25)
                 cash_flow     = f_cf.result(timeout=25)
                 hist          = f_hist.result(timeout=25)
 
-            # quoteSummary nests fields in sub-dicts; flatten so downstream
-            # .get('longName') / .get('sector') calls work unchanged.
-            if isinstance(info, dict) and 'quoteType' in info:
-                flat: dict = {}
-                for v in info.values():
-                    if isinstance(v, dict):
-                        flat.update(v)
-                flat.update(info)   # top-level keys win
-                info = flat
+            # Build an info-like dict from fast_info (reliable) + extra (best-effort)
+            try:
+                fi = fast_info_obj
+                info = {
+                    'symbol':             ticker.upper(),
+                    'longName':           extra_info.get('longName') or extra_info.get('shortName') or ticker.upper(),
+                    'sector':             extra_info.get('sector') or 'Unknown',
+                    'industry':           extra_info.get('industry') or 'Unknown',
+                    'currentPrice':       getattr(fi, 'last_price', None) or extra_info.get('currentPrice', 0),
+                    'regularMarketPrice': getattr(fi, 'last_price', None) or 0,
+                    'marketCap':          getattr(fi, 'market_cap', None) or extra_info.get('marketCap', 0),
+                    'sharesOutstanding':  getattr(fi, 'shares', None) or extra_info.get('sharesOutstanding', 0),
+                    'beta':               extra_info.get('beta', 1.0),
+                    'forwardPE':          extra_info.get('forwardPE', 0),
+                    'trailingPE':         extra_info.get('trailingPE', 0),
+                    'financialCurrency':  extra_info.get('financialCurrency', 'USD'),
+                    'country':            extra_info.get('country', 'United States'),
+                    'exchange':           getattr(fi, 'exchange', 'NASDAQ'),
+                }
+            except Exception as e:
+                logger.warning(f'fast_info parse error for {ticker}: {e}')
+                info = {'symbol': ticker.upper()}
 
-            if not info or not info.get('symbol'):
-                logger.error(f"Invalid ticker or no data: {ticker}")
+            if not info.get('symbol'):
+                logger.error(f"Invalid ticker: {ticker}")
                 return None
 
             # Extract key data

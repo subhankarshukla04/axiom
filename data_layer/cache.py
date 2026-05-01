@@ -31,10 +31,13 @@ _TTL = {
 class DataCache:
     """Thread-safe SQLite cache for external API responses."""
 
-    def __init__(self, db_path: str = 'valuations.db'):
-        # Use same db as main app if it exists, else create separate
-        if not os.path.exists(db_path):
-            db_path = 'valuation.db'
+    def __init__(self, db_path: str = None):
+        if db_path is None:
+            try:
+                from config import Config
+                db_path = Config.SQLITE_DB
+            except Exception:
+                db_path = '/tmp/valuations.db'
         self.db_path = db_path
         self._ensure_table()
 
