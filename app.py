@@ -1,3 +1,12 @@
+import os as _os
+# Point yfinance cache to /tmp so it works on read-only filesystems (Lambda, containers)
+_os.environ.setdefault('YFINANCE_CACHE_DIR', '/tmp/yfinance')
+try:
+    import yfinance as _yf
+    _yf.set_tz_cache_location('/tmp/yfinance')
+except Exception:
+    pass
+
 from flask import Flask, render_template, request, jsonify, send_file
 import sqlite3
 import psycopg2
@@ -252,7 +261,18 @@ def init_db():
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
         description TEXT,
-        assumptions TEXT,
+        risk_free_rate REAL DEFAULT 0.045,
+        market_risk_premium REAL DEFAULT 0.065,
+        gdp_growth REAL DEFAULT 0.025,
+        inflation_rate REAL DEFAULT 0.030,
+        credit_spread_aaa REAL DEFAULT 0.005,
+        credit_spread_aa REAL DEFAULT 0.0075,
+        credit_spread_a REAL DEFAULT 0.010,
+        credit_spread_bbb REAL DEFAULT 0.015,
+        credit_spread_bb REAL DEFAULT 0.025,
+        credit_spread_b REAL DEFAULT 0.040,
+        corporate_tax_rate REAL DEFAULT 0.21,
+        equity_risk_appetite TEXT DEFAULT 'neutral',
         created_by INTEGER,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )''')

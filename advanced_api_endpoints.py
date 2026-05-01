@@ -38,7 +38,8 @@ logger = logging.getLogger(__name__)
 def register_advanced_routes(app):
     """Register all advanced API endpoints"""
 
-    valuation_service = ValuationService()
+    from config import Config
+    valuation_service = ValuationService(db_path=Config.SQLITE_DB)
     importer = UniversalCompanyImporter()
     portfolio_engine = PortfolioEngine()
     institutional_engine = InstitutionalValuationEngine()
