@@ -1215,7 +1215,7 @@ def dashboard_stats():
     # Normalize stats and sectors for both SQLite (tuples) and PostgreSQL (dicts)
     result = {
         'total_companies': stats.get('total_companies', 0) if isinstance(stats, dict) else (stats or {}).get('total_companies', 0),
-        'avg_upside': round(stats.get('avg_upside', 0) if isinstance(stats, dict) else 0, 2),
+        'avg_upside': round(stats.get('avg_upside') or 0 if isinstance(stats, dict) else 0, 2),
         'buy_count': stats.get('buy_count', 0) if isinstance(stats, dict) else 0,
         'hold_count': stats.get('hold_count', 0) if isinstance(stats, dict) else 0,
         'sell_count': stats.get('sell_count', 0) if isinstance(stats, dict) else 0,

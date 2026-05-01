@@ -15,26 +15,70 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+_YF_HEADERS = {
+    'User-Agent': (
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) '
+        'AppleWebKit/537.36 (KHTML, like Gecko) '
+        'Chrome/122.0.0.0 Safari/537.36'
+    ),
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    'Accept-Language': 'en-US,en;q=0.9',
+    'Accept-Encoding': 'gzip, deflate, br',
+    'Referer': 'https://finance.yahoo.com/',
+}
+
+
 def _yf_session() -> requests.Session:
     """
-    Browser-like session for yfinance.
-    Yahoo Finance blocks plain AWS/Lambda IPs — spoofing a real browser
-    User-Agent bypasses the block and avoids 429 / empty-JSON errors.
+    Session with Yahoo Finance cookies + crumb.
+    Yahoo Finance blocks bare AWS Lambda IPs. We replicate what a browser
+    does: visit the consent page to get cookies, then fetch the crumb token,
+    then attach both to subsequent API calls.
     """
     s = requests.Session()
-    s.headers.update({
-        'User-Agent': (
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) '
-            'AppleWebKit/537.36 (KHTML, like Gecko) '
-            'Chrome/122.0.0.0 Safari/537.36'
-        ),
-        'Accept': '*/*',
-        'Accept-Language': 'en-US,en;q=0.9',
-        'Accept-Encoding': 'gzip, deflate, br',
-        'Referer': 'https://finance.yahoo.com/',
-        'Origin': 'https://finance.yahoo.com',
-    })
+    s.headers.update(_YF_HEADERS)
+    try:
+        # Step 1: get consent cookies
+        s.get('https://fc.yahoo.com', timeout=5)
+        s.get('https://finance.yahoo.com', timeout=5)
+        # Step 2: get crumb
+        crumb_r = s.get(
+            'https://query1.finance.yahoo.com/v1/test/getcrumb',
+            timeout=5,
+        )
+        if crumb_r.status_code == 200 and crumb_r.text:
+            s.params = {'crumb': crumb_r.text.strip()}  # type: ignore[assignment]
+    except Exception:
+        pass
     return s
+
+
+def _yahoo_quote_summary(ticker: str, session: requests.Session) -> dict:
+    """
+    Direct Yahoo Finance quoteSummary call — bypasses yfinance's .info
+    which uses a separate (and frequently rate-limited) scraping path.
+    Returns the merged modules dict, or {} on failure.
+    """
+    modules = 'financialData,quoteType,defaultKeyStatistics,assetProfile,summaryDetail'
+    params = {'modules': modules, 'corsDomain': 'finance.yahoo.com', 'formatted': 'false', 'symbol': ticker}
+    if hasattr(session, 'params') and isinstance(session.params, dict):
+        params.update(session.params)
+    try:
+        r = session.get(
+            f'https://query1.finance.yahoo.com/v10/finance/quoteSummary/{ticker}',
+            params=params, timeout=15,
+        )
+        data = r.json()
+        result = data.get('quoteSummary', {}).get('result') or []
+        if not result:
+            return {}
+        merged: dict = {}
+        for module in result:
+            merged.update(module)
+        return merged
+    except Exception as e:
+        logger.debug('quoteSummary direct call failed: %s', e)
+        return {}
 
 # Module-level cache for risk-free rate (shared across all callers)
 _rfr_cache = {'value': None, 'timestamp': 0}
@@ -166,14 +210,21 @@ class DataIntegrator:
 
             from concurrent.futures import ThreadPoolExecutor
             session = _yf_session()
-            stock = yf.Ticker(ticker, session=session)
+            stock   = yf.Ticker(ticker, session=session)
 
-            # Fetch all data sources in parallel — reduces 15-20s sequential to ~5s
-            def _info():       return stock.info
+            # Use direct quoteSummary API for .info — avoids the broken
+            # yfinance crumb scraper that gets 429'd on AWS Lambda IPs.
+            def _info():
+                raw = _yahoo_quote_summary(ticker, session)
+                if raw:
+                    return raw
+                # Fallback: try yfinance .info (works if not rate-limited)
+                return stock.info
+
             def _financials(): return stock.financials
             def _balance():    return stock.balance_sheet
             def _cashflow():   return stock.cashflow
-            def _history():    return stock.history(period="2y")  # 2y sufficient for beta
+            def _history():    return stock.history(period="2y")
 
             with ThreadPoolExecutor(max_workers=5) as ex:
                 f_info  = ex.submit(_info)
@@ -181,15 +232,24 @@ class DataIntegrator:
                 f_bal   = ex.submit(_balance)
                 f_cf    = ex.submit(_cashflow)
                 f_hist  = ex.submit(_history)
-                info        = f_info.result(timeout=20)
-                financials  = f_fin.result(timeout=20)
-                balance_sheet = f_bal.result(timeout=20)
-                cash_flow   = f_cf.result(timeout=20)
-                hist        = f_hist.result(timeout=20)
+                info          = f_info.result(timeout=25)
+                financials    = f_fin.result(timeout=25)
+                balance_sheet = f_bal.result(timeout=25)
+                cash_flow     = f_cf.result(timeout=25)
+                hist          = f_hist.result(timeout=25)
 
-            # Verify ticker is valid
-            if not info or 'symbol' not in info:
-                logger.error(f"Invalid ticker: {ticker}")
+            # quoteSummary nests fields in sub-dicts; flatten so downstream
+            # .get('longName') / .get('sector') calls work unchanged.
+            if isinstance(info, dict) and 'quoteType' in info:
+                flat: dict = {}
+                for v in info.values():
+                    if isinstance(v, dict):
+                        flat.update(v)
+                flat.update(info)   # top-level keys win
+                info = flat
+
+            if not info or not info.get('symbol'):
+                logger.error(f"Invalid ticker or no data: {ticker}")
                 return None
 
             # Extract key data
