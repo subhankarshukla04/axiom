@@ -30,7 +30,7 @@ EXPOSE 8000
 # Persistent data volume (SQLite DB)
 VOLUME ["/data"]
 
-CMD gunicorn app:app \
+CMD python -m gunicorn app:app \
     --bind 0.0.0.0:${PORT} \
     --workers 2 \
     --timeout 120 \
