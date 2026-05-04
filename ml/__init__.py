@@ -1,20 +1,21 @@
 """
-AXIOM ML layer — the actually-learned-from-data parts.
+AXIOM ML layer.
 
-This package now holds *only* code that is trained on prediction history:
-  - calibrator.py      — GBM correction model (trained from prediction_log.jsonl)
-  - walk_forward.py    — walk-forward training pipeline
-  - backtest.py        — historical regression backtest harness
-  - accuracy_report.py — post-hoc metrics from prediction log
-  - monitor.py         — live monitoring + auto-retrain
-  - log.py             — prediction logging (writes to prediction_log.jsonl)
-
-Heuristic / multiples-based valuation logic moved to `valuation_app/valuation/`
-in Phase 1. Do not add hardcoded sector tables, multiples, or anchor weights
-here — those belong in `valuation/config/*.json`.
+  - walk_forward.py      — walk-forward training pipeline (monthly rolling, excess return target)
+  - monitor.py           — daily snapshots, weekly evaluation, IC-based reporting, auto-retrain
+  - log.py               — prediction logging (writes to prediction_log.jsonl)
+  - growth_normalizer.py — yfinance multi-year median growth, writes to company_financials
+  - wacc_calibrator.py   — reverse-DCF implied WACC → GBT regressor, replaces CAPM floors
+  - company_classifier.py — GBT classifier for company_type from financial features
+  - framework_router.py  — detects REITs/banks/neg-FCF companies, skips ML for those
 """
-from ml.calibrator import apply_ml_correction, train_calibration_model, ML_MODEL_PATH
 from ml.log import log_prediction, PREDICTION_LOG_PATH
-from ml.backtest import run_backtest
+from ml.walk_forward import run as run_walk_forward
+from ml.growth_normalizer import run_normalization, compute_median_growth
+from ml.wacc_calibrator import (train as train_wacc_model,
+                                  predict as predict_wacc)
+from ml.company_classifier import (train as train_classifier,
+                                     predict as predict_company_type)
+from ml.framework_router import classify_framework
 
-MIN_TRAINING_SAMPLES = 15
+MIN_TRAINING_SAMPLES = 50

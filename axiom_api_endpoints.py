@@ -294,9 +294,10 @@ def register_axiom_routes(app):
             conn, ph = _get_db()
             cur = conn.cursor()
             cur.execute(f"""
-                SELECT cf.revenue, cf.ebitda, cf.growth_rate_y1, cf.growth_rate_y2,
-                       cf.growth_rate_y3, cf.terminal_growth, cf.capex_pct,
-                       cf.tax_rate, cf.shares_outstanding, cf.debt, cf.cash,
+                SELECT cf.revenue, cf.ebitda, cf.depreciation, cf.growth_rate_y1,
+                       cf.growth_rate_y2, cf.growth_rate_y3, cf.terminal_growth,
+                       cf.capex_pct, cf.working_capital_change, cf.tax_rate,
+                       cf.shares_outstanding, cf.debt, cf.cash,
                        vr.wacc, vr.current_price
                 FROM company_financials cf
                 LEFT JOIN valuation_results vr ON cf.company_id = vr.company_id
@@ -310,38 +311,45 @@ def register_axiom_routes(app):
             if not row:
                 return jsonify({'error': f'Company {company_id} not found'}), 404
 
-            revenue = float(row['revenue'] or 0)
-            ebitda = float(row['ebitda'] or 0)
-            wacc = float(row['wacc'] or 0.09)
+            from valuation.scenarios import run_dcf_projection
+
+            revenue        = float(row['revenue'] or 0)
+            ebitda         = float(row['ebitda'] or 0)
+            depreciation   = float(row['depreciation'] or 0)
+            capex_pct      = float(row['capex_pct'] or 0.05)
+            wc_change      = float(row['working_capital_change'] or 0)
+            tax_rate       = float(row['tax_rate'] or 0.21)
+            shares         = float(row['shares_outstanding'] or 1)
+            debt           = float(row['debt'] or 0)
+            cash           = float(row['cash'] or 0)
+            wacc           = float(row['wacc'] or 0.09)
             terminal_growth = float(row['terminal_growth'] or 0.025)
-            capex_pct = float(row['capex_pct'] or 0.05)
-            tax_rate = float(row['tax_rate'] or 0.21)
-            shares = float(row['shares_outstanding'] or 1)
-            net_debt = float(row['debt'] or 0) - float(row['cash'] or 0)
-            current_price = float(row['current_price'] or 0)
+            growth_y1      = float(row['growth_rate_y1'] or 0.08)
+            growth_y2      = float(row['growth_rate_y2'] or 0.06)
+            growth_y3      = float(row['growth_rate_y3'] or 0.05)
+            current_price  = float(row['current_price'] or 0)
 
-            growth_rates = [
-                float(row['growth_rate_y1'] or 0.08),
-                float(row['growth_rate_y2'] or 0.06),
-                float(row['growth_rate_y3'] or 0.05),
-            ]
-            for _ in range(7):
-                g = max(terminal_growth, growth_rates[-1] * 0.9)
-                growth_rates.append(g)
-
-            ebitda_margin = ebitda / revenue if revenue > 0 else 0.20
-            fcfs, rev = [], revenue
-            for g in growth_rates:
-                rev = rev * (1 + g)
-                nopat = rev * ebitda_margin * (1 - tax_rate)
-                fcfs.append(nopat - (rev * capex_pct))
+            # Generate FCF schedule using the same engine as the main DCF so
+            # the sensitivity base case always matches the DCF Fair Value shown above it.
+            def _fcfs_for(w, tg):
+                result = run_dcf_projection(
+                    revenue=revenue, ebitda=ebitda, depreciation=depreciation,
+                    raw_capex_pct=capex_pct, normalized_capex_pct=capex_pct,
+                    wc_change=wc_change, tax_rate=tax_rate,
+                    shares=shares, debt=debt, cash=cash,
+                    wacc=w, terminal_growth=tg,
+                    growth_y1=growth_y1, growth_y2=growth_y2, growth_y3=growth_y3,
+                )
+                return result['fcf_schedule']
 
             base_inputs = {
-                'projected_fcfs': fcfs,
+                'projected_fcfs': _fcfs_for(wacc, terminal_growth),
                 'shares_outstanding': shares,
-                'net_debt': net_debt,
+                'net_debt': debt - cash,
                 'wacc': wacc,
                 'terminal_growth': terminal_growth,
+                # Pass factory so sensitivity can recompute FCFs per cell
+                '_fcf_factory': _fcfs_for,
             }
 
             from sensitivity import compute_sensitivity_table

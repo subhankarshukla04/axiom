@@ -26,8 +26,10 @@ build/
 
 # Logs
 *.log
+*.bak
 *.txt
 !requirements*.txt
+bulk_import_log.json
 
 # IDE
 .vscode/

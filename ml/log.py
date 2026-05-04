@@ -44,21 +44,18 @@ def _get_analyst_target(ticker: str, company_data: dict) -> Optional[float]:
 def log_prediction(ticker: str, predicted_price: float, company_data: dict,
                    model_version: str = 'v2') -> None:
     record = {
-        'ticker':        ticker,
-        'predicted_at':  datetime.utcnow().isoformat(),
-        'predicted_price': predicted_price,
-        'model_version': model_version,
-        'company_type':  company_data.get('company_type'),
-        'sub_sector_tag': company_data.get('sub_sector_tag'),
-        'blend_weights': company_data.get('blend_weights'),
-        'dcf_price':     company_data.get('dcf_price_per_share'),
-        'ev_price':      company_data.get('ev_price_per_share'),
-        'pe_price':      company_data.get('pe_price_per_share'),
-        'analyst_target': company_data.get('analyst_target'),
-        'wacc':          company_data.get('wacc'),
-        'growth_y1':     company_data.get('growth_rate_y1'),
-        'ebitda_method': company_data.get('ebitda_method'),
-        'market_regime': _get_market_regime(),
+        'ticker':          ticker,
+        'predicted_at':    datetime.utcnow().isoformat(),
+        'pure_dcf_price':  company_data.get('dcf_price_per_share'),  # clean DCF only
+        'predicted_price': predicted_price,                           # kept for compat
+        'model_version':   model_version,
+        'company_type':    company_data.get('company_type'),
+        'sub_sector_tag':  company_data.get('sub_sector_tag'),
+        'analyst_target':  company_data.get('analyst_target'),
+        'wacc':            company_data.get('wacc'),
+        'growth_y1':       company_data.get('growth_rate_y1'),
+        'ebitda_method':   company_data.get('ebitda_method'),
+        'market_regime':   _get_market_regime(),
     }
 
     try:

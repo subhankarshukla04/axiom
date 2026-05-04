@@ -2,11 +2,7 @@ import csv
 import math
 from statistics import mean, stdev
 from config import Config
-from ib_valuation_framework import (
-	apply_investment_banking_adjustments,
-	classify_company,
-	get_industry_benchmark_multiples
-)
+from ib_valuation_framework import apply_investment_banking_adjustments
 try:
 	import valuation_engine as _ml
 	_ML_AVAILABLE = True
@@ -180,12 +176,11 @@ def enhanced_dcf_valuation(company_data):
 			market_cap = float(company_data.get('market_cap_estimate', 0))
 			current_price = market_cap / shares if shares > 0 else 0
 			analyst_target = company_data.get('analyst_target')
-			# Anchor alt model to analyst consensus
-			final_price = _ml.apply_analyst_anchor(alt_price, analyst_target,
-			                                        company_data.get('company_type', 'STABLE_VALUE'),
-			                                        company_data)
+			final_price = alt_price
+			final_price, _ = _ml.apply_sanity_guardrail(
+				final_price, analyst_target, current_price
+			)
 			upside = ((final_price * shares - market_cap) / market_cap * 100) if market_cap > 0 else 0
-			final_price = _ml.apply_ml_correction(final_price, company_data)
 			company_data['dcf_price_per_share'] = alt_price
 			company_data['ev_price_per_share'] = alt_price
 			company_data['pe_price_per_share'] = alt_price
@@ -375,6 +370,15 @@ def enhanced_dcf_valuation(company_data):
 	# Apply guardrails (clamp WACC and terminal growth to safe ranges)
 	wacc = max(Config.WACC_MIN, min(Config.WACC_MAX, wacc))
 	terminal_growth = max(Config.TERMINAL_GROWTH_MIN, min(Config.TERMINAL_GROWTH_MAX, terminal_growth))
+
+	# ML WACC override — if the calibration pipeline has predicted a better WACC,
+	# use it instead of the CAPM result (still clamped to safe range)
+	_ml_wacc = company_data.get('_ml_wacc_override')
+	if _ml_wacc is not None:
+		try:
+			wacc = max(Config.WACC_MIN, min(Config.WACC_MAX, float(_ml_wacc)))
+		except (TypeError, ValueError):
+			pass
 	
 	print(f"\n--- Cost of Capital Analysis ---")
 	print(f"  Risk-Free Rate:        {rf_rate*100:.2f}%")
@@ -498,37 +502,17 @@ def enhanced_dcf_valuation(company_data):
 	print(f"  Company PEG Ratio:            {implied_peg:.2f}")
 	print(f"  Industry PEG:                 {comp_peg:.2f}")
 	
-	# Adaptive blend weights from ML calibration layer
-	if _ML_AVAILABLE and 'blend_weights' in company_data:
-		bw = _ml.get_blend_weights(
-			company_data.get('company_type', 'STABLE_VALUE'),
-			dcf_equity_value
-		)
-		weight_dcf = bw['dcf']
-		weight_ev_ebitda = bw['ev']
-		weight_pe = bw['pe']
-	else:
-		w = Config.VALUATION_WEIGHTS
-		weight_dcf = w.get('dcf', 0.45)
-		weight_ev_ebitda = w.get('ev_ebitda', 0.30)
-		weight_pe = w.get('pe', 0.25)
+	# DCF is the fair value. EV/EBITDA and P/E are context — not blended in.
+	weight_dcf      = 1.0
+	weight_ev_ebitda = 0.0
+	weight_pe       = 0.0
 
-	final_equity_value = (
-		dcf_equity_value * weight_dcf +
-		comp_equity_ev * weight_ev_ebitda +
-		comp_pe_method * weight_pe
-	)
-	final_price_per_share = final_equity_value / shares
+	final_equity_value    = dcf_equity_value
+	final_price_per_share = dcf_price_per_share
 
-	# Analyst consensus anchor + ML correction
+	# Sanity guardrail — catches data anomalies, not a blend
 	if _ML_AVAILABLE:
 		analyst_target = company_data.get('analyst_target')
-		company_type = company_data.get('company_type', 'STABLE_VALUE')
-		final_price_per_share = _ml.apply_analyst_anchor(
-			final_price_per_share, analyst_target, company_type, company_data
-		)
-		final_price_per_share = _ml.apply_ml_correction(final_price_per_share, company_data)
-		# B2-5: Sanity guardrail — catches data anomalies (DKS $1381, TPR $44)
 		current_market_price = company_data.get('current_price', 0)
 		final_price_per_share, _flagged = _ml.apply_sanity_guardrail(
 			final_price_per_share, analyst_target, current_market_price

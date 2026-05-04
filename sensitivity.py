@@ -27,7 +27,13 @@ def _signal(implied_price: float, current_price: float) -> str:
 
 def _run_dcf(base_inputs: dict, wacc: float, terminal_growth: float) -> Optional[float]:
     try:
-        fcfs = base_inputs.get('projected_fcfs', [])
+        # If caller provided a factory, regenerate FCFs for this wacc/tg combination
+        # so the FCF schedule is consistent with the main DCF engine.
+        factory = base_inputs.get('_fcf_factory')
+        if factory is not None:
+            fcfs = factory(wacc, terminal_growth)
+        else:
+            fcfs = base_inputs.get('projected_fcfs', [])
         if not fcfs:
             return None
         shares = base_inputs.get('shares_outstanding', 1)

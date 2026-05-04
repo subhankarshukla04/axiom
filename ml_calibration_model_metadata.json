@@ -1,13 +1,14 @@
 {
-  "trained_at": "2026-05-01T14:02:05.262450+00:00",
+  "trained_at": "2026-05-03T03:20:22.951468+00:00",
   "n_features": 11,
+  "feature_format": "z_scores",
   "features": [
     "tag_int",
     "type_int",
-    "wacc",
-    "growth_y1",
+    "z_value",
+    "z_momentum",
     "ebitda_method_int",
-    "analyst_ratio",
+    "z_quality",
     "regime_int",
     "horizon_days",
     "month_of_pred",
@@ -29,15 +30,17 @@
     9,
     10
   ],
-  "target": "excess_return_over_sector_etf",
-  "framework": "walk_forward_v2",
-  "n_rows": 9900,
+  "target": "cross_sectional_rank_within_tag",
+  "target_note": "percentile [0,1] within (year,month,horizon,tag); groups <5 keep raw excess",
+  "framework": "walk_forward_v4",
+  "n_rows": 17324,
   "years": [
     2022,
     2023,
-    2024
+    2024,
+    2025
   ],
-  "window_months": 12,
-  "overall_oos_mae": 0.1559,
+  "window_months": 24,
+  "overall_oos_mae": 0.4171,
   "mode": "monthly_rolling"
 }

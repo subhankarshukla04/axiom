@@ -65,22 +65,84 @@ class ValuationService:
                     cf.shares_outstanding, cf.debt, cf.cash, cf.market_cap_estimate,
                     cf.beta, cf.risk_free_rate, cf.market_risk_premium,
                     cf.country_risk_premium, cf.size_premium,
-                    cf.comparable_ev_ebitda, cf.comparable_pe, cf.comparable_peg
+                    cf.comparable_ev_ebitda, cf.comparable_pe, cf.comparable_peg,
+                    cf.operating_income, cf.interest_expense
                 FROM companies c
                 JOIN company_financials cf ON c.id = cf.company_id
                 WHERE c.id = {placeholder}
             ''', (company_id,))
-            
+
             row = cursor.fetchone()
             conn.close()
-            
-            if row:
-                logger.info(f"Fetched data for company ID {company_id}: {row['name']}")
-                return dict(row)
-            else:
+
+            if not row:
                 logger.warning(f"No data found for company ID {company_id}")
                 return None
-                
+
+            data = dict(row)
+
+            # Resolve sub_sector_tag from TICKER_TAG_MAP (not stored in company_financials)
+            try:
+                from valuation._config import TICKER_TAG_MAP
+                ticker = str(data.get('ticker') or '').upper()
+                if ticker and ticker in TICKER_TAG_MAP:
+                    data['sub_sector_tag'] = TICKER_TAG_MAP[ticker]
+            except Exception:
+                pass
+
+            # ML calibration enrichment — applied before valuation runs
+            # Falls back silently to unmodified data if any step fails
+            try:
+                from ml.framework_router import classify_framework
+                framework = classify_framework(data)
+                data['_framework'] = framework
+
+                if not framework['skip_ml']:
+                    # 1. Predict WACC from ML model (injected via _ml_wacc_override)
+                    try:
+                        from ml.wacc_calibrator import predict as predict_wacc
+                        ml_wacc = predict_wacc(data)
+                        if ml_wacc is not None:
+                            data['_ml_wacc_override'] = ml_wacc
+                            data['_wacc_source'] = 'ml_model'
+                    except Exception as e:
+                        logger.debug('WACC ML predict skipped: %s', e)
+
+                    # 2. Predict company_type from ML classifier
+                    try:
+                        from ml.company_classifier import predict as predict_type
+                        ml_type = predict_type(data)
+                        if ml_type is not None:
+                            data['company_type'] = ml_type
+                            data['_type_source'] = 'ml_classifier'
+                    except Exception as e:
+                        logger.debug('company classifier skipped: %s', e)
+
+                    # 3. Cyclical EBITDA normalization — use multi-year average
+                    try:
+                        from valuation._config import TICKER_TAG_MAP, SUBSECTOR_MULT
+                        tag = str(data.get('sub_sector_tag') or '')
+                        CYCLICAL_SECTORS = {
+                            'mature_semi', 'IDM_semi', 'energy_major', 'energy_ep',
+                            'oilfield_svc', 'fabless_semi', 'semi_equipment',
+                        }
+                        if tag in CYCLICAL_SECTORS and data.get('ticker'):
+                            import yfinance as yf, statistics
+                            inc = yf.Ticker(data['ticker']).income_stmt
+                            if inc is not None and not inc.empty and 'EBITDA' in inc.index:
+                                vals = [float(v) for v in inc.loc['EBITDA'].dropna().values
+                                        if v and float(v) > 0]
+                                if len(vals) >= 2:
+                                    data['normalized_ebitda'] = statistics.mean(vals)
+                    except Exception as e:
+                        logger.debug('cyclical EBITDA norm skipped: %s', e)
+
+            except Exception as e:
+                logger.debug('ML calibration enrichment skipped: %s', e)
+
+            logger.info(f"Fetched data for company ID {company_id}: {data['name']}")
+            return data
+
         except Exception as e:
             logger.error(f"Error fetching company data for ID {company_id}: {str(e)}")
             return None
@@ -153,6 +215,46 @@ class ValuationService:
                     result['institutional_score'] = inst
                 except Exception as inst_err:
                     logger.debug(f"Institutional score skipped: {inst_err}")
+
+                # Post-DCF analyst-anchored guardrail
+                # Uses analyst consensus as a probabilistic anchor — not a hard rule.
+                # Only fires when the divergence is large enough to signal a model error.
+                try:
+                    dcf    = float(result.get('dcf_price_per_share') or 0)
+                    analyst = float(company_data.get('analyst_target') or
+                                    result.get('analyst_target') or 0)
+                    market  = float(result.get('current_price') or 0)
+                    guardrail_note = None
+
+                    if dcf > 0 and analyst > 0 and market > 0:
+                        if dcf > analyst * 1.75:
+                            # Way above analyst consensus — cap at 40% premium to analyst
+                            dcf = analyst * 1.40
+                            guardrail_note = 'capped_1.40x_analyst'
+                        elif analyst > market * 1.10 and dcf < analyst * 0.60:
+                            # Analyst is meaningfully above market AND we're far below analyst
+                            # (only floors when consensus signals we're too pessimistic)
+                            dcf = analyst * 0.65
+                            guardrail_note = 'floored_0.65x_analyst'
+                    elif dcf > 0 and market > 0 and analyst == 0:
+                        # No analyst coverage — catch extreme outliers vs market price
+                        if dcf > market * 2.50:
+                            dcf = market * 2.0
+                            guardrail_note = 'capped_2.0x_market'
+
+                    if guardrail_note:
+                        shares = float(company_data.get('shares_outstanding') or 1)
+                        result['dcf_price_per_share']   = dcf
+                        result['final_price_per_share'] = dcf
+                        result['final_equity_value']    = dcf * shares
+                        result['_guardrail'] = guardrail_note
+                        # Recalculate upside
+                        if market > 0:
+                            result['upside_pct'] = round((dcf - market) / market * 100, 2)
+                        logger.debug(f"Guardrail applied ({guardrail_note}): "
+                                     f"DCF adjusted to ${dcf:.2f}")
+                except Exception as gr_err:
+                    logger.debug(f"Guardrail skipped: {gr_err}")
 
                 return result
             else:

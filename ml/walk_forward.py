@@ -48,19 +48,48 @@ from typing import Dict, List, Optional, Tuple
 import numpy as np
 
 from valuation._config import CYCLICAL_TAGS, SECULAR_DECLINE_TAGS, SUBSECTOR_MULT, TICKER_TAG_MAP
-from ml.calibrator import (
-    ML_MODEL_PATH,
-    _method_to_int,
-    _regime_to_int,
-    _tag_to_int,
-    _type_to_int,
-)
 
 logger = logging.getLogger(__name__)
 
+ML_MODEL_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'ml_calibration_model.pkl')
 _ML_DIR    = os.path.dirname(ML_MODEL_PATH)
 MODEL_Y1   = os.path.join(_ML_DIR, 'ml_model_y1.pkl')
 MODEL_Y1Y2 = os.path.join(_ML_DIR, 'ml_model_y1y2.pkl')
+
+_COMPANY_TYPES  = ['DISTRESSED', 'STORY', 'HYPERGROWTH', 'GROWTH_TECH',
+                   'CYCLICAL', 'STABLE_VALUE', 'STABLE_VALUE_LOWGROWTH']
+_EBITDA_METHODS = ['em:single', 'em:zero', 'em:cyc3yr', 'em:secular_decline',
+                   'em:recent', 'em:trend', 'em:3yavg', 'backtest']
+_MARKET_REGIMES = ['risk_on', 'transition', 'risk_off', 'unknown']
+
+
+def _tag_to_int(tag: str) -> int:
+    tags = sorted(SUBSECTOR_MULT.keys())
+    try:
+        return tags.index(tag)
+    except ValueError:
+        return len(tags)
+
+
+def _type_to_int(t: str) -> int:
+    try:
+        return _COMPANY_TYPES.index(t)
+    except ValueError:
+        return len(_COMPANY_TYPES)
+
+
+def _method_to_int(m: str) -> int:
+    try:
+        return _EBITDA_METHODS.index(m)
+    except ValueError:
+        return len(_EBITDA_METHODS)
+
+
+def _regime_to_int(r: str) -> int:
+    try:
+        return _MARKET_REGIMES.index(r)
+    except ValueError:
+        return len(_MARKET_REGIMES)
 
 HORIZONS       = [90, 180, 365]
 MIN_TRAIN_ROWS = 50
@@ -169,21 +198,22 @@ def build_wf_features(tag: str, regime: str, horizon_days: int,
                        month: int = 1, volatility: float = _VOL_DEFAULT,
                        etf_momentum: float = 0.0) -> List[float]:
     """
-    11-feature vector.
+    11-feature vector using static sector defaults.
+    Used for historical training (2022-2024) where snapshot Z-scores are unavailable.
 
     Pos  Type  Name
     ---  ----  ----------------
     0    cat   tag_int
     1    cat   type_int
-    2    num   wacc
-    3    num   growth_y1
+    2    num   wacc              (sector default)
+    3    num   growth_y1         (sector median)
     4    cat   ebitda_method_int
-    5    num   analyst_ratio
-    6    cat   regime_int        (risk_on=0, transition=1, risk_off=2, unknown=3)
-    7    cat   horizon_days      (90 | 180 | 365)
-    8    cat   month_of_pred     (1-12)
+    5    num   analyst_ratio     (1.0 = neutral, no historical data)
+    6    cat   regime_int
+    7    cat   horizon_days
+    8    cat   month_of_pred
     9    num   volatility_30d
-    10   num   etf_momentum_90d  (sector ETF 3-month return; 0 = neutral/unknown)
+    10   num   etf_momentum_90d
     """
     ctype  = _tag_to_default_type(tag)
     wacc   = _TAG_WACC.get(tag, _WACC_DEFAULT)
@@ -196,12 +226,66 @@ def build_wf_features(tag: str, regime: str, horizon_days: int,
         wacc,
         growth,
         _method_to_int('em:3yavg'),
-        1.0,                        # analyst_ratio: no historical data in training
+        1.0,
         _regime_to_int(regime),
         float(horizon_days),
         float(month),
         float(volatility),
         float(etf_momentum),
+    ]
+
+
+def build_wf_features_from_snapshot(snap: dict, horizon_days: int) -> List[float]:
+    """
+    Build the 11-feature vector from a live snapshot record that has Z-scores.
+    Used at inference time and for future training windows once snapshot history
+    accumulates (replaces static sector defaults with real cross-sectional signals).
+
+    snap keys used: tag, regime, month (derived from date), volatility_sector,
+                    etf_momentum (from etf_moms), z_value, z_momentum, z_quality.
+
+    Feature mapping (same positions as build_wf_features for model compatibility):
+      0  tag_int           (unchanged)
+      1  type_int          (unchanged)
+      2  z_value           replaces wacc — DCF upside Z-score within tag
+      3  z_momentum        replaces growth_y1 — 12-1 month momentum Z-score
+      4  ebitda_method_int (unchanged, 0 = em:3yavg default)
+      5  z_quality         replaces analyst_ratio — ROIC+FCF yield Z-score
+      6  regime_int        (unchanged)
+      7  horizon_days      (unchanged)
+      8  month_of_pred     (unchanged)
+      9  volatility_30d    (unchanged)
+      10 etf_momentum_90d  (unchanged)
+    """
+    from datetime import datetime as _dt
+    tag      = snap.get('tag', '')
+    regime   = snap.get('regime', 'unknown')
+    vol      = snap.get('volatility_sector', _VOL_DEFAULT)
+    etf_mom  = snap.get('etf_momentum_90d', 0.0) or 0.0
+    ctype    = _tag_to_default_type(tag)
+
+    try:
+        month = int(snap['date'].split('-')[1])
+    except Exception:
+        month = _dt.utcnow().month
+
+    # Z-scores — fall back to 0.0 (neutral) if not yet computed
+    z_value    = snap.get('z_value')    or 0.0
+    z_momentum = snap.get('z_momentum') or 0.0
+    z_quality  = snap.get('z_quality')  or 0.0
+
+    return [
+        _tag_to_int(tag),
+        _type_to_int(ctype),
+        float(z_value),
+        float(z_momentum),
+        _method_to_int('em:3yavg'),
+        float(z_quality),
+        _regime_to_int(regime),
+        float(horizon_days),
+        float(month),
+        float(vol),
+        float(etf_mom),
     ]
 
 
@@ -460,20 +544,94 @@ def fetch_year_samples_monthly(tickers: List[str], year: int) -> List[dict]:
     return samples
 
 
+# ── Snapshot Z-score index ─────────────────────────────────────────────────────
+
+def _load_snapshot_z_scores() -> Dict[tuple, dict]:
+    """
+    Load Z-scores from monitor_log.jsonl indexed by (ticker_upper, year, month).
+    Returns {('AAPL', 2025, 11): {z_value, z_momentum, ...}}.
+
+    Indexed by (ticker, year, month) rather than exact date so that training
+    samples — which only know the month of prediction — can look up the
+    closest snapshot record for that period. When multiple records exist for
+    the same month, keeps the one with the most complete factor data
+    (z_value present > z_quality present > any record).
+    """
+    snap_dir = os.path.dirname(os.path.dirname(__file__))
+    snap_path = os.path.join(snap_dir, 'monitor_log.jsonl')
+    # per-key candidates: keep best record (z_value > z_quality > any)
+    candidates: Dict[tuple, list] = {}
+    if not os.path.exists(snap_path):
+        return {}
+    try:
+        with open(snap_path) as f:
+            for line in f:
+                try:
+                    r = json.loads(line.strip())
+                    d = r.get('date', '')
+                    if not d:
+                        continue
+                    parts = d.split('-')
+                    yr, mo = int(parts[0]), int(parts[1])
+                    tkr = r['ticker'].upper()
+                    key = (tkr, yr, mo)
+                    score = (2 if r.get('z_value') is not None else
+                             1 if r.get('z_quality') is not None else 0)
+                    prev = candidates.get(key)
+                    if prev is None or score > prev[0]:
+                        candidates[key] = (score, {
+                            'z_value':          r.get('z_value')    or 0.0,
+                            'z_momentum':       r.get('z_momentum') or 0.0,
+                            'z_quality':        r.get('z_quality')  or 0.0,
+                            'etf_momentum_90d': r.get('etf_momentum_90d', 0.0) or 0.0,
+                            'volatility_sector': r.get('volatility_sector', _VOL_DEFAULT),
+                            'regime':           r.get('regime', 'unknown'),
+                        })
+                except Exception:
+                    pass
+    except Exception:
+        pass
+    return {k: v[1] for k, v in candidates.items()}
+
+
 # ── Training data assembly ─────────────────────────────────────────────────────
 
-def samples_to_Xy(samples: List[dict]) -> Tuple[np.ndarray, np.ndarray]:
+def samples_to_Xy(samples: List[dict],
+                  snap_index: Optional[Dict[tuple, dict]] = None
+                  ) -> Tuple[np.ndarray, np.ndarray, str]:
     """
     Target = excess return factor = (stock_return / etf_return).
-    1.0 = matched sector. 1.2 = beat sector by 20%. 0.8 = lagged by 20%.
-    This removes market beta and measures only idiosyncratic calibration error.
+
+    Feature format selection:
+    - If snap_index is provided AND >= SNAP_FEATURE_THRESHOLD fraction of rows
+      have matching Z-scores, the model trains using Z-score features
+      (build_wf_features_from_snapshot). This is the Phase-3 path.
+    - Otherwise, trains on static sector defaults (build_wf_features).
+      This preserves historical compatibility for 2022-2024 data.
+
+    Returns (X, y, feature_format) where feature_format is 'z_scores' or
+    'static_defaults'. The caller writes this to model metadata so inference
+    can use the matching function.
     """
-    X_rows, y_rows = [], []
+    SNAP_FEATURE_THRESHOLD = 0.50   # require 50% of rows with Z-scores to switch format
+
+    if snap_index is None:
+        snap_index = {}
+
+    # Phase 1: collect all (ticker, year, month, horizon) rows with raw excess returns
+    # We defer cross-sectional ranking to Phase 2 so we can rank within period × tag.
+    rows: List[dict] = []   # {tag, regime, month, horizon, excess, x_static, x_zsnap}
+    n_with_snap = 0
 
     for s in samples:
         sp, es = s.get('start_price', 0), s.get('etf_start', 0)
         if sp <= 0 or es <= 0:
             continue
+
+        tkr = s.get('ticker', '').upper()
+        year, month = s.get('year', 0), s.get('month', 1)
+        snap_key = (tkr, year, month)
+        snap = snap_index.get(snap_key)
 
         for horizon, pk, ek in [
             (90,  'p90',  'etf90'),
@@ -487,50 +645,132 @@ def samples_to_Xy(samples: List[dict]) -> Tuple[np.ndarray, np.ndarray]:
 
             stock_ret = p_actual / sp
             etf_ret   = e_actual / es
-            excess    = stock_ret / etf_ret          # remove beta
-            excess    = max(_CLIP[0], min(excess, _CLIP[1]))
+            excess    = max(_CLIP[0], min(stock_ret / etf_ret, _CLIP[1]))
 
-            X_rows.append(build_wf_features(
+            x_static = build_wf_features(
                 s['tag'], s['regime'], horizon,
-                month=s['month'], volatility=s.get('vol', _VOL_DEFAULT),
+                month=month, volatility=s.get('vol', _VOL_DEFAULT),
                 etf_momentum=s.get('etf_momentum', 0.0),
-            ))
-            y_rows.append(excess)
+            )
 
-    return np.array(X_rows, dtype=float), np.array(y_rows, dtype=float)
+            x_zsnap = None
+            if snap:
+                snap_rec = {
+                    'date':              f'{year}-{month:02d}-02',
+                    'tag':               s['tag'],
+                    'regime':            snap.get('regime', s['regime']),
+                    'volatility_sector': snap.get('volatility_sector', _VOL_DEFAULT),
+                    'etf_momentum_90d':  snap.get('etf_momentum_90d', 0.0),
+                    'z_value':           snap['z_value'],
+                    'z_momentum':        snap['z_momentum'],
+                    'z_quality':         snap['z_quality'],
+                }
+                x_zsnap = build_wf_features_from_snapshot(snap_rec, horizon)
+                n_with_snap += 1
+
+            rows.append({
+                'tag':      s['tag'],
+                'period':   (year, month, horizon),  # cross-sectional grouping key
+                'excess':   excess,
+                'x_static': x_static,
+                'x_zsnap':  x_zsnap,
+            })
+
+    if not rows:
+        return np.array([]), np.array([]), 'static_defaults'
+
+    # Phase 2: convert absolute excess returns → cross-sectional percentile rank
+    # within (year, month, horizon, tag).  Rank [0, 1] where 1 = top performer.
+    # This trains the model to predict relative attractiveness, not absolute return.
+    # Minimum 5 stocks in a group to rank; singletons keep raw excess (won't bias).
+    from collections import defaultdict as _dd
+    group_rows: Dict[tuple, list] = _dd(list)
+    for i, row in enumerate(rows):
+        key = row['period'] + (row['tag'],)
+        group_rows[key].append(i)
+
+    y_final = np.array([r['excess'] for r in rows], dtype=float)
+    for key, idxs in group_rows.items():
+        if len(idxs) < 5:
+            continue  # too few to rank; keep absolute excess
+        excesses = [rows[i]['excess'] for i in idxs]
+        sorted_ex = sorted(set(excesses))
+        n = len(sorted_ex)
+        # Percentile rank: worst excess → 0.0, best → 1.0
+        rank_map = {v: (sorted_ex.index(v) / max(n - 1, 1)) for v in sorted_ex}
+        for i in idxs:
+            y_final[i] = rank_map[rows[i]['excess']]
+
+    # Phase 3: decide feature format based on snapshot Z-score coverage
+    snap_coverage = n_with_snap / len(rows)
+    if snap_coverage >= SNAP_FEATURE_THRESHOLD and n_with_snap >= MIN_TRAIN_ROWS:
+        X_list = [r['x_zsnap'] if r['x_zsnap'] is not None else r['x_static'] for r in rows]
+        feature_format = 'z_scores'
+        print(f'  Feature format: z_scores  (snap coverage={snap_coverage:.0%})')
+    else:
+        X_list = [r['x_static'] for r in rows]
+        feature_format = 'static_defaults'
+        if snap_coverage > 0:
+            print(f'  Feature format: static_defaults  (snap={snap_coverage:.0%} < {SNAP_FEATURE_THRESHOLD:.0%})')
+
+    return np.array(X_list, dtype=float), y_final, feature_format
 
 
 # ── Train / validate helpers ───────────────────────────────────────────────────
 
-def _train(samples: List[dict]) -> Tuple[object, int]:
-    X, y = samples_to_Xy(samples)
+def _train(samples: List[dict],
+           snap_index: Optional[Dict[tuple, dict]] = None
+           ) -> Tuple[object, int, str]:
+    X, y, feature_format = samples_to_Xy(samples, snap_index)
     if len(X) < MIN_TRAIN_ROWS:
         raise ValueError(f'Only {len(X)} rows — need {MIN_TRAIN_ROWS}')
     pipe = _build_pipeline()
     pipe.fit(X, y)
-    return pipe, len(X)
+    return pipe, len(X), feature_format
 
 
-def _validate(pipeline, samples: List[dict]) -> dict:
+def _validate(pipeline, samples: List[dict],
+              feature_format: str = 'static_defaults',
+              snap_index: Optional[Dict[tuple, dict]] = None) -> dict:
     by_tag     = defaultdict(list)
     by_regime  = defaultdict(list)
     by_horizon = defaultdict(list)
     overall    = []
 
+    if snap_index is None:
+        snap_index = {}
+
     for s in samples:
         sp, es = s.get('start_price', 0), s.get('etf_start', 0)
         if sp <= 0 or es <= 0:
             continue
+        tkr = s.get('ticker', '').upper()
+        year, month = s.get('year', 0), s.get('month', 1)
+        snap_key = (tkr, year, month)
+        snap = snap_index.get(snap_key)
+
         for horizon, pk, ek in [(90, 'p90', 'etf90'), (180, 'p180', 'etf180'), (365, 'p365', 'etf365')]:
             p_actual, e_actual = s.get(pk), s.get(ek)
             if p_actual is None or e_actual is None or e_actual <= 0:
                 continue
             true_ex = max(_CLIP[0], min((p_actual / sp) / (e_actual / es), _CLIP[1]))
-            pred_ex = float(pipeline.predict(np.array([
-                build_wf_features(s['tag'], s['regime'], horizon,
-                                  month=s['month'], volatility=s.get('vol', _VOL_DEFAULT),
-                                  etf_momentum=s.get('etf_momentum', 0.0))
-            ]))[0])
+
+            if feature_format == 'z_scores' and snap:
+                snap_rec = {
+                    'date': f'{year}-{month:02d}-02', 'tag': s['tag'],
+                    'regime': snap.get('regime', s['regime']),
+                    'volatility_sector': snap.get('volatility_sector', _VOL_DEFAULT),
+                    'etf_momentum_90d': snap.get('etf_momentum_90d', 0.0),
+                    'z_value': snap['z_value'], 'z_momentum': snap['z_momentum'],
+                    'z_quality': snap['z_quality'],
+                }
+                feat = build_wf_features_from_snapshot(snap_rec, horizon)
+            else:
+                feat = build_wf_features(s['tag'], s['regime'], horizon,
+                                         month=month, volatility=s.get('vol', _VOL_DEFAULT),
+                                         etf_momentum=s.get('etf_momentum', 0.0))
+
+            pred_ex = float(pipeline.predict(np.array([feat]))[0])
             err = abs(pred_ex - true_ex)
             overall.append(err)
             by_tag[s['tag']].append(err)
@@ -551,25 +791,38 @@ def _validate(pipeline, samples: List[dict]) -> dict:
 
 # ── Persistence ────────────────────────────────────────────────────────────────
 
-def _save(pipeline, path: str, extra: dict) -> None:
+def _save(pipeline, path: str, extra: dict, feature_format: str = 'static_defaults') -> None:
     import datetime as _dt
     with open(path, 'wb') as f:
         pickle.dump(pipeline, f)
+
+    if feature_format == 'z_scores':
+        feature_names = ['tag_int', 'type_int', 'z_value', 'z_momentum',
+                         'ebitda_method_int', 'z_quality', 'regime_int',
+                         'horizon_days', 'month_of_pred', 'volatility_30d',
+                         'etf_momentum_90d']
+    else:
+        feature_names = ['tag_int', 'type_int', 'wacc', 'growth_y1',
+                         'ebitda_method_int', 'analyst_ratio', 'regime_int',
+                         'horizon_days', 'month_of_pred', 'volatility_30d',
+                         'etf_momentum_90d']
+
     meta = {
-        'trained_at': _dt.datetime.now(_dt.timezone.utc).isoformat(),
-        'n_features':  11,
-        'features':   ['tag_int', 'type_int', 'wacc', 'growth_y1', 'ebitda_method_int',
-                       'analyst_ratio', 'regime_int', 'horizon_days', 'month_of_pred',
-                       'volatility_30d', 'etf_momentum_90d'],
-        'cat_cols': [0, 1, 4, 6, 7, 8],
-        'num_cols': [2, 3, 5, 9, 10],
-        'target':   'excess_return_over_sector_etf',
-        'framework': 'walk_forward_v2',
+        'trained_at':    _dt.datetime.now(_dt.timezone.utc).isoformat(),
+        'n_features':    11,
+        'feature_format': feature_format,
+        'features':      feature_names,
+        'cat_cols':      [0, 1, 4, 6, 7, 8],
+        'num_cols':      [2, 3, 5, 9, 10],
+        'target':        'cross_sectional_rank_within_tag',
+        'target_note':   'percentile [0,1] within (year,month,horizon,tag); groups <5 keep raw excess',
+        'framework':     'walk_forward_v4',
         **extra,
     }
     with open(path.replace('.pkl', '_metadata.json'), 'w') as f:
         json.dump(meta, f, indent=2)
-    print(f'  Saved {os.path.basename(path)}  ({extra.get("n_rows", "?")} rows)')
+    print(f'  Saved {os.path.basename(path)}  ({extra.get("n_rows", "?")} rows)  '
+          f'feature_format={feature_format}')
 
 
 # ── Report printing ────────────────────────────────────────────────────────────
@@ -617,8 +870,14 @@ def run_monthly_rolling(years: List[int], tickers: List[str],
     print(f'\nMonthly rolling walk-forward  window={window_months}mo')
     print(f'Total (year, month) periods: {len(ordered_yms)}')
 
+    # Load snapshot Z-scores once — used by all training windows that overlap with snapshot history
+    print('  Loading snapshot Z-scores from monitor_log.jsonl...')
+    snap_index = _load_snapshot_z_scores()
+    print(f'  Snapshot Z-score records: {len(snap_index)}')
+
     val_rows = []
     final_pipe = None
+    final_feature_format = 'static_defaults'
 
     for i, ym in enumerate(ordered_yms):
         if i < window_months:
@@ -629,19 +888,20 @@ def run_monthly_rolling(years: List[int], tickers: List[str],
         train_samples = [s for tym in train_yms for s in by_ym[tym]]
 
         try:
-            pipe, n_rows = _train(train_samples)
+            pipe, n_rows, feature_format = _train(train_samples, snap_index)
         except ValueError as e:
             logger.debug('%s %s: skip — %s', ym, e)
             continue
 
-        # Validate on the current month (out-of-sample)
+        # Validate on the current month (out-of-sample), using same feature format
         val_samples = by_ym[ym]
-        report = _validate(pipe, val_samples)
+        report = _validate(pipe, val_samples, feature_format, snap_index)
         if report['n'] > 0:
-            val_rows.append({'ym': f'{ym[0]}-{ym[1]:02d}', **report})
-            print(f'  {ym[0]}-{ym[1]:02d}  train={n_rows}  val_n={report["n"]}  mae={report["mae"]:.4f}')
+            val_rows.append({'ym': f'{ym[0]}-{ym[1]:02d}', 'feature_format': feature_format, **report})
+            print(f'  {ym[0]}-{ym[1]:02d}  train={n_rows}  val_n={report["n"]}  mae={report["mae"]:.4f}  fmt={feature_format}')
 
         final_pipe = pipe
+        final_feature_format = feature_format
 
     if final_pipe is None:
         print('Not enough data to train — check year range.')
@@ -670,14 +930,14 @@ def run_monthly_rolling(years: List[int], tickers: List[str],
     # Save final model (trained on last window_months of all available data)
     last_window = ordered_yms[-window_months:]
     final_samples = [s for tym in last_window for s in by_ym[tym]]
-    final_pipe, n_final = _train(final_samples)
+    final_pipe, n_final, final_feature_format = _train(final_samples, snap_index)
     _save(final_pipe, ML_MODEL_PATH, {
         'n_rows':         n_final,
         'years':          years,
         'window_months':  window_months,
         'overall_oos_mae': overall,
         'mode':           'monthly_rolling',
-    })
+    }, feature_format=final_feature_format)
     print(f'Production model updated → {os.path.basename(ML_MODEL_PATH)}')
 
 

@@ -63,6 +63,10 @@ function addValNavLink() {
     }
 }
 
+// ── Ticker state ──────────────────────────────────────────────────────────────
+let _tickerRates = [];
+let _tickerCompanies = [];
+
 // ── FRED Live Rates ───────────────────────────────────────────────────────────
 async function loadMacroRates() {
     try {
@@ -71,35 +75,97 @@ async function loadMacroRates() {
         const data = await resp.json();
         const rates = data.rates || {};
 
-        const fmt = (v, suffix='%') => v != null ? (+v).toFixed(2) + suffix : '—';
+        const fmt = (v, d=2) => v != null ? (+v).toFixed(d) : '—';
 
-        const set = (id, key, suffix, scale=1) => {
-            const el = document.getElementById(id);
-            if (!el) return;
+        _tickerRates = [];
+
+        const push = (label, key, suffix, scale=1, decimals=2) => {
             const r = rates[key];
             if (r && r.available) {
-                const val = r.value * scale;
-                el.innerHTML = el.innerHTML.replace(/<strong>.*<\/strong>/, `<strong>${fmt(val, suffix)}</strong>`);
-                el.title = `Source: ${r.source}`;
+                _tickerRates.push({ label, value: fmt(r.value * scale, decimals) + suffix });
             }
         };
 
-        set('rate-10y', 'risk_free_10y', '%');
-        set('rate-2y', 'risk_free_2y', '%');
-        set('rate-hy', 'hy_spread', 'bps', 100);
-        set('rate-fed', 'fed_funds', '%');
-        set('rate-vix', 'vix', '', 1);
+        push('10Y',  'risk_free_10y', '%');
+        push('2Y',   'risk_free_2y',  '%');
+        push('HY',   'hy_spread',     'bps', 100, 0);
+        push('Fed',  'fed_funds',     '%');
+        push('VIX',  'vix',           '', 1, 1);
 
-        const src = document.getElementById('rates-source');
-        if (src) src.textContent = 'FRED';
-        const age = document.getElementById('rates-age');
-        if (age) {
-            _axiomRatesFetchedAt = new Date();
-            age.textContent = 'Just updated';
-        }
+        _axiomRatesFetchedAt = new Date();
+        buildTicker();
+        showTickerBar();
     } catch (e) {
+        // Show ticker with placeholder rates so it still appears
+        _tickerRates = [
+            { label: '10Y', value: '—' },
+            { label: '2Y',  value: '—' },
+            { label: 'Fed', value: '—' },
+            { label: 'VIX', value: '—' },
+        ];
+        buildTicker();
+        showTickerBar();
         console.debug('AXIOM: FRED rates unavailable', e.message);
     }
+}
+
+function showTickerBar() {
+    const bar = document.getElementById('axiom-rates-bar');
+    if (bar) bar.style.display = '';
+}
+
+function updateTickerCompanies(companies) {
+    _tickerCompanies = (companies || [])
+        .filter(c => c.fair_value && c.current_price)
+        .map(c => ({
+            ticker:  c.ticker || c.name,
+            fairVal: c.fair_value,
+            price:   c.current_price,
+            upside:  c.upside || 0,
+        }));
+    buildTicker();
+}
+
+function buildTicker() {
+    const track = document.getElementById('ticker-track');
+    if (!track) return;
+
+    const items = [];
+
+    // Rate items
+    _tickerRates.forEach(r => {
+        items.push(`
+            <span class="ticker-item">
+                <span class="ticker-label">${r.label}</span>
+                <strong class="ticker-value">${r.value}</strong>
+            </span>`);
+    });
+
+    // Separator between rates and companies
+    if (_tickerCompanies.length > 0) {
+        items.push(`<span class="ticker-sep"></span>`);
+
+        // Company items
+        _tickerCompanies.forEach(c => {
+            const uClass = c.upside >= 0 ? 'positive' : 'negative';
+            const sign   = c.upside >= 0 ? '+' : '';
+            items.push(`
+                <span class="ticker-item">
+                    <span class="ticker-label">${c.ticker}</span>
+                    <strong class="ticker-value">$${(+c.price).toFixed(2)}</strong>
+                    <span class="ticker-upside ${uClass}">${sign}${(+c.upside).toFixed(1)}%</span>
+                </span>`);
+        });
+    }
+
+    if (items.length === 0) {
+        track.innerHTML = '';
+        return;
+    }
+
+    // Duplicate content for seamless infinite scroll
+    const html = items.join('');
+    track.innerHTML = html + html;
 }
 
 // ── Manual Price Refresh ──────────────────────────────────────────────────────

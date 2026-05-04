@@ -1,17 +1,5 @@
 """
 AXIOM valuation engine — single import surface for all callers.
-
-This module re-exports both layers:
-  - heuristic / multiples-based valuation  → `valuation_app/valuation/`
-  - learned ML correction (GBM)            → `valuation_app/ml/`
-
-Honest framing: the heuristic layer does most of the work. The ML layer is a
-post-hoc correction trained on prior prediction errors. See README.md for the
-full description, and HARDCODED_VALUES.md for the inventory of magic numbers
-in the heuristic layer.
-
-This file replaces the old `ml_engine.py` shim (renamed in Phase 1) — calling
-the whole thing "ml" misrepresented what the system is.
 """
 from valuation import (
     calibrate,
@@ -26,11 +14,7 @@ from valuation import (
     BLEND_WEIGHTS,
 )
 from ml import (
-    apply_ml_correction,
-    train_calibration_model,
     log_prediction,
-    run_backtest,
-    ML_MODEL_PATH,
     PREDICTION_LOG_PATH,
     MIN_TRAINING_SAMPLES,
 )

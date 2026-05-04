@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AXIOM — Institutional Investment Intelligence</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_professional.css') }}?v=3">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/ticker_add.css') }}?v=1">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_professional.css') }}?v=12">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/ticker_add.css') }}?v=2">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Chart.js for visualizations -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <!-- Plotly for football field chart -->
@@ -36,22 +36,29 @@
     </nav>
 
 
-    <!-- AXIOM Live Rates Bar -->
-    <div id="axiom-rates-bar" style="display:none;background:var(--bg-secondary);border-bottom:1px solid var(--border-color);padding:6px 24px;gap:24px;align-items:center;font-size:12px;font-family:'Courier New',monospace;">
-        <span style="color:var(--text-muted);font-family:inherit;font-size:11px;letter-spacing:1px;">LIVE RATES</span>
-        <span id="rate-10y">10Y: <strong>—</strong></span>
-        <span id="rate-2y">2Y: <strong>—</strong></span>
-        <span id="rate-hy">HY: <strong>—</strong></span>
-        <span id="rate-fed">Fed: <strong>—</strong></span>
-        <span id="rate-vix">VIX: <strong>—</strong></span>
-        <span style="margin-left:auto;color:var(--text-muted);font-size:11px;" id="rates-source">FRED</span>
-        <span style="color:var(--text-muted);font-size:11px;" id="rates-age"></span>
+    <!-- AXIOM Live Ticker Bar -->
+    <div id="axiom-rates-bar" class="axiom-ticker-bar">
+        <div class="ticker-fade ticker-fade-l"></div>
+        <div class="ticker-scroll-wrap">
+            <div class="ticker-track" id="ticker-track">
+                <!-- Populated by JS — rates + portfolio companies -->
+            </div>
+        </div>
+        <div class="ticker-fade ticker-fade-r"></div>
+        <!-- Hidden spans kept for legacy JS rate updates -->
+        <span id="rate-10y" style="display:none">10Y: <strong>—</strong></span>
+        <span id="rate-2y" style="display:none">2Y: <strong>—</strong></span>
+        <span id="rate-hy" style="display:none">HY: <strong>—</strong></span>
+        <span id="rate-fed" style="display:none">Fed: <strong>—</strong></span>
+        <span id="rate-vix" style="display:none">VIX: <strong>—</strong></span>
+        <span id="rates-source" style="display:none">FRED</span>
+        <span id="rates-age" style="display:none"></span>
     </div>
 
     <!-- Three-pane workspace -->
     <div class="workspace">
-        <!-- Left: Company Sidebar -->
-        <div class="workspace-left" id="workspace-left">
+        <!-- Left: Company Sidebar (hidden) -->
+        <div class="workspace-left" id="workspace-left" style="display:none">
             <div class="workspace-left-header">
                 <span>Portfolio</span>
                 <button class="pane-toggle-btn" onclick="toggleLeftPane()" title="Collapse sidebar">&#x25C0;</button>
@@ -131,15 +138,13 @@
                     <div id="ticker-result" class="ticker-result" style="display:none;">
                         <!-- Result will show here -->
                     </div>
-                    <div class="quick-add-examples">
-                        <span>Popular: </span>
+                    <div class="quick-add-examples" id="quick-add-examples">
+                        <span class="quick-chips-label">Popular:</span>
                         <button class="ticker-chip" onclick="quickAddTicker('AAPL')">AAPL</button>
                         <button class="ticker-chip" onclick="quickAddTicker('MSFT')">MSFT</button>
                         <button class="ticker-chip" onclick="quickAddTicker('GOOGL')">GOOGL</button>
-                        <button class="ticker-chip" onclick="quickAddTicker('AMZN')">AMZN</button>
                         <button class="ticker-chip" onclick="quickAddTicker('NVDA')">NVDA</button>
                         <button class="ticker-chip" onclick="quickAddTicker('TSLA')">TSLA</button>
-                        <button class="ticker-chip" onclick="quickAddTicker('META')">META</button>
                     </div>
                 </div>
             </div>
@@ -203,23 +208,9 @@
                 </div>
             </div>
 
-            <!-- Investment Recommendations -->
-            <div class="recommendation-grid">
-                <div class="rec-card buy">
-                    <div class="rec-title">Strong Buy / Buy</div>
-                    <div class="rec-count" id="buy-count">0</div>
-                    <div class="rec-percentage" id="buy-pct">0% of portfolio</div>
-                </div>
-                <div class="rec-card hold">
-                    <div class="rec-title">Hold</div>
-                    <div class="rec-count" id="hold-count">0</div>
-                    <div class="rec-percentage" id="hold-pct">0% of portfolio</div>
-                </div>
-                <div class="rec-card sell">
-                    <div class="rec-title">Sell / Underweight</div>
-                    <div class="rec-count" id="sell-count">0</div>
-                    <div class="rec-percentage" id="sell-pct">0% of portfolio</div>
-                </div>
+            <!-- Portfolio Distribution Bar -->
+            <div class="portfolio-dist-wrap" id="portfolio-dist-wrap">
+                <div class="dist-empty">Add companies to see portfolio breakdown</div>
             </div>
 
             <!-- Sector Analysis Table -->
@@ -279,6 +270,7 @@
             <!-- Bulk action bar (shown only in select mode with ≥1 selection) -->
             <div id="bulk-action-bar" style="display:none; align-items:center; gap:12px; padding:10px 16px; margin-bottom:12px; background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:8px;">
                 <span id="bulk-count" style="font-size:0.875rem; color:var(--text-muted);">0 selected</span>
+                <button class="btn-secondary" onclick="selectAll()" id="select-all-btn" style="font-size:0.8rem; padding:6px 14px;">Select All</button>
                 <button class="btn-danger" onclick="bulkDeleteSelected()" style="font-size:0.8rem; padding:6px 14px;">Remove from portfolio</button>
                 <button class="btn-secondary" onclick="bulkWatchlistSelected()" style="font-size:0.8rem; padding:6px 14px;">⭐ Watchlist</button>
                 <button class="btn-secondary" onclick="clearSelection()" style="font-size:0.8rem; padding:6px 14px;">Clear</button>
@@ -615,7 +607,7 @@
                         <h3 style="color: white; margin-bottom: 12px;">Live Preview (API-based)</h3>
                         <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 12px;">
                             <div>
-                                <div style="font-size: 11px; opacity: 0.8;">Fair Value / Share</div>
+                                <div style="font-size: 11px; opacity: 0.8;">DCF Fair Value</div>
                                 <div id="live-preview-fair-value" style="font-size: 20px; font-weight: bold;">--</div>
                             </div>
                             <div>
@@ -627,11 +619,11 @@
                                 <div id="live-preview-wacc" style="font-size: 20px; font-weight: bold;">--</div>
                             </div>
                             <div>
-                                <div style="font-size: 11px; opacity: 0.8;">DCF / Share</div>
+                                <div style="font-size: 11px; opacity: 0.8;">EV/EBITDA Est.</div>
                                 <div id="live-preview-dcf" style="font-size: 18px; font-weight: 600;">--</div>
                             </div>
                             <div>
-                                <div style="font-size: 11px; opacity: 0.8;">Comps / Share</div>
+                                <div style="font-size: 11px; opacity: 0.8;">P/E Est.</div>
                                 <div id="live-preview-comps" style="font-size: 18px; font-weight: 600;">--</div>
                             </div>
                         </div>
@@ -907,9 +899,10 @@
         </div>
     </div>
 
-    <script src="{{ url_for('static', filename='js/app.js') }}?v=36"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}?v=41"></script>
     <script src="{{ url_for('static', filename='js/ticker_add.js') }}?v=1"></script>
     <script src="{{ url_for('static', filename='js/macro_controls.js') }}?v=1"></script>
     <script src="{{ url_for('static', filename='js/axiom_ui.js') }}?v=1"></script>
+    <script src="{{ url_for('static', filename='js/particles.js') }}?v=5"></script>
 </body>
 </html>

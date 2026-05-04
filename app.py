@@ -154,10 +154,38 @@ def init_db():
                 'ALTER TABLE valuation_results ADD COLUMN IF NOT EXISTS company_type TEXT',
                 'ALTER TABLE valuation_results ADD COLUMN IF NOT EXISTS ebitda_method TEXT',
                 'ALTER TABLE valuation_results ADD COLUMN IF NOT EXISTS analyst_target REAL',
+                'ALTER TABLE company_financials ADD COLUMN IF NOT EXISTS operating_income REAL',
+                'ALTER TABLE company_financials ADD COLUMN IF NOT EXISTS interest_expense REAL',
+                # ML calibration columns
+                'ALTER TABLE company_financials ADD COLUMN IF NOT EXISTS growth_rate_y1_original REAL',
+                "ALTER TABLE company_financials ADD COLUMN IF NOT EXISTS growth_source VARCHAR(50) DEFAULT 'stored'",
+                'ALTER TABLE companies ADD COLUMN IF NOT EXISTS is_training_data BOOLEAN DEFAULT FALSE',
             ]
             for sql in pg_migrations:
                 c.execute(sql)
             conn.commit()
+
+            # Mark bulk-imported companies as training data (hide from portfolio UI)
+            try:
+                import json as _json
+                _bulk_log = os.path.join(os.path.dirname(__file__), 'bulk_import_log.json')
+                if os.path.exists(_bulk_log):
+                    with open(_bulk_log) as _f:
+                        _log = _json.load(_f)
+                    _bulk_tickers = [e['ticker'] for e in _log if e.get('status') == 'ok']
+                    if _bulk_tickers:
+                        _ph = ','.join(['%s'] * len(_bulk_tickers))
+                        c.execute(
+                            f"UPDATE companies SET is_training_data = TRUE "
+                            f"WHERE ticker IN ({_ph}) AND "
+                            f"(is_training_data IS NULL OR is_training_data = FALSE)",
+                            _bulk_tickers,
+                        )
+                        conn.commit()
+                        logger.info(f"Marked {len(_bulk_tickers)} bulk-imported companies as training data")
+            except Exception as _e:
+                logger.debug(f"Training data marking skipped: {_e}")
+
             conn.close()
             logger.info("PostgreSQL column migrations applied")
         except Exception as e:
@@ -183,6 +211,13 @@ def init_db():
     for col, coltype in [('ticker', 'TEXT'), ('industry', 'TEXT')]:
         try:
             c.execute(f'ALTER TABLE companies ADD COLUMN {col} {coltype}')
+        except Exception:
+            pass
+
+    # Add operating_income and interest_expense to company_financials (no-op if present)
+    for col, coltype in [('operating_income', 'REAL'), ('interest_expense', 'REAL')]:
+        try:
+            c.execute(f'ALTER TABLE company_financials ADD COLUMN {col} {coltype}')
         except Exception:
             pass
 
@@ -420,6 +455,28 @@ def import_and_value():
         conn = get_db_connection()
         c = conn.cursor()
 
+        # Check for duplicate ticker
+        if Config.DATABASE_TYPE == 'postgresql':
+            c.execute('SELECT id, name FROM companies WHERE UPPER(ticker) = %s', (ticker,))
+        else:
+            c.execute('SELECT id, name FROM companies WHERE UPPER(ticker) = ?', (ticker,))
+        existing = c.fetchone()
+        if existing:
+            conn.close()
+            # Re-run valuation on existing company and return result
+            success, results, error = valuation_service.valuate_company(existing['id'])
+            if success:
+                return jsonify({
+                    'success': True,
+                    'company_id': existing['id'],
+                    'company_name': existing['name'],
+                    'ticker': ticker,
+                    'current_price': company_data.get('current_price', 0),
+                    'valuation': results,
+                    'message': f'{ticker} already in portfolio — valuation refreshed'
+                })
+            return jsonify({'success': False, 'error': f'{ticker} already tracked (id={existing["id"]})'}), 409
+
         # Insert company
         industry_val = company_data.get('industry') or None
         if Config.DATABASE_TYPE == 'postgresql':
@@ -582,6 +639,7 @@ def get_companies():
                  FROM companies c
                  LEFT JOIN valuation_results vr ON c.id = vr.company_id
                  AND vr.id = (SELECT MAX(id) FROM valuation_results WHERE company_id = c.id)
+                 WHERE (c.is_training_data IS NULL OR c.is_training_data = FALSE)
                  ORDER BY c.created_at DESC''')
     
     companies = []
@@ -757,11 +815,7 @@ def get_heuristics_inventory():
          'gates': 'Rule-of-40 SaaS EV/Revenue tiers', 'phase': 'P2'},
         {'file': 'valuation/alt_models.py', 'line': '84-87', 'value': 'rf+0.005, NI×0.67',
          'gates': 'Utility DDM-style payout assumption', 'phase': 'P2'},
-        {'file': 'ml/calibrator.py', 'line': '132-134', 'value': 'clip [0.2, 5.0]',
-         'gates': 'Censors large mispricings — kills the signal the model exists to find', 'phase': 'P3'},
-        {'file': 'ml/calibrator.py', 'line': 137, 'value': '80/20 split',
-         'gates': 'Single chronological holdout, no k-fold or grid search', 'phase': 'P3'},
-        {'file': 'ml/calibrator.py', 'line': '23-35', 'value': '_TAG_VOL_DEFAULT',
+        {'file': 'ml/walk_forward.py', 'line': '_TAG_VOL', 'value': 'sector vol priors',
          'gates': 'Sector volatility priors used at inference', 'phase': 'P4'},
         {'file': 'ml/walk_forward.py', 'line': '235-280', 'value': 'VIX>22, HYG-3mo<-3%, ^IRX>^TNX, SPY<MA200, SPY-3mo<-8%',
          'gates': 'Hardcoded composite-regime thresholds', 'phase': 'P5'},
@@ -1070,15 +1124,14 @@ def preview_valuation():
 
         # Return standardized preview response
         shares = company_data['shares_outstanding']
+        ev_ps = round(results.get('comp_ev_value', 0) / shares, 2) if shares > 0 else 0
+        pe_ps = round(results.get('comp_pe_value', 0) / shares, 2) if shares > 0 else 0
         return jsonify({
-            'fair_value': round(results.get('final_price_per_share') or results.get('dcf_price_per_share', 0), 2),
+            'fair_value': round(results.get('dcf_price_per_share', 0), 2),
             'upside_pct': round(results.get('upside_pct', 0), 2),
             'wacc': round(results.get('wacc', 0), 4),
-            'dcf_value': round(results.get('dcf_price_per_share', 0), 2),
-            'comps_value': round(
-                (results.get('comp_ev_value', 0) + results.get('comp_pe_value', 0)) / 2 / shares
-                if shares > 0 else 0, 2
-            ),
+            'ev_ebitda_value': ev_ps,
+            'pe_value': pe_ps,
             'recommendation': results.get('recommendation', 'N/A'),
             'dcf_equity_value': results.get('dcf_equity_value'),
             'comp_ev_value': results.get('comp_ev_value'),
@@ -1112,19 +1165,49 @@ def run_valuation(company_id):
         return jsonify({'error': str(e)}), 500
 
 
+def _get_latest_factor_signal(ticker: str) -> dict:
+    """Load the most recent snapshot record for a ticker and return its factor scores."""
+    if not ticker:
+        return {}
+    try:
+        import json as _json, os as _os
+        snap_path = _os.path.join(_os.path.dirname(__file__), 'monitor_log.jsonl')
+        latest = None
+        with open(snap_path) as f:
+            for line in f:
+                try:
+                    r = _json.loads(line.strip())
+                    if r.get('ticker', '').upper() == ticker.upper():
+                        if latest is None or r['date'] > latest['date']:
+                            latest = r
+                except Exception:
+                    pass
+        if not latest:
+            return {}
+        return {
+            'as_of':           latest.get('date'),
+            'z_value':         latest.get('z_value'),
+            'z_momentum':      latest.get('z_momentum'),
+            'z_quality':       latest.get('z_quality'),
+            'composite_score': latest.get('composite_score'),
+            'value_factor':    latest.get('value_factor'),
+            'regime':          latest.get('regime'),
+        }
+    except Exception:
+        return {}
+
+
 @app.route('/api/valuation/<int:company_id>/details', methods=['GET'])
 def get_valuation_details(company_id):
     """
     Get detailed valuation breakdown for a company.
 
     Returns full calculation details including:
-    - DCF: WACC breakdown, 10-year FCF projections, terminal value
-    - EV/EBITDA: multiple used, EBITDA, implied EV/equity
-    - P/E: multiple used, net income, implied value
-    - Blend weights used for final valuation
+    - DCF: WACC breakdown, 10-year FCF projections, terminal value (the headline fair value)
+    - EV/EBITDA: comparable estimate (context only, not blended into fair value)
+    - P/E: comparable estimate (context only, not blended into fair value)
 
-    This endpoint computes on-demand rather than fetching cached results,
-    ensuring the breakdown always reflects current assumptions.
+    This endpoint computes on-demand rather than fetching cached results.
     """
     try:
         logger.info(f"Valuation details requested for company ID {company_id}")
@@ -1145,27 +1228,50 @@ def get_valuation_details(company_id):
             'company_name': results.get('name'),
             'ticker': company_data.get('ticker'),
             'sector': results.get('sector'),
+            # summary block — read by ev_ebitda_detail.js and pe_detail.js
             'summary': {
-                'fair_value': results.get('final_price_per_share'),
-                'current_price': results.get('current_price'),
-                'upside_pct': results.get('upside_pct'),
+                'fair_value':     results.get('dcf_price_per_share'),
+                'current_price':  results.get('current_price'),
+                'upside_pct':     results.get('upside_pct'),
                 'recommendation': results.get('recommendation'),
+                'ev_ebitda_fv':   (results.get('ev_ebitda_details') or {}).get('calculated', {}).get('price_per_share', {}).get('value'),
+                'pe_fv':          (results.get('pe_details') or {}).get('calculated', {}).get('price_per_share', {}).get('value'),
             },
-            'dcf_details': results.get('dcf_details'),
+            # All fields needed by showFairValueBreakdown / showValuationResults
+            'name':                  results.get('name'),
+            'recommendation':        results.get('recommendation'),
+            'upside_pct':            results.get('upside_pct'),
+            'final_equity_value':    results.get('final_equity_value'),
+            'final_price_per_share': results.get('final_price_per_share'),
+            'dcf_price_per_share':   results.get('dcf_price_per_share'),
+            'dcf_equity_value':      results.get('dcf_equity_value'),
+            'comp_ev_value':         results.get('comp_ev_value'),
+            'comp_pe_value':         results.get('comp_pe_value'),
+            'market_cap':            results.get('market_cap'),
+            'current_price':         results.get('current_price'),
+            'wacc':                  results.get('wacc'),
+            'ev_ebitda':             results.get('ev_ebitda'),
+            'pe_ratio':              results.get('pe_ratio'),
+            'fcf_yield':             results.get('fcf_yield'),
+            'roe':                   results.get('roe'),
+            'roic':                  results.get('roic'),
+            'debt_to_equity':        results.get('debt_to_equity'),
+            'z_score':               results.get('z_score'),
+            'sub_sector_tag':        results.get('sub_sector_tag'),
+            'company_type':          results.get('company_type'),
+            'ebitda_method':         results.get('ebitda_method'),
+            'analyst_target':        results.get('analyst_target'),
+            'mc_p10':                results.get('mc_p10'),
+            'mc_p90':                results.get('mc_p90'),
+            # Detailed breakdowns (top-level names kept for detail page JS compatibility)
+            'dcf_details':      results.get('dcf_details'),
             'ev_ebitda_details': results.get('ev_ebitda_details'),
-            'pe_details': results.get('pe_details'),
-            'blend_weights': results.get('blend_weights'),
-            'risk_metrics': {
-                'wacc': results.get('wacc'),
-                'z_score': results.get('z_score'),
-                'debt_to_equity': results.get('debt_to_equity'),
+            'pe_details':        results.get('pe_details'),
+            'comparable_estimates': {
+                'ev_ebitda': results.get('ev_ebitda_details'),
+                'pe': results.get('pe_details'),
             },
-            'ml_calibration': {
-                'sub_sector_tag': results.get('sub_sector_tag'),
-                'company_type': results.get('company_type'),
-                'ebitda_method': results.get('ebitda_method'),
-                'analyst_target': results.get('analyst_target'),
-            },
+            'factor_signal': _get_latest_factor_signal(company_data.get('ticker', '')),
         })
 
     except Exception as e:

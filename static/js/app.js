@@ -23,8 +23,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     loadDashboard();
     loadCompanies();
-    // Load settings at startup so UI behavior (like recompute-on-save) is available
     loadSettings();
+
+    // Navbar glass on scroll
+    const navbar = document.querySelector('.navbar');
+    if (navbar) {
+        window.addEventListener('scroll', () => {
+            navbar.classList.toggle('scrolled', window.scrollY > 8);
+        }, { passive: true });
+    }
 
     // Form submission - attach to form with detailed logging
     const companyForm = document.getElementById('company-form');
@@ -141,43 +148,86 @@ async function loadDashboard() {
         const response = await fetch('/api/dashboard/stats');
         const stats = await response.json();
         dashboardStats = stats;
-        
-        // Update main stats with enhanced display
+
         document.getElementById('total-companies').textContent = stats.total_companies;
         document.getElementById('avg-upside').textContent = `${stats.avg_upside.toFixed(1)}%`;
         document.getElementById('avg-pe').textContent = `${stats.avg_pe.toFixed(1)}x`;
         document.getElementById('avg-roe').textContent = `${stats.avg_roe.toFixed(1)}%`;
-        
-        // Add WACC if available
-        const avgWacc = stats.avg_wacc || 0;
+
         const waccElement = document.getElementById('avg-wacc');
-        if (waccElement) {
-            waccElement.textContent = `${avgWacc.toFixed(2)}%`;
-        }
-        
-        // Update trend indicators
+        if (waccElement) waccElement.textContent = `${(stats.avg_wacc || 0).toFixed(2)}%`;
+
         updateTrendIndicators(stats);
-        
-        // Update recommendation counts with percentages
-        const total = stats.total_companies || 1;
-        document.getElementById('buy-count').textContent = stats.buy_count;
-        document.getElementById('hold-count').textContent = stats.hold_count;
-        document.getElementById('sell-count').textContent = stats.sell_count;
-        
-        const buyPct = document.getElementById('buy-pct');
-        const holdPct = document.getElementById('hold-pct');
-        const sellPct = document.getElementById('sell-pct');
-        
-        if (buyPct) buyPct.textContent = `${((stats.buy_count / total) * 100).toFixed(0)}% of portfolio`;
-        if (holdPct) holdPct.textContent = `${((stats.hold_count / total) * 100).toFixed(0)}% of portfolio`;
-        if (sellPct) sellPct.textContent = `${((stats.sell_count / total) * 100).toFixed(0)}% of portfolio`;
-        
-        // Enhanced sector breakdown with table format
+        renderDistributionBar(stats);
         renderSectorTable(stats.sectors);
-        
+
     } catch (error) {
         console.error('Error loading dashboard:', error);
     }
+}
+
+function renderDistributionBar(stats) {
+    const wrap = document.getElementById('portfolio-dist-wrap');
+    if (!wrap) return;
+
+    const total = stats.total_companies || 0;
+    if (total === 0) {
+        wrap.innerHTML = `<div class="dist-empty">Add companies to see portfolio breakdown</div>`;
+        return;
+    }
+
+    const buy  = stats.buy_count  || 0;
+    const hold = stats.hold_count || 0;
+    const sell = stats.sell_count || 0;
+    const none = total - buy - hold - sell;
+
+    const buyPct  = (buy  / total) * 100;
+    const holdPct = (hold / total) * 100;
+    const sellPct = (sell / total) * 100;
+    const nonePct = (none / total) * 100;
+
+    const segLabel = (pct, label) => pct > 12 ? label : '';
+
+    wrap.innerHTML = `
+        <div class="dist-bar-header">
+            <span class="dist-bar-title">Portfolio Breakdown</span>
+            <span class="dist-bar-total">${total} compan${total === 1 ? 'y' : 'ies'}</span>
+        </div>
+        <div class="dist-bar">
+            ${buyPct  > 0 ? `<div class="dist-seg buy"  style="flex:${buyPct}">${segLabel(buyPct,  buy + ' Buy')}</div>`  : ''}
+            ${holdPct > 0 ? `<div class="dist-seg hold" style="flex:${holdPct}">${segLabel(holdPct, hold + ' Hold')}</div>` : ''}
+            ${sellPct > 0 ? `<div class="dist-seg sell" style="flex:${sellPct}">${segLabel(sellPct, sell + ' Sell')}</div>` : ''}
+            ${nonePct > 0 ? `<div class="dist-seg" style="flex:${nonePct};background:var(--bg-tertiary);"></div>` : ''}
+        </div>
+        <div class="dist-legend">
+            ${buy  > 0 ? `<div class="dist-leg-item"><div class="dist-leg-dot buy"></div><span class="dist-leg-count">${buy}</span> Buy</div>`   : ''}
+            ${hold > 0 ? `<div class="dist-leg-item"><div class="dist-leg-dot hold"></div><span class="dist-leg-count">${hold}</span> Hold</div>` : ''}
+            ${sell > 0 ? `<div class="dist-leg-item"><div class="dist-leg-dot sell"></div><span class="dist-leg-count">${sell}</span> Sell</div>` : ''}
+            ${none > 0 ? `<div class="dist-leg-item" style="color:var(--text-tertiary)"><span class="dist-leg-count">${none}</span> Pending</div>` : ''}
+        </div>
+    `;
+}
+
+function updateQuickChips() {
+    const container = document.getElementById('quick-add-examples');
+    if (!container) return;
+
+    if (allCompanies.length === 0) {
+        container.innerHTML = `
+            <span class="quick-chips-label">Popular:</span>
+            <button class="ticker-chip" onclick="quickAddTicker('AAPL')">AAPL</button>
+            <button class="ticker-chip" onclick="quickAddTicker('MSFT')">MSFT</button>
+            <button class="ticker-chip" onclick="quickAddTicker('GOOGL')">GOOGL</button>
+            <button class="ticker-chip" onclick="quickAddTicker('NVDA')">NVDA</button>
+            <button class="ticker-chip" onclick="quickAddTicker('TSLA')">TSLA</button>
+        `;
+        return;
+    }
+
+    const chips = allCompanies.slice(0, 6).map(c =>
+        `<button class="ticker-chip portfolio-chip" onclick="showFairValueBreakdown(${c.id})">${c.ticker || c.name}</button>`
+    ).join('');
+    container.innerHTML = `<span class="quick-chips-label">Your portfolio:</span>${chips}`;
 }
 
 function updateTrendIndicators(stats) {
@@ -344,11 +394,17 @@ function renderCompanies() {
         return;
     }
     
-    const companiesHtml = filteredCompanies.map(company => {
+    // Push company data to the live ticker
+    if (typeof updateTickerCompanies === 'function') {
+        updateTickerCompanies(filteredCompanies.length > 0 ? allCompanies : []);
+    }
+
+    const companiesHtml = filteredCompanies.map((company, index) => {
         const recClass = getRecommendationClass(company.recommendation);
         const upsideValue = company.upside || 0;
         const upsideClass = upsideValue >= 0 ? 'positive' : 'negative';
         const isSelected = selectedCompanyIds.has(company.id);
+        const animDelay = `animation-delay:${index * 40}ms`;
 
         // Border color driven by recommendation
         let borderClass = '';
@@ -375,7 +431,7 @@ function renderCompanies() {
             <div class="company-card${borderClass}${isSelected ? ' selected' : ''}"
                  data-company-id="${company.id}"
                  onclick="${cardOnclick}"
-                 style="cursor:pointer;">
+                 style="cursor:pointer;${animDelay}">
 
                 ${selectModeActive ? `
                 <div onclick="event.stopPropagation();toggleCompanySelection(${company.id})"
@@ -403,14 +459,6 @@ function renderCompanies() {
                             <div class="bubble-value">$${formatNumber(company.fair_value)}</div>
                             <div class="bubble-label">AXIOM</div>
                         </div>
-                        ${(() => {
-                            const uv = getUserValuation(company.id);
-                            return uv ? `
-                        <div class="price-bubble user" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white;">
-                            <div class="bubble-value">$${uv.pricePerShare.toFixed(2)}</div>
-                            <div class="bubble-label">Yours</div>
-                        </div>` : '';
-                        })()}
                         ${company.analyst_target ? `
                         <div class="price-bubble street">
                             <div class="bubble-value">$${formatNumber(company.analyst_target)}</div>
@@ -425,15 +473,6 @@ function renderCompanies() {
                     <!-- Upside Row -->
                     <div class="upside-row">
                         <span class="upside-pill ${upsideClass}">${upsideValue >= 0 ? '+' : ''}${upsideValue.toFixed(1)}% AXIOM</span>
-                        ${(() => {
-                            const uv = getUserValuation(company.id);
-                            if (uv && company.current_price) {
-                                const userUpside = ((uv.pricePerShare - company.current_price) / company.current_price) * 100;
-                                const userClass = userUpside >= 0 ? 'positive' : 'negative';
-                                return `<span class="upside-pill ${userClass}" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white;">${userUpside >= 0 ? '+' : ''}${userUpside.toFixed(1)}% Yours</span>`;
-                            }
-                            return '';
-                        })()}
                         ${streetUpsideHtml}
                     </div>
 
@@ -454,49 +493,47 @@ function renderCompanies() {
             </div>
         `;
     }).join('');
-    
+
     document.getElementById('companies-grid').innerHTML = companiesHtml;
+    updateQuickChips();
 }
 
-// Show fair value breakdown modal (fetch latest stored valuation and show detailed methods)
+// Show fair value breakdown modal — always re-runs fresh so modal matches DCF detail view
 async function showFairValueBreakdown(companyId) {
-    currentCompanyId = companyId;  // Set for DCF details modal
+    currentCompanyId = companyId;
     try {
-        showLoadingState('Loading valuation breakdown...');
-        const res = await fetch(`/api/company/${companyId}`);
-        if (!res.ok) throw new Error('Failed to load company valuation');
+        showLoadingState('Loading valuation...');
+        const res = await fetch(`/api/valuation/${companyId}/details`);
+        if (!res.ok) throw new Error('Failed to load valuation');
         const data = await res.json();
 
-        // If the endpoint returns an object with `valuation`, map it into the shape expected by showValuationResults
-        const val = data.valuation || data;
-
         const result = {
-            company_id: data.id,
-            name: data.name,
-            recommendation: val.recommendation || 0,
-            upside_pct: val.upside_pct || 0,
-            final_equity_value: val.final_equity_value || 0,
-            final_price_per_share: val.final_price_per_share || 0,
-            market_cap: val.market_cap || 0,
-            current_price: val.current_price || 0,
-            dcf_equity_value: val.dcf_equity_value || 0,
-            dcf_price_per_share: val.dcf_price_per_share || 0,
-            comp_ev_value: val.comp_ev_value || 0,
-            comp_pe_value: val.comp_pe_value || 0,
-            mc_p10: val.mc_p10 || 0,
-            mc_p90: val.mc_p90 || 0,
-            wacc: val.wacc || 0,
-            ev_ebitda: val.ev_ebitda || 0,
-            pe_ratio: val.pe_ratio || 0,
-            fcf_yield: val.fcf_yield || 0,
-            roe: val.roe || 0,
-            roic: val.roic || 0,
-            debt_to_equity: val.debt_to_equity || 0,
-            z_score: val.z_score || 0,
-            sub_sector_tag: val.sub_sector_tag || null,
-            company_type: val.company_type || null,
-            ebitda_method: val.ebitda_method || null,
-            analyst_target: val.analyst_target || null,
+            company_id: companyId,
+            name: data.name || data.company_name,
+            recommendation:        data.recommendation        || 0,
+            upside_pct:            data.upside_pct            || 0,
+            final_equity_value:    data.final_equity_value    || 0,
+            final_price_per_share: data.final_price_per_share || data.dcf_price_per_share || 0,
+            market_cap:            data.market_cap            || 0,
+            current_price:         data.current_price         || 0,
+            dcf_equity_value:      data.dcf_equity_value      || 0,
+            dcf_price_per_share:   data.dcf_price_per_share   || 0,
+            comp_ev_value:         data.comp_ev_value         || 0,
+            comp_pe_value:         data.comp_pe_value         || 0,
+            mc_p10:                data.mc_p10                || 0,
+            mc_p90:                data.mc_p90                || 0,
+            wacc:                  data.wacc                  || 0,
+            ev_ebitda:             data.ev_ebitda             || 0,
+            pe_ratio:              data.pe_ratio              || 0,
+            fcf_yield:             data.fcf_yield             || 0,
+            roe:                   data.roe                   || 0,
+            roic:                  data.roic                  || 0,
+            debt_to_equity:        data.debt_to_equity        || 0,
+            z_score:               data.z_score               || 0,
+            sub_sector_tag:        data.sub_sector_tag        || null,
+            company_type:          data.company_type          || null,
+            ebitda_method:         data.ebitda_method         || null,
+            analyst_target:        data.analyst_target        || null,
         };
 
         hideLoadingState();
@@ -756,8 +793,8 @@ function recalculatePreview() {
             document.getElementById('live-preview-fair-value').textContent = '$' + (result.fair_value || 0).toFixed(2);
             document.getElementById('live-preview-upside').textContent = (upsidePct >= 0 ? '+' : '') + upsidePct.toFixed(1) + '%';
             document.getElementById('live-preview-wacc').textContent = waccPct.toFixed(1) + '%';
-            document.getElementById('live-preview-dcf').textContent = '$' + (result.dcf_value || 0).toFixed(0);
-            document.getElementById('live-preview-comps').textContent = '$' + (result.comps_value || 0).toFixed(0);
+            document.getElementById('live-preview-dcf').textContent = result.ev_ebitda_value > 0 ? '$' + result.ev_ebitda_value.toFixed(0) : '—';
+            document.getElementById('live-preview-comps').textContent = result.pe_value > 0 ? '$' + result.pe_value.toFixed(0) : '—';
 
             // Color upside
             const upsideEl = document.getElementById('live-preview-upside');
@@ -1151,7 +1188,15 @@ function toggleSelectMode() {
     const btn = document.getElementById('select-mode-btn');
     btn.textContent = selectModeActive ? 'Cancel' : 'Select';
     btn.classList.toggle('active', selectModeActive);
-    document.getElementById('bulk-action-bar').style.display = 'none';
+    const bar = document.getElementById('bulk-action-bar');
+    if (selectModeActive) {
+        bar.style.display = 'flex';
+        document.getElementById('bulk-count').textContent = '0 selected';
+        const saBtn = document.getElementById('select-all-btn');
+        if (saBtn) saBtn.textContent = 'Select All';
+    } else {
+        bar.style.display = 'none';
+    }
     renderCompanies(filteredCompanies);
 }
 
@@ -1174,6 +1219,26 @@ function clearSelection() {
     selectedCompanyIds.clear();
     document.getElementById('bulk-action-bar').style.display = 'none';
     document.querySelectorAll('.company-card.selected').forEach(c => c.classList.remove('selected'));
+    const btn = document.getElementById('select-all-btn');
+    if (btn) btn.textContent = 'Select All';
+}
+
+function selectAll() {
+    const allSelected = filteredCompanies.every(c => selectedCompanyIds.has(c.id));
+    if (allSelected) {
+        // Deselect all if everything is already selected
+        clearSelection();
+        return;
+    }
+    filteredCompanies.forEach(c => selectedCompanyIds.add(c.id));
+    document.querySelectorAll('.company-card[data-company-id]').forEach(card => {
+        card.classList.add('selected');
+    });
+    const count = selectedCompanyIds.size;
+    const bar = document.getElementById('bulk-action-bar');
+    bar.style.display = 'flex';
+    document.getElementById('bulk-count').textContent = `${count} selected`;
+    document.getElementById('select-all-btn').textContent = 'Deselect All';
 }
 
 async function bulkDeleteSelected() {
@@ -1382,91 +1447,27 @@ function showValuationResults(result) {
         `;
     }
 
-    // Derive share count from valuation output (exact)
+    // Derive share count and comparable implied prices
     const shares = (result.final_price_per_share > 0 && result.final_equity_value > 0)
         ? result.final_equity_value / result.final_price_per_share : 0;
 
-    // AXIOM base values
-    const axiomDcfPS  = result.dcf_price_per_share || 0;
-    const axiomEvPS   = (shares > 0 && result.comp_ev_value > 0)  ? result.comp_ev_value  / shares : 0;
-    const axiomPePS   = (shares > 0 && result.comp_pe_value > 0)  ? result.comp_pe_value  / shares : 0;
+    const finalPS     = result.final_price_per_share || result.dcf_price_per_share || 0;
+    const displayUpside = result.upside_pct || 0;
+    const displayRec    = result.recommendation || 'N/A';
+    const displayRecClass = displayRec === 'BUY' || displayRec === 'STRONG BUY' ? 'buy'
+                          : displayRec === 'SELL' ? 'sell' : 'hold';
+
+    // Comparable estimates (shown separately, not blended into headline)
+    const evPS  = (shares > 0 && result.comp_ev_value > 0) ? result.comp_ev_value  / shares : 0;
+    const pePS  = (shares > 0 && result.comp_pe_value > 0) ? result.comp_pe_value  / shares : 0;
     const analystPS = result.analyst_target ? +result.analyst_target : 0;
-
-    // Check for user's saved custom valuations
-    const userDCF = getUserValuation(result.company_id || currentCompanyId);
-    const userEV = getUserEVEBITDAValuation(result.company_id || currentCompanyId);
-    const userPE = getUserPEValuation(result.company_id || currentCompanyId);
-
-    // Use user values if available, otherwise AXIOM
-    const dcfPS = userDCF ? userDCF.pricePerShare : axiomDcfPS;
-    const evPS = userEV ? userEV.pricePerShare : axiomEvPS;
-    const pePS = userPE ? userPE.pricePerShare : axiomPePS;
-
-    // Calculate % differences from AXIOM
-    const dcfDiff = axiomDcfPS > 0 ? ((dcfPS - axiomDcfPS) / axiomDcfPS) * 100 : 0;
-    const evDiff = axiomEvPS > 0 ? ((evPS - axiomEvPS) / axiomEvPS) * 100 : 0;
-    const peDiff = axiomPePS > 0 ? ((pePS - axiomPePS) / axiomPePS) * 100 : 0;
-
-    // Blend weights lookup
-    const WEIGHTS = {
-        'HYPERGROWTH':            [0.20, 0.50, 0.30],
-        'GROWTH_TECH':            [0.40, 0.35, 0.25],
-        'DISTRESSED':             [0.00, 0.60, 0.40],
-        'CYCLICAL':               [0.35, 0.45, 0.20],
-        'STORY':                  [0.15, 0.00, 0.85],
-        'STABLE_VALUE':           [0.45, 0.30, 0.25],
-        'STABLE_VALUE_LOWGROWTH': [0.20, 0.55, 0.25],
-    };
-    const [wDCF, wEV, wPE] = WEIGHTS[result.company_type] || [0.40, 0.35, 0.25];
-    const blended = dcfPS * wDCF + evPS * wEV + pePS * wPE;
-
-    // Build math string using current (possibly user-adjusted) values
-    const mathParts = [];
-    if (wDCF > 0) mathParts.push(`${(wDCF*100).toFixed(0)}% × $${dcfPS.toFixed(2)}`);
-    if (wEV  > 0 && evPS > 0) mathParts.push(`${(wEV*100).toFixed(0)}% × $${evPS.toFixed(2)}`);
-    if (wPE  > 0 && pePS > 0) mathParts.push(`${(wPE*100).toFixed(0)}% × $${pePS.toFixed(2)}`);
-    const mathStr = mathParts.join(' + ') + ` = $${blended.toFixed(2)}`;
-
-    // Analyst anchor step (shown only when analyst target exists)
-    const anchorWeights = { 'STORY': 0.70, 'HYPERGROWTH': 0.30, 'DISTRESSED': 0.40 };
-    const aWeight = anchorWeights[result.company_type] || 0.15;
-
-    // Calculate final price using user's blended value
-    const finalPS = analystPS > 0
-        ? blended * (1 - aWeight) + analystPS * aWeight
-        : blended;
-
-    const anchorStr = analystPS > 0
-        ? `${(100-aWeight*100).toFixed(0)}% × $${blended.toFixed(2)} + ${(aWeight*100).toFixed(0)}% × $${analystPS.toFixed(2)} = $${finalPS.toFixed(2)}`
-        : null;
-
-    // Helper to show user vs AXIOM subscript
-    const userBadge = (isUser, diff) => isUser
-        ? `<div style="font-size: 0.65rem; margin-top: 4px; color: ${diff >= 0 ? '#22c55e' : '#ef4444'};">Your value · ${diff >= 0 ? '+' : ''}${diff.toFixed(1)}% vs AXIOM</div>`
-        : `<div style="font-size: 0.65rem; margin-top: 4px; color: var(--text-muted);">AXIOM</div>`;
-
-    // Recalculate upside based on user's fair value
-    const currentPrice = result.current_price || 0;
-    const userUpside = currentPrice > 0 ? ((finalPS - currentPrice) / currentPrice) * 100 : 0;
-    const hasUserValues = userDCF || userEV || userPE;
-
-    // Determine recommendation based on user's upside
-    let userRec = result.recommendation;
-    if (hasUserValues) {
-        if (userUpside >= 15) userRec = 'BUY';
-        else if (userUpside >= -10) userRec = 'HOLD';
-        else userRec = 'SELL';
-    }
-    const displayUpside = hasUserValues ? userUpside : result.upside_pct;
-    const displayRec = hasUserValues ? userRec : result.recommendation;
-    const displayRecClass = displayRec === 'BUY' ? 'buy' : displayRec === 'SELL' ? 'sell' : 'hold';
 
     const html = `
         ${changeSection}
 
         <!-- Valuation Header -->
         <div class="valuation-header rec-${displayRecClass}">
-            <div class="recommendation">${displayRec || 'N/A'}${hasUserValues ? ' <span style="font-size: 0.6rem; opacity: 0.8;">(Your Analysis)</span>' : ''}</div>
+            <div class="recommendation">${displayRec || 'N/A'}</div>
             <div class="upside">
                 ${displayUpside >= 0 ? '↑' : '↓'} ${displayUpside >= 0 ? '+' : ''}${displayUpside.toFixed(1)}% ${displayUpside >= 0 ? 'Upside' : 'Downside'}
             </div>
@@ -1475,16 +1476,16 @@ function showValuationResults(result) {
         <!-- Summary Metrics -->
         <div class="summary-grid">
             <div class="summary-item">
-                <div class="summary-label">Fair Price / Share${hasUserValues ? ' <span style="font-size: 0.6rem; color: var(--accent-primary);">(Yours)</span>' : ''}</div>
-                <div class="summary-value" style="${hasUserValues ? 'color: var(--accent-primary);' : ''}">$${finalPS.toFixed(2)}</div>
+                <div class="summary-label">DCF Fair Value</div>
+                <div class="summary-value">$${finalPS.toFixed(2)}</div>
             </div>
             <div class="summary-item">
                 <div class="summary-label">Current Price</div>
-                <div class="summary-value">$${result.current_price.toFixed(2)}</div>
+                <div class="summary-value">$${(result.current_price || 0).toFixed(2)}</div>
             </div>
             <div class="summary-item">
-                <div class="summary-label">Fair Value (Equity)</div>
-                <div class="summary-value">$${formatNumber(finalPS * shares)}</div>
+                <div class="summary-label">DCF Equity Value</div>
+                <div class="summary-value">$${formatNumber(result.final_equity_value || finalPS * shares)}</div>
             </div>
             <div class="summary-item">
                 <div class="summary-label">Market Cap</div>
@@ -1492,71 +1493,77 @@ function showValuationResults(result) {
             </div>
         </div>
 
-        <!-- HOW THE FAIR VALUE WAS CALCULATED -->
-        <div style="margin: 1.5rem 0; border: 1px solid var(--border-color); border-radius: 10px; overflow: hidden;">
+        <!-- DCF Fair Value -->
+        <div class="valuation-card-wrap">
             <div style="background: var(--bg-secondary); padding: 12px 16px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 10px;">
-                <span style="font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted);">Fair Value Calculation</span>
+                <span style="font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted);">DCF Fair Value</span>
                 ${result.company_type ? `<span style="font-size: 0.75rem; font-weight: 600; color: var(--accent-primary); background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 4px; padding: 2px 8px;">${result.company_type.replace(/_/g,' ')}</span>` : ''}
                 ${result.sub_sector_tag ? `<span style="font-size: 0.75rem; color: var(--text-muted); background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 4px; padding: 2px 8px;">${result.sub_sector_tag.replace(/_/g,' ')}</span>` : ''}
             </div>
-
-            <!-- Step 1: Three methods -->
-            <div style="padding: 16px; border-bottom: 1px solid var(--border-color);">
-                <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 10px; font-weight: 600;">STEP 1 — Three valuation methods</div>
-                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border-color); border-radius: 6px; overflow: hidden;">
-                    <div class="method-card method-card-dcf" onclick="toggleDCFDetails()" style="background: var(--bg-primary); padding: 14px; text-align: center; cursor: pointer; transition: all 0.2s ease;" title="Click to see full DCF breakdown">
-                        <div style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em;">DCF <span style="font-size: 0.6rem; color: var(--accent-primary);">↗ details</span></div>
-                        <div style="font-size: 1.35rem; font-weight: 700; ${userDCF ? 'color: var(--accent-primary);' : ''}">${dcfPS > 0 ? '$' + dcfPS.toFixed(2) : '—'}</div>
-                        ${userBadge(!!userDCF, dcfDiff)}
-                    </div>
-                    <div class="method-card method-card-ev" onclick="toggleEVEBITDADetails()" style="background: var(--bg-primary); padding: 14px; text-align: center; cursor: pointer; transition: all 0.2s ease;" title="Click to see EV/EBITDA breakdown">
-                        <div style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em;">EV / EBITDA <span style="font-size: 0.6rem; color: var(--accent-primary);">↗ details</span></div>
-                        <div style="font-size: 1.35rem; font-weight: 700; ${userEV ? 'color: var(--accent-primary);' : ''}">${evPS > 0 ? '$' + evPS.toFixed(2) : '—'}</div>
-                        ${userBadge(!!userEV, evDiff)}
-                    </div>
-                    <div class="method-card method-card-pe" onclick="togglePEDetails()" style="background: var(--bg-primary); padding: 14px; text-align: center; cursor: pointer; transition: all 0.2s ease;" title="Click to see P/E breakdown">
-                        <div style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em;">P / E <span style="font-size: 0.6rem; color: var(--accent-primary);">↗ details</span></div>
-                        <div style="font-size: 1.35rem; font-weight: 700; ${userPE ? 'color: var(--accent-primary);' : ''}">${pePS > 0 ? '$' + pePS.toFixed(2) : '—'}</div>
-                        ${userBadge(!!userPE, peDiff)}
-                    </div>
-                </div>
-            </div>
-
-            <!-- Step 2: Blend -->
-            <div style="padding: 16px; border-bottom: 1px solid var(--border-color);">
-                <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 10px; font-weight: 600;">STEP 2 — Weighted blend</div>
-                <div style="font-family: monospace; font-size: 0.875rem; color: var(--text-primary); background: var(--bg-secondary); padding: 10px 14px; border-radius: 6px; line-height: 1.7;">
-                    ${mathStr}
-                </div>
-            </div>
-
-            <!-- Step 3: Analyst anchor (if applicable) -->
-            ${anchorStr ? `
-            <div style="padding: 16px; border-bottom: 1px solid var(--border-color);">
-                <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 10px; font-weight: 600;">STEP 3 — Analyst consensus anchor</div>
-                <div style="font-family: monospace; font-size: 0.875rem; color: var(--text-primary); background: var(--bg-secondary); padding: 10px 14px; border-radius: 6px; line-height: 1.7;">
-                    ${anchorStr}
-                </div>
-                <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 6px;">Wall St. consensus: $${analystPS.toFixed(2)}</div>
-            </div>` : ''}
-
-            <!-- Result -->
-            <div style="padding: 16px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+            <div class="method-card method-card-dcf" onclick="toggleDCFDetails()" style="padding: 16px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; cursor: pointer;" title="Click to see full DCF breakdown">
                 <div>
-                    <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px;">Fair Value${hasUserValues ? ' (Yours)' : ''}</div>
+                    <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px;">DCF Price / Share <span style="font-size: 0.6rem; color: var(--accent-primary);">↗ details</span></div>
                     <div style="font-size: 2rem; font-weight: 800; color: var(--accent-primary);">$${finalPS.toFixed(2)}</div>
-                    ${hasUserValues ? `<div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 2px;">AXIOM: $${result.final_price_per_share?.toFixed(2) || '—'}</div>` : ''}
+                    <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 4px;">PV(10yr FCF) + PV(terminal) + cash − debt ÷ shares</div>
                 </div>
                 <div style="text-align: right;">
                     <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px;">vs Market</div>
                     <div style="font-size: 1.4rem; font-weight: 700; color: ${displayUpside >= 0 ? '#22c55e' : '#ef4444'};">
                         ${displayUpside >= 0 ? '+' : ''}${displayUpside.toFixed(1)}%
                     </div>
-                    <div style="font-size: 0.75rem; color: var(--text-muted);">Current: $${result.current_price.toFixed(2)}</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted);">Current: $${(result.current_price || 0).toFixed(2)}</div>
                 </div>
             </div>
             ${result.ebitda_method ? `<div style="padding: 8px 16px; background: var(--bg-secondary); border-top: 1px solid var(--border-color); font-size: 0.7rem; color: var(--text-muted);">EBITDA normalization: ${ebitdaMethodLabel(result.ebitda_method)}</div>` : ''}
         </div>
+
+        <!-- Comparable Estimates -->
+        ${(evPS > 0 || pePS > 0 || analystPS > 0) ? (() => {
+            const currentPrice = result.current_price || 0;
+            const evImplied  = evPS;
+            const peImplied  = pePS;
+            // Sector-average multiples come from ev_ebitda_details / pe_details if available
+            // We use result.ev_ebitda (current mkt ratio) as the live ratio label
+            const evMktMultiple  = result.ev_ebitda  ? result.ev_ebitda.toFixed(1)  + 'x current' : '';
+            const peMktMultiple  = result.pe_ratio   ? result.pe_ratio.toFixed(1)   + 'x current' : '';
+            const evUpside  = currentPrice > 0 ? ((evImplied  - currentPrice) / currentPrice * 100) : 0;
+            const peUpside  = currentPrice > 0 ? ((peImplied  - currentPrice) / currentPrice * 100) : 0;
+            const wsUpside  = currentPrice > 0 && analystPS > 0 ? ((analystPS - currentPrice) / currentPrice * 100) : 0;
+            const upsideStr = (v) => v >= 0 ? `<span style="color:#22c55e;">+${v.toFixed(1)}%</span>` : `<span style="color:#ef4444;">${v.toFixed(1)}%</span>`;
+            return `
+        <div class="valuation-card-wrap">
+            <div style="background: var(--bg-secondary); padding: 12px 16px; border-bottom: 1px solid var(--border-color); display:flex; align-items:center; gap:8px;">
+                <span style="font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted);">Comparable Estimates</span>
+                <span style="font-size: 0.7rem; color: var(--text-muted);">Context only, not included in fair value</span>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(${[evImplied, peImplied, analystPS].filter(v => v > 0).length}, 1fr); gap: 1px; background: var(--border-color);">
+                ${evImplied > 0 ? `
+                <div class="method-card method-card-dcf" onclick="toggleEVEBITDADetails()" style="background: var(--bg-primary); padding: 16px; text-align: center; cursor: pointer;" title="Click for full EV/EBITDA breakdown">
+                    <div style="font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;">EV / EBITDA implied <span style="color:var(--accent-primary);">↗</span></div>
+                    <div style="font-size: 1.4rem; font-weight: 700;">$${evImplied.toFixed(2)}</div>
+                    <div style="font-size: 0.7rem; margin-top: 6px;">${upsideStr(evUpside)} vs market</div>
+                    <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 4px;">${evMktMultiple}</div>
+                </div>` : ''}
+                ${peImplied > 0 ? `
+                <div class="method-card method-card-dcf" onclick="togglePEDetails()" style="background: var(--bg-primary); padding: 16px; text-align: center; cursor: pointer;" title="Click for full P/E breakdown">
+                    <div style="font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;">P/E implied <span style="color:var(--accent-primary);">↗</span></div>
+                    <div style="font-size: 1.4rem; font-weight: 700;">$${peImplied.toFixed(2)}</div>
+                    <div style="font-size: 0.7rem; margin-top: 6px;">${upsideStr(peUpside)} vs market</div>
+                    <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 4px;">${peMktMultiple}</div>
+                </div>` : ''}
+                ${analystPS > 0 ? `
+                <div style="background: var(--bg-primary); padding: 16px; text-align: center;">
+                    <div style="font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;">Wall St. Consensus</div>
+                    <div style="font-size: 1.4rem; font-weight: 700;">$${analystPS.toFixed(2)}</div>
+                    <div style="font-size: 0.7rem; margin-top: 6px;">${upsideStr(wsUpside)} vs market</div>
+                    <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 4px;">analyst price target</div>
+                </div>` : ''}
+            </div>
+            <div style="padding: 10px 16px; background: var(--bg-secondary); border-top: 1px solid var(--border-color); font-size: 0.68rem; color: var(--text-muted); line-height: 1.5;">
+                Implied prices show what the stock would be worth if it traded at sector-average multiples. DCF fair value above is the primary estimate.
+            </div>
+        </div>`;
+        })() : ''}
 
         <!-- Key Financial Metrics -->
         <div style="font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px;">Key Metrics</div>

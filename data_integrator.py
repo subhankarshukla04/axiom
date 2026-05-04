@@ -210,7 +210,7 @@ class DataIntegrator:
 
             from concurrent.futures import ThreadPoolExecutor
             session = _yf_session()
-            stock   = yf.Ticker(ticker, session=session)
+            stock   = yf.Ticker(ticker)
 
             # Yahoo Finance's quoteSummary / .info endpoint is rate-limited
             # on AWS Lambda IPs. Use fast_info + download() instead — these
@@ -252,11 +252,21 @@ class DataIntegrator:
             # Build an info-like dict from fast_info (reliable) + extra (best-effort)
             try:
                 fi = fast_info_obj
+
+                # If quoteSummary didn't give us a name/sector, try stock.info as fallback
+                yf_info = {}
+                if not extra_info.get('longName') or extra_info.get('sector') in (None, 'Unknown', ''):
+                    try:
+                        yf_info = stock.info or {}
+                    except Exception:
+                        yf_info = {}
+
                 info = {
                     'symbol':             ticker.upper(),
-                    'longName':           extra_info.get('longName') or extra_info.get('shortName') or ticker.upper(),
-                    'sector':             extra_info.get('sector') or 'Unknown',
-                    'industry':           extra_info.get('industry') or 'Unknown',
+                    'longName':           (extra_info.get('longName') or extra_info.get('shortName')
+                                          or yf_info.get('longName') or yf_info.get('shortName') or ticker.upper()),
+                    'sector':             (extra_info.get('sector') or yf_info.get('sector') or 'Unknown'),
+                    'industry':           (extra_info.get('industry') or yf_info.get('industry') or 'Unknown'),
                     'currentPrice':       getattr(fi, 'last_price', None) or extra_info.get('currentPrice', 0),
                     'regularMarketPrice': getattr(fi, 'last_price', None) or 0,
                     'marketCap':          getattr(fi, 'market_cap', None) or extra_info.get('marketCap', 0),
