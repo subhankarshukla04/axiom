@@ -1,0 +1,9 @@
+{
+  "HYPERGROWTH":            {"dcf": 0.20, "ev": 0.50, "pe": 0.30},
+  "GROWTH_TECH":            {"dcf": 0.40, "ev": 0.35, "pe": 0.25},
+  "DISTRESSED":             {"dcf": 0.00, "ev": 0.60, "pe": 0.40},
+  "CYCLICAL":               {"dcf": 0.35, "ev": 0.45, "pe": 0.20},
+  "STORY":                  {"dcf": 0.15, "ev": 0.00, "pe": 0.85},
+  "STABLE_VALUE":           {"dcf": 0.45, "ev": 0.30, "pe": 0.25},
+  "STABLE_VALUE_LOWGROWTH": {"dcf": 0.20, "ev": 0.55, "pe": 0.25}
+}

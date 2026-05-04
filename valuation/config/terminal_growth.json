@@ -1,0 +1,24 @@
+{
+  "default": 0.025,
+  "rates": {
+    "cloud_saas": 0.030, "cloud_software": 0.028, "fabless_semi": 0.028,
+    "security_cloud": 0.030, "digital_platform": 0.028, "ecommerce_cloud": 0.028,
+    "rule40_saas": 0.028, "music_platform": 0.030, "mature_semi": 0.025,
+    "semi_equipment": 0.025, "IDM_semi": 0.020, "growth_loss": 0.025,
+    "payment_net": 0.025, "asset_mgmt": 0.022, "data_analytics": 0.025,
+    "exchange": 0.025, "commercial_bank": 0.022, "invest_bank": 0.022,
+    "pc_insurance": 0.022, "pharma": 0.022, "biotech_device": 0.025,
+    "health_insurance": 0.022, "hospital_operator": 0.022,
+    "consumer_staples": 0.020, "tobacco": 0.010, "retail_bigbox": 0.022,
+    "membership_retail": 0.025, "franchise_rest": 0.022, "apparel_brand": 0.022,
+    "luxury_brand": 0.025, "hotel_resort": 0.022, "gaming": 0.020,
+    "industrial_cong": 0.022, "heavy_machinery": 0.022, "defense": 0.022,
+    "logistics_ltl": 0.022, "logistics_parcel": 0.018, "logistics": 0.020,
+    "industrial_dist": 0.022, "packaging": 0.018,
+    "energy_ep": 0.010, "energy_major": 0.010, "oilfield_svc": 0.012,
+    "telecom_carrier": 0.015, "media_cable": 0.005, "streaming_media": 0.025,
+    "legacy_tech": 0.015, "utility_regulated": 0.020, "reit": 0.020,
+    "airline": 0.018, "auto_legacy": 0.018, "story_auto": 0.020,
+    "crypto_proxy": 0.010, "distressed_industrial": 0.015
+  }
+}

@@ -1,0 +1,28 @@
+# Core
+flask==3.0.0
+pydantic==2.10.3
+requests==2.31.0
+python-dotenv>=1.0.0
+
+# Database
+psycopg2-binary==2.9.9
+
+# Auth & Security
+flask-login==0.6.3
+flask-principal==0.4.0
+flask-limiter==3.5.0
+flask-talisman==1.1.0
+flask-wtf==1.2.1
+
+# Data & ML
+yfinance==0.2.40
+pandas==2.2.0
+numpy==1.26.4
+numpy-financial==1.0.0
+scikit-learn==1.4.0
+
+# Scheduling
+pytz>=2023.3
+
+# Logging
+python-json-logger==2.0.7

@@ -1,0 +1,229 @@
+/* Quick Add by Ticker Styles */
+
+.quick-add-section {
+    margin-bottom: 30px;
+}
+
+.quick-add-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 16px;
+    padding: 30px;
+    color: white;
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+}
+
+.quick-add-header h2 {
+    margin: 0 0 8px 0;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.quick-add-header p {
+    margin: 0;
+    opacity: 0.9;
+    font-size: 14px;
+}
+
+.quick-add-form {
+    display: flex;
+    gap: 12px;
+    margin: 20px 0;
+}
+
+.ticker-search-input {
+    flex: 1;
+    padding: 14px 18px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 8px;
+    font-size: 16px;
+    background: rgba(255,255,255,0.15);
+    color: white;
+    font-weight: 600;
+    text-transform: uppercase;
+    transition: all 0.3s;
+}
+
+.ticker-search-input::placeholder {
+    color: rgba(255,255,255,0.7);
+    text-transform: none;
+    font-weight: 400;
+}
+
+.ticker-search-input:focus {
+    outline: none;
+    background: rgba(255,255,255,0.25);
+    border-color: rgba(255,255,255,0.6);
+}
+
+.btn-add-ticker {
+    padding: 14px 32px;
+    background: white;
+    color: #667eea;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    white-space: nowrap;
+}
+
+.btn-add-ticker:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+}
+
+.btn-add-ticker:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.quick-add-examples {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+    font-size: 14px;
+}
+
+.ticker-chip {
+    padding: 6px 14px;
+    background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 20px;
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.ticker-chip:hover {
+    background: rgba(255,255,255,0.3);
+    transform: scale(1.05);
+}
+
+/* Result Display */
+.ticker-result {
+    margin-top: 20px;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.result-success,
+.result-danger {
+    background: white;
+    color: #333;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.result-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #eee;
+}
+
+.ticker-badge {
+    background: #667eea;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.result-metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 16px;
+    margin: 16px 0;
+}
+
+.metric {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.metric-label {
+    font-size: 12px;
+    color: #666;
+    font-weight: 500;
+}
+
+.metric-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: #333;
+}
+
+.metric-value.metric-success {
+    color: #10b981;
+}
+
+.metric-value.metric-danger {
+    color: #ef4444;
+}
+
+.result-footer {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #eee;
+    color: #10b981;
+    font-weight: 500;
+}
+
+.result-danger {
+    background: #fee2e2;
+    border: 1px solid #ef4444;
+}
+
+.result-danger strong {
+    color: #dc2626;
+}
+
+.result-danger p {
+    margin: 8px 0 0 0;
+    color: #7f1d1d;
+}
+
+/* Dark theme adjustments */
+[data-theme="dark"] .quick-add-card {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="dark"] .result-success {
+    background: #1f2937;
+    color: #e5e7eb;
+}
+
+[data-theme="dark"] .result-header {
+    border-bottom-color: #374151;
+}
+
+[data-theme="dark"] .metric-label {
+    color: #9ca3af;
+}
+
+[data-theme="dark"] .metric-value {
+    color: #f3f4f6;
+}
+
+[data-theme="dark"] .result-footer {
+    border-top-color: #374151;
+}

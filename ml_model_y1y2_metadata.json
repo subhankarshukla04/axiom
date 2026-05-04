@@ -1,0 +1,35 @@
+{
+  "trained_at": "2026-04-30T20:29:26.860723",
+  "n_features": 9,
+  "features": [
+    "tag_int",
+    "type_int",
+    "wacc",
+    "growth_y1",
+    "ebitda_method_int",
+    "analyst_ratio",
+    "regime_int",
+    "horizon_days",
+    "month_of_pred"
+  ],
+  "cat_cols": [
+    0,
+    1,
+    4,
+    6,
+    7,
+    8
+  ],
+  "num_cols": [
+    2,
+    3,
+    5
+  ],
+  "framework": "walk_forward_v1",
+  "years_trained": [
+    2022,
+    2023
+  ],
+  "n_samples": 1650,
+  "n_tickers": 550
+}

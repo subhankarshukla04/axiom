@@ -1,0 +1,43 @@
+{
+  "trained_at": "2026-05-01T14:02:05.262450+00:00",
+  "n_features": 11,
+  "features": [
+    "tag_int",
+    "type_int",
+    "wacc",
+    "growth_y1",
+    "ebitda_method_int",
+    "analyst_ratio",
+    "regime_int",
+    "horizon_days",
+    "month_of_pred",
+    "volatility_30d",
+    "etf_momentum_90d"
+  ],
+  "cat_cols": [
+    0,
+    1,
+    4,
+    6,
+    7,
+    8
+  ],
+  "num_cols": [
+    2,
+    3,
+    5,
+    9,
+    10
+  ],
+  "target": "excess_return_over_sector_etf",
+  "framework": "walk_forward_v2",
+  "n_rows": 9900,
+  "years": [
+    2022,
+    2023,
+    2024
+  ],
+  "window_months": 12,
+  "overall_oos_mae": 0.1559,
+  "mode": "monthly_rolling"
+}

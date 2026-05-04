@@ -1,0 +1,8 @@
+{
+  "sector_pffo": { "reit": 20.0 },
+  "ticker_pffo": {
+    "WELL": 35.0, "EQIX": 28.0, "DLR": 24.0, "AMT": 22.0,
+    "CCI": 20.0, "SBAC": 22.0, "PLD": 23.0, "SPG": 14.0,
+    "O": 15.0, "VNO": 12.0
+  }
+}

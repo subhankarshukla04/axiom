@@ -1,0 +1,20 @@
+{
+  "default": 0.07,
+  "norms": {
+    "cloud_saas": 0.04, "cloud_software": 0.05, "fabless_semi": 0.04,
+    "mature_semi": 0.06, "IDM_semi": 0.16, "digital_platform": 0.07,
+    "ecommerce_cloud": 0.09, "story_auto": 0.06, "auto_legacy": 0.05,
+    "telecom_carrier": 0.14, "media_cable": 0.10, "streaming_media": 0.05,
+    "commercial_bank": 0.02, "invest_bank": 0.02, "payment_net": 0.03,
+    "asset_mgmt": 0.03, "data_analytics": 0.04, "reit": 0.05,
+    "defense": 0.04, "pharma": 0.05, "biotech_device": 0.06,
+    "health_insurance": 0.03, "consumer_staples": 0.04, "tobacco": 0.04,
+    "retail_bigbox": 0.04, "membership_retail": 0.04, "franchise_rest": 0.03,
+    "logistics": 0.05, "heavy_machinery": 0.06, "industrial_cong": 0.05,
+    "energy_major": 0.12, "energy_ep": 0.12, "oilfield_svc": 0.08,
+    "growth_loss": 0.05, "apparel_brand": 0.03,
+    "airline": 0.08, "luxury_brand": 0.03, "music_platform": 0.04,
+    "crypto_proxy": 0.02, "hospital_operator": 0.05, "rule40_saas": 0.04,
+    "pc_insurance": 0.02
+  }
+}

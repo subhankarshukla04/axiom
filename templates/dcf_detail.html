@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DCF Analysis | AXIOM</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_professional.css') }}?v=3">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { background: var(--bg-secondary); min-height: 100vh; }
+
+        .page-nav {
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--border-primary);
+            padding: 0 24px;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .page-nav .logo {
+            font-size: 1rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: var(--text-primary);
+        }
+
+        .page-nav .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 5px 12px;
+            border: 1px solid var(--border-primary);
+            border-radius: 6px;
+            cursor: pointer;
+            background: transparent;
+            transition: all 0.15s;
+        }
+        .page-nav .back-btn:hover { background: var(--bg-hover); color: var(--text-primary); }
+
+        .page-nav .nav-right { display: flex; align-items: center; gap: 10px; }
+
+        .theme-btn {
+            padding: 5px 12px;
+            font-size: 0.78rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            background: transparent;
+            border: 1px solid var(--border-primary);
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .company-header {
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--border-primary);
+            padding: 20px 24px;
+        }
+
+        .company-header .company-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .company-header .company-meta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .ticker-badge {
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            padding: 2px 10px;
+            background: var(--bg-tertiary, #f1f5f9);
+            border: 1px solid var(--border-primary);
+            border-radius: 4px;
+            color: var(--text-secondary);
+        }
+
+        .sector-tag {
+            font-size: 0.78rem;
+            color: var(--text-muted, var(--text-secondary));
+        }
+
+        .summary-bar {
+            display: flex;
+            gap: 0;
+            padding: 16px 24px;
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--border-primary);
+            flex-wrap: wrap;
+        }
+
+        .summary-item {
+            flex: 1;
+            min-width: 120px;
+            padding: 0 20px;
+            border-right: 1px solid var(--border-primary);
+        }
+        .summary-item:first-child { padding-left: 0; }
+        .summary-item:last-child  { border-right: none; }
+
+        .summary-item .label {
+            font-size: 0.68rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-muted, var(--text-secondary));
+            margin-bottom: 4px;
+        }
+
+        .summary-item .value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .rec-badge {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 4px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            color: white;
+            background: #f59e0b;
+        }
+
+        .dcf-label-strip {
+            padding: 16px 24px 0;
+        }
+
+        .dcf-label-strip .section-heading {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-muted, var(--text-secondary));
+            margin-bottom: 4px;
+        }
+
+        .content-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-primary);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 16px 24px;
+        }
+
+        /* Override CSS vars used by app.js render functions */
+        :root {
+            --border-color: var(--border-primary);
+            --text-muted: var(--text-tertiary, #94a3b8);
+        }
+        [data-theme="dark"] {
+            --border-color: var(--border-primary);
+            --text-muted: var(--text-tertiary, #666666);
+        }
+
+        /* Purple range sliders — cross-browser, light + dark */
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            height: 4px;
+            border-radius: 2px;
+            background: transparent;
+            outline: none;
+            cursor: pointer;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #7c3aed;
+            border: 2px solid #fff;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+            cursor: pointer;
+            transition: background 0.15s, transform 0.1s;
+        }
+        input[type="range"]::-webkit-slider-thumb:hover {
+            background: #6d28d9;
+            transform: scale(1.15);
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #7c3aed;
+            border: 2px solid #fff;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+            cursor: pointer;
+        }
+        input[type="range"]::-webkit-slider-runnable-track {
+            height: 4px;
+            border-radius: 2px;
+            background: rgba(124, 58, 237, 0.28);
+        }
+        [data-theme="dark"] input[type="range"]::-webkit-slider-runnable-track {
+            background: rgba(124, 58, 237, 0.45);
+        }
+        input[type="range"]::-moz-range-track {
+            height: 4px;
+            border-radius: 2px;
+            background: rgba(124, 58, 237, 0.28);
+        }
+        [data-theme="dark"] input[type="range"]::-moz-range-track {
+            background: rgba(124, 58, 237, 0.45);
+        }
+
+        /* Custom hover tooltip */
+        #dcf-tip {
+            position: fixed;
+            z-index: 9999;
+            padding: 8px 12px;
+            background: #1e293b;
+            color: #f1f5f9;
+            font-size: 0.76rem;
+            font-family: Inter, sans-serif;
+            line-height: 1.55;
+            border-radius: 7px;
+            max-width: 240px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.1s ease;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.35);
+        }
+        #dcf-tip.visible { opacity: 1; }
+        #dcf-tip .tip-source {
+            display: block;
+            margin-top: 3px;
+            font-size: 0.7rem;
+            color: #94a3b8;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Nav -->
+    <nav class="page-nav">
+        <div style="display:flex;align-items:center;gap:16px;">
+            <span class="logo">AXIOM</span>
+            <button class="back-btn" onclick="window.close()">← Close</button>
+        </div>
+        <div class="nav-right">
+            <span style="font-size:0.78rem;color:var(--text-secondary);">Discounted Cash Flow Analysis</span>
+            <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">☾ Dark</button>
+        </div>
+    </nav>
+
+    <!-- Company header -->
+    <div class="company-header">
+        <div class="company-title" id="hdr-company">Loading…</div>
+        <div class="company-meta">
+            <span class="ticker-badge" id="hdr-ticker">—</span>
+            <span class="sector-tag" id="hdr-sector"></span>
+        </div>
+    </div>
+
+    <!-- Summary bar -->
+    <div class="summary-bar">
+        <div class="summary-item">
+            <div class="label">Current Price</div>
+            <div class="value" id="hdr-price">—</div>
+        </div>
+        <div class="summary-item">
+            <div class="label">DCF Fair Value</div>
+            <div class="value" id="hdr-fv">—</div>
+        </div>
+        <div class="summary-item">
+            <div class="label">Upside / Downside</div>
+            <div class="value" id="hdr-upside">—</div>
+        </div>
+        <div class="summary-item">
+            <div class="label">Recommendation</div>
+            <div class="value"><span class="rec-badge" id="hdr-rec">—</span></div>
+        </div>
+    </div>
+
+    <!-- DCF Content -->
+    <div class="dcf-label-strip">
+        <div class="section-heading">Full DCF Breakdown</div>
+    </div>
+    <div class="content-card">
+        <div id="dcf-page-content">
+            <div style="padding:60px;text-align:center;color:var(--text-secondary);">Loading…</div>
+        </div>
+    </div>
+
+    <div style="height:48px;"></div>
+
+    <div id="dcf-tip"></div>
+    <script src="{{ url_for('static', filename='js/dcf_detail.js') }}?v=3"></script>
+</body>
+</html>

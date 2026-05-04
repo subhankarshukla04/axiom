@@ -1,6 +1,7 @@
 # macOS
 .DS_Store
 .AppleDouble
+.LSOverride
 
 # Claude Code internals
 .claude/
@@ -8,11 +9,15 @@
 # Python
 __pycache__/
 *.py[cod]
+*$py.class
 *.so
+.Python
 .venv/
 venv/
 env/
+ENV/
 *.egg-info/
+*.egg
 dist/
 build/
 
@@ -20,28 +25,60 @@ build/
 .env
 .env.local
 .env.*.local
+!.env.example
 
 # Databases
 *.db
 *.sqlite
 *.sqlite3
+valuations.db
 
 # Logs
 logs/
 *.log
+*.txt
+!requirements*.txt
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# ML models — *.pkl ignored by default; exception for small production models
+*.pkl
+!ml_calibration_model.pkl
+!ml_model_y1.pkl
+!ml_model_y1y2.pkl
 
 # Data files (generated at runtime)
 *.jsonl
-*.pkl
 *.csv
+predictions_db.json
+monthly_tracking_results.json
+backtest_*_report.json
+batch*.json
+*_results.csv
 
-# Exports
+# Exports (generated)
 exports/
+exports/*.pdf
+exports/*.xlsx
 
-# Misc
-*.swp
-*.swo
-valuations.db
+# Generated / infra only
+intelligence/
+services/
+scripts/
+tests/
+migrations/
+mcp_server.py
 docs/superpowers/
 
 # Node / Next.js

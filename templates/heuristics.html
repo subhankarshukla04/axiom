@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Axiom — Heuristics Inventory</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<style>
+  body { font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  pre  { font-family: ui-monospace, "SF Mono", Menlo, Monaco, monospace; }
+  .phase-pill { display:inline-block; padding:1px 8px; border-radius:9999px; font-size:11px; font-weight:600; }
+  .p-P2 { background:#fee2e2; color:#991b1b; }
+  .p-P3 { background:#fef3c7; color:#92400e; }
+  .p-P4 { background:#dbeafe; color:#1e40af; }
+  .p-P5 { background:#e0e7ff; color:#3730a3; }
+  .p-P6 { background:#ede9fe; color:#5b21b6; }
+</style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+<div x-data="heuristics()" x-init="load()" class="max-w-6xl mx-auto p-8">
+
+  <header class="mb-8">
+    <a href="/" class="text-sm text-slate-500 hover:text-slate-800">← back to app</a>
+    <h1 class="text-3xl font-semibold mt-2">Heuristics inventory</h1>
+    <p class="text-slate-600 mt-2 max-w-3xl">
+      Every hand-picked constant that drives the valuation output. None of these
+      are learned from data — they are stored in <code class="bg-slate-200 px-1 rounded">valuation/config/*.json</code>
+      or embedded in the heuristic Python layer. Phase 2 onwards replaces the
+      <span class="phase-pill p-P2">P2</span>-tagged rows with live peer-comp estimates.
+      Read-only for now. See <code class="bg-slate-200 px-1 rounded">HARDCODED_VALUES.md</code>
+      for full audit trail.
+    </p>
+  </header>
+
+  <section class="mb-10">
+    <h2 class="text-xl font-semibold mb-3">Magic numbers in Python</h2>
+    <div class="bg-white border border-slate-200 rounded-lg overflow-hidden">
+      <table class="w-full text-sm">
+        <thead class="bg-slate-100 text-left">
+          <tr>
+            <th class="px-3 py-2">File</th>
+            <th class="px-3 py-2">Line</th>
+            <th class="px-3 py-2">Value</th>
+            <th class="px-3 py-2">Gates</th>
+            <th class="px-3 py-2">Phase</th>
+          </tr>
+        </thead>
+        <tbody>
+          <template x-for="row in magic" :key="row.file + row.line">
+            <tr class="border-t border-slate-100">
+              <td class="px-3 py-2 font-mono text-xs" x-text="row.file"></td>
+              <td class="px-3 py-2 font-mono text-xs" x-text="row.line"></td>
+              <td class="px-3 py-2 font-mono text-xs" x-text="row.value"></td>
+              <td class="px-3 py-2 text-slate-700" x-text="row.gates"></td>
+              <td class="px-3 py-2">
+                <span class="phase-pill" :class="'p-' + row.phase" x-text="row.phase"></span>
+              </td>
+            </tr>
+          </template>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="text-xl font-semibold mb-3">JSON config tables</h2>
+    <template x-for="(content, name) in configs" :key="name">
+      <details class="bg-white border border-slate-200 rounded-lg mb-3">
+        <summary class="cursor-pointer px-4 py-3 font-medium hover:bg-slate-50">
+          <span x-text="name"></span>
+          <span class="text-xs text-slate-500 ml-2" x-text="'(' + countConstants(content) + ' constants)'"></span>
+        </summary>
+        <pre class="px-4 py-3 text-xs bg-slate-900 text-slate-100 overflow-x-auto" x-text="JSON.stringify(content, null, 2)"></pre>
+      </details>
+    </template>
+  </section>
+
+  <footer class="mt-10 text-xs text-slate-500">
+    Source: <code>GET /api/config/heuristics</code> · Documented in <code>HARDCODED_VALUES.md</code>
+  </footer>
+</div>
+
+<script>
+function heuristics() {
+  return {
+    configs: {}, magic: [],
+    async load() {
+      const r = await fetch('/api/config/heuristics');
+      const d = await r.json();
+      this.configs = d.configs;
+      this.magic   = d.magic_numbers;
+    },
+    countConstants(x) {
+      if (Array.isArray(x)) return x.length;
+      if (x && typeof x === 'object') {
+        let n = 0;
+        for (const k in x) n += this.countConstants(x[k]);
+        return n || Object.keys(x).length;
+      }
+      return 1;
+    }
+  };
+}
+</script>
+</body>
+</html>

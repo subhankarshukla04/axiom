@@ -1,0 +1,1813 @@
+{
+  "computed_at": "2026-05-01T14:02:02.697617+00:00",
+  "years": [
+    2022,
+    2023,
+    2024
+  ],
+  "window_months": 12,
+  "overall_oos_mae": 0.1559,
+  "n_periods": 24,
+  "periods": [
+    {
+      "ym": "2023-01",
+      "n": 822,
+      "mae": 0.2149,
+      "by_regime": {
+        "transition": {
+          "n": 822,
+          "mae": 0.2149
+        }
+      },
+      "by_horizon": {
+        "90": {
+          "n": 274,
+          "mae": 0.1536
+        },
+        "180": {
+          "n": 274,
+          "mae": 0.2152
+        },
+        "365": {
+          "n": 274,
+          "mae": 0.276
+        }
+      },
+      "by_tag": {
+        "utility_regulated": {
+          "n": 69,
+          "mae": 0.0615
+        },
+        "pharma": {
+          "n": 36,
+          "mae": 0.1865
+        },
+        "industrial_cong": {
+          "n": 30,
+          "mae": 0.1609
+        },
+        "growth_loss": {
+          "n": 27,
+          "mae": 0.2925
+        },
+        "cloud_saas": {
+          "n": 27,
+          "mae": 0.1304
+        },
+        "pc_insurance": {
+          "n": 27,
+          "mae": 0.1333
+        },
+        "reit": {
+          "n": 27,
+          "mae": 0.1175
+        },
+        "commercial_bank": {
+          "n": 24,
+          "mae": 0.1495
+        },
+        "consumer_staples": {
+          "n": 24,
+          "mae": 0.0598
+        },
+        "packaging": {
+          "n": 21,
+          "mae": 0.1767
+        },
+        "airline": {
+          "n": 18,
+          "mae": 0.1094
+        },
+        "biotech_device": {
+          "n": 18,
+          "mae": 0.0764
+        }
+      }
+    },
+    {
+      "ym": "2023-02",
+      "n": 822,
+      "mae": 0.1489,
+      "by_regime": {
+        "transition": {
+          "n": 822,
+          "mae": 0.1489
+        }
+      },
+      "by_horizon": {
+        "90": {
+          "n": 274,
+          "mae": 0.1132
+        },
+        "180": {
+          "n": 274,
+          "mae": 0.1285
+        },
+        "365": {
+          "n": 274,
+          "mae": 0.2051
+        }
+      },
+      "by_tag": {
+        "utility_regulated": {
+          "n": 69,
+          "mae": 0.0649
+        },
+        "pharma": {
+          "n": 36,
+          "mae": 0.1896
+        },
+        "industrial_cong": {
+          "n": 30,
+          "mae": 0.1696
+        },
+        "growth_loss": {
+          "n": 27,
+          "mae": 0.3155
+        },
+        "cloud_saas": {
+          "n": 27,
+          "mae": 0.1494
+        },
+        "pc_insurance": {
+          "n": 27,
+          "mae": 0.072
+        },
+        "reit": {
+          "n": 27,
+          "mae": 0.1314
+        },
+        "commercial_bank": {
+          "n": 24,
+          "mae": 0.1611
+        },
+        "consumer_staples": {
+          "n": 24,
+          "mae": 0.0754
+        },
+        "packaging": {
+          "n": 21,
+          "mae": 0.1213
+        },
+        "airline": {
+          "n": 18,
+          "mae": 0.0952
+        },
+        "biotech_device": {
+          "n": 18,
+          "mae": 0.1047
+        }
+      }
+    },
+    {
+      "ym": "2023-03",
+      "n": 822,
+      "mae": 0.1619,
+      "by_regime": {
+        "transition": {
+          "n": 822,
+          "mae": 0.1619
+        }
+      },
+      "by_horizon": {
+        "90": {
+          "n": 274,
+          "mae": 0.1194
+        },
+        "180": {
+          "n": 274,
+          "mae": 0.1368
+        },
+        "365": {
+          "n": 274,
+          "mae": 0.2294
+        }
+      },
+      "by_tag": {
+        "utility_regulated": {
+          "n": 69,
+          "mae": 0.0599
+        },
+        "pharma": {
+          "n": 36,
+          "mae": 0.1795
+        },
+        "industrial_cong": {
+          "n": 30,
+          "mae": 0.143
+        },
+        "growth_loss": {
+          "n": 27,
+          "mae": 0.3416
+        },
+        "cloud_saas": {
+          "n": 27,
+          "mae": 0.1177
+        },
+        "pc_insurance": {
+          "n": 27,
+          "mae": 0.0678
+        },
+        "reit": {
+          "n": 27,
+          "mae": 0.1273
+        },
+        "commercial_bank": {
+          "n": 24,
+          "mae": 0.1378
+        },
+        "consumer_staples": {
+          "n": 24,
+          "mae": 0.067
+        },
+        "packaging": {
+          "n": 21,
+          "mae": 0.1451
+        },
+        "airline": {
+          "n": 18,
+          "mae": 0.0826
+        },
+        "biotech_device": {
+          "n": 18,
+          "mae": 0.104
+        }
+      }
+    },
+    {
+      "ym": "2023-04",
+      "n": 822,
+      "mae": 0.1518,
+      "by_regime": {
+        "risk_on": {
+          "n": 822,
+          "mae": 0.1518
+        }
+      },
+      "by_horizon": {
+        "90": {
+          "n": 274,
+          "mae": 0.1027
+        },
+        "180": {
+          "n": 274,
+          "mae": 0.1351
+        },
+        "365": {
+          "n": 274,
+          "mae": 0.2176
+        }
+      },
+      "by_tag": {
+        "utility_regulated": {
+          "n": 69,
+          "mae": 0.057
+        },
+        "pharma": {
+          "n": 36,
+          "mae": 0.1619
+        },
+        "industrial_cong": {
+          "n": 30,
+          "mae": 0.124
+        },
+        "growth_loss": {
+          "n": 27,
+          "mae": 0.4225
+        },
+        "cloud_saas": {
+          "n": 27,
+          "mae": 0.1461
+        },
+        "pc_insurance": {
+          "n": 27,
+          "mae": 0.0784
+        },
+        "reit": {
+          "n": 27,
+          "mae": 0.152
+        },
+        "commercial_bank": {
+          "n": 24,
+          "mae": 0.0731
+        },
+        "consumer_staples": {
+          "n": 24,
+          "mae": 0.0628
+        },
+        "packaging": {
+          "n": 21,
+          "mae": 0.1034
+        },
+        "airline": {
+          "n": 18,
+          "mae": 0.105
+        },
+        "biotech_device": {
+          "n": 18,
+          "mae": 0.086
+        }
+      }
+    },
+    {
+      "ym": "2023-05",
+      "n": 822,
+      "mae": 0.1548,
+      "by_regime": {
+        "risk_on": {
+          "n": 822,
+          "mae": 0.1548
+        }
+      },
+      "by_horizon": {
+        "90": {
+          "n": 274,
+          "mae": 0.1141
+        },
+        "180": {
+          "n": 274,
+          "mae": 0.1423
+        },
+        "365": {
+          "n": 274,
+          "mae": 0.208
+        }
+      },
+      "by_tag": {
+        "utility_regulated": {
+          "n": 69,
+          "mae": 0.0517
+        },
+        "pharma": {
+          "n": 36,
+          "mae": 0.1674
+        },
+        "industrial_cong": {
+          "n": 30,
+          "mae": 0.1245
+        },
+        "growth_loss": {
+          "n": 27,
+          "mae": 0.3866
+        },
+        "cloud_saas": {
+          "n": 27,
+          "mae": 0.2081
+        },
+        "pc_insurance": {
+          "n": 27,
+          "mae": 0.0786
+        },
+        "reit": {
+          "n": 27,
+          "mae": 0.1443
+        },
+        "commercial_bank": {
+          "n": 24,
+          "mae": 0.096
+        },
+        "consumer_staples": {
+          "n": 24,
+          "mae": 0.0807
+        },
+        "packaging": {
+          "n": 21,
+          "mae": 0.0953
+        },
+        "airline": {
+          "n": 18,
+          "mae": 0.1069
+        },
+        "biotech_device": {
+          "n": 18,
+          "mae": 0.152
+        }
+      }
+    },
+    {
+      "ym": "2023-06",
+      "n": 822,
+      "mae": 0.1298,
+      "by_regime": {
+        "risk_on": {
+          "n": 822,
+          "mae": 0.1298
+        }
+      },
+      "by_horizon": {
+        "90": {
+          "n": 274,
+          "mae": 0.0843
+        },
+        "180": {
+          "n": 274,
+          "mae": 0.1175
+        },
+        "365": {
+          "n": 274,
+          "mae": 0.1875
+        }
+      },
+      "by_tag": {
+        "utility_regulated": {
+          "n": 69,
+          "mae": 0.0516
+        },
+        "pharma": {
+          "n": 36,
+          "mae": 0.1808
+        },
+        "industrial_cong": {
+          "n": 30,
+          "mae": 0.111
+        },
+        "growth_loss": {
+          "n": 27,
+          "mae": 0.2505
+        },
+        "cloud_saas": {
+          "n": 27,
+          "mae": 0.1062
+        },
+        "pc_insurance": {
+          "n": 27,
+          "mae": 0.0881
+        },
+        "reit": {
+          "n": 27,
+          "mae": 0.1225
+        },
+        "commercial_bank": {
+          "n": 24,
+          "mae": 0.0923
+        },
+        "consumer_staples": {
+          "n": 24,
+          "mae": 0.0848
+        },
+        "packaging": {
+          "n": 21,
+          "mae": 0.1402
+        },
+        "airline": {
+          "n": 18,
+          "mae": 0.1223
+        },
+        "biotech_device": {
+          "n": 18,
+          "mae": 0.0842
+        }
+      }
+    },
+    {
+      "ym": "2023-07",
+      "n": 822,
+      "mae": 0.1328,
+      "by_regime": {
+        "risk_on": {
+          "n": 822,
+          "mae": 0.1328
+        }
+      },
+      "by_horizon": {
+        "90": {
+          "n": 274,
+          "mae": 0.0946
+        },
+        "180": {
+          "n": 274,
+          "mae": 0.1142
+        },
+        "365": {
+          "n": 274,
+          "mae": 0.1897
+        }
+      },
+      "by_tag": {
+        "utility_regulated": {
+          "n": 69,
+          "mae": 0.0613
+        },
+        "pharma": {
+          "n": 36,
+          "mae": 0.173
+        },
+        "industrial_cong": {
+          "n": 30,
+          "mae": 0.1006
+        },
+        "growth_loss": {
+          "n": 27,
+          "mae": 0.2697
+        },
+        "cloud_saas": {
+          "n": 27,
+          "mae": 0.0993
+        },
+        "pc_insurance": {
+          "n": 27,
+          "mae": 0.0778
+        },
+        "reit": {
+          "n": 27,
+          "mae": 0.0927
+        },
+        "commercial_bank": {
+          "n": 24,
+          "mae": 0.0876
+        },
+        "consumer_staples": {
+          "n": 24,
+          "mae": 0.074
+        },
+        "packaging": {
+          "n": 21,
+          "mae": 0.1278
+        },
+        "airline": {
+          "n": 18,
+          "mae": 0.1226
+        },
+        "biotech_device": {
+          "n": 18,
+          "mae": 0.1075
+        }
+      }
+    },
+    {
+      "ym": "2023-08",
+      "n": 822,
+      "mae": 0.1358,
+      "by_regime": {
+        "risk_on": {
+          "n": 822,
+          "mae": 0.1358
+        }
+      },
+      "by_horizon": {
+        "90": {
+          "n": 274,
+          "mae": 0.1054
+        },
+        "180": {
+          "n": 274,
+          "mae": 0.1242
+        },
+        "365": {
+          "n": 274,
+          "mae": 0.1777
+        }
+      },
+      "by_tag": {
+        "utility_regulated": {
+          "n": 69,
+          "mae": 0.063
+        },
+        "pharma": {
+          "n": 36,
+          "mae": 0.2097
+        },
+        "industrial_cong": {
+          "n": 30,
+          "mae": 0.101
+        },
+        "growth_loss": {
+          "n": 27,
+          "mae": 0.2862
+        },
+        "cloud_saas": {
+          "n": 27,
+          "mae": 0.1323
+        },
+        "pc_insurance": {
+          "n": 27,
+          "mae": 0.0894
+        },
+        "reit": {
+          "n": 27,
+          "mae": 0.0746
+        },
+        "commercial_bank": {
+          "n": 24,
+          "mae": 0.0397
+        },
+        "consumer_staples": {
+          "n": 24,
+          "mae": 0.0731
+        },
+        "packaging": {
+          "n": 21,
+          "mae": 0.0939
+        },
+        "airline": {
+          "n": 18,
+          "mae": 0.0756
+        },
+        "biotech_device": {
+          "n": 18,
+          "mae": 0.1272
+        }
+      }
+    },
+    {
+      "ym": "2023-09",
+      "n": 822,
+      "mae": 0.1379,
+      "by_regime": {
+        "risk_on": {
+          "n": 822,
+          "mae": 0.1379
+        }
+      },
+      "by_horizon": {
+        "90": {
+          "n": 274,
+          "mae": 0.0888
+        },
+        "180": {
+          "n": 274,
+          "mae": 0.1414
+        },
+        "365": {
+          "n": 274,
+          "mae": 0.1837
+        }
+      },
+      "by_tag": {
+        "utility_regulated": {
+          "n": 69,
+          "mae": 0.0599
+        },
+        "pharma": {
+          "n": 36,
+          "mae": 0.1379
+        },
+        "industrial_cong": {
+          "n": 30,
+          "mae": 0.1141
+        },
+        "growth_loss": {
+          "n": 27,
+          "mae": 0.3183
+        },
+        "cloud_saas": {
+          "n": 27,
+          "mae": 0.142
+        },
+        "pc_insurance": {
+          "n": 27,
+          "mae": 0.1032
+        },
+        "reit": {
+          "n": 27,
+          "mae": 0.0839
+        },
+        "commercial_bank": {
+          "n": 24,
+          "mae": 0.057
+        },
+        "consumer_staples": {
+          "n": 24,
+          "mae": 0.0629
+        },
+        "packaging": {
+          "n": 21,
+          "mae": 0.1073
+        },
+        "airline": {
+          "n": 18,
+          "mae": 0.0701
+        },
+        "biotech_device": {
+          "n": 18,
+          "mae": 0.0893
+        }
+      }
+    },
+    {
+      "ym": "2023-10",
+      "n": 822,
+      "mae": 0.1352,
+      "by_regime": {
+        "risk_on": {
+          "n": 822,
+          "mae": 0.1352
+        }
+      },
+      "by_horizon": {
+        "90": {
+          "n": 274,
+          "mae": 0.0873
+        },
+        "180": {
+          "n": 274,
+          "mae": 0.1395
+        },
+        "365": {
+          "n": 274,
+          "mae": 0.1789
+        }
+      },
+      "by_tag": {
+        "utility_regulated": {
+          "n": 69,
+          "mae": 0.056
+        },
+        "pharma": {
+          "n": 36,
+          "mae": 0.117
+        },
+        "industrial_cong": {
+          "n": 30,
+          "mae": 0.1269
+        },
+        "growth_loss": {
+          "n": 27,
+          "mae": 0.2982
+        },
+        "cloud_saas": {
+          "n": 27,
+          "mae": 0.156
+        },
+        "pc_insurance": {
+          "n": 27,
+          "mae": 0.1045
+        },
+        "reit": {
+          "n": 27,
+          "mae": 0.0737
+        },
+        "commercial_bank": {
+          "n": 24,
+          "mae": 0.052
+        },
+        "consumer_staples": {
+          "n": 24,
+          "mae": 0.0596
+        },
+        "packaging": {
+          "n": 21,
+          "mae": 0.0768
+        },
+        "airline": {
+          "n": 18,
+          "mae": 0.099
+        },
+        "biotech_device": {
+          "n": 18,
+          "mae": 0.0787
+        }
+      }
+    },
+    {
+      "ym": "2023-11",
+      "n": 822,
+      "mae": 0.1407,
+      "by_regime": {
+        "risk_on": {
+          "n": 822,
+          "mae": 0.1407
+        }
+      },
+      "by_horizon": {
+        "90": {
+          "n": 274,
+          "mae": 0.0987
+        },
+        "180": {
+          "n": 274,
+          "mae": 0.1351
+        },
+        "365": {
+          "n": 274,
+          "mae": 0.1884
+        }
+      },
+      "by_tag": {
+        "utility_regulated": {
+          "n": 69,
+          "mae": 0.0599
+        },
+        "pharma": {
+          "n": 36,
+          "mae": 0.163
+        },
+        "industrial_cong": {
+          "n": 30,
+          "mae": 0.13
+        },
+        "growth_loss": {
+          "n": 27,
+          "mae": 0.3004
+        },
+        "cloud_saas": {
+          "n": 27,
+          "mae": 0.1688
+        },
+        "pc_insurance": {
+          "n": 27,
+          "mae": 0.0897
+        },
+        "reit": {
+          "n": 27,
+          "mae": 0.0921
+        },
+        "commercial_bank": {
+          "n": 24,
+          "mae": 0.0567
+        },
+        "consumer_staples": {
+          "n": 24,
+          "mae": 0.0666
+        },
+        "packaging": {
+          "n": 21,
+          "mae": 0.0824
+        },
+        "airline": {
+          "n": 18,
+          "mae": 0.1219
+        },
+        "biotech_device": {
+          "n": 18,
+          "mae": 0.1124
+        }
+      }
+    },
+    {
+      "ym": "2023-12",
+      "n": 822,
+      "mae": 0.1463,
+      "by_regime": {
+        "risk_on": {
+          "n": 822,
+          "mae": 0.1463
+        }
+      },
+      "by_horizon": {
+        "90": {
+          "n": 274,
+          "mae": 0.1034
+        },
+        "180": {
+          "n": 274,
+          "mae": 0.1435
+        },
+        "365": {
+          "n": 274,
+          "mae": 0.1918
+        }
+      },
+      "by_tag": {
+        "utility_regulated": {
+          "n": 69,
+          "mae": 0.0722
+        },
+        "pharma": {
+          "n": 36,
+          "mae": 0.1415
+        },
+        "industrial_cong": {
+          "n": 30,
+          "mae": 0.1369
+        },
+        "growth_loss": {
+          "n": 27,
+          "mae": 0.3189
+        },
+        "cloud_saas": {
+          "n": 27,
+          "mae": 0.1569
+        },
+        "pc_insurance": {
+          "n": 27,
+          "mae": 0.0916
+        },
+        "reit": {
+          "n": 27,
+          "mae": 0.1209
+        },
+        "commercial_bank": {
+          "n": 24,
+          "mae": 0.0762
+        },
+        "consumer_staples": {
+          "n": 24,
+          "mae": 0.0693
+        },
+        "packaging": {
+          "n": 21,
+          "mae": 0.094
+        },
+        "airline": {
+          "n": 18,
+          "mae": 0.1645
+        },
+        "biotech_device": {
+          "n": 18,
+          "mae": 0.1239
+        }
+      }
+    },
+    {
+      "ym": "2024-01",
+      "n": 825,
+      "mae": 0.1684,
+      "by_regime": {
+        "risk_on": {
+          "n": 825,
+          "mae": 0.1684
+        }
+      },
+      "by_horizon": {
+        "90": {
+          "n": 275,
+          "mae": 0.1174
+        },
+        "180": {
+          "n": 275,
+          "mae": 0.1585
+        },
+        "365": {
+          "n": 275,
+          "mae": 0.2293
+        }
+      },
+      "by_tag": {
+        "utility_regulated": {
+          "n": 69,
+          "mae": 0.0655
+        },
+        "pharma": {
+          "n": 36,
+          "mae": 0.15
+        },
+        "industrial_cong": {
+          "n": 30,
+          "mae": 0.1327
+        },
+        "growth_loss": {
+          "n": 27,
+          "mae": 0.4833
+        },
+        "cloud_saas": {
+          "n": 27,
+          "mae": 0.2001
+        },
+        "pc_insurance": {
+          "n": 27,
+          "mae": 0.0819
+        },
+        "reit": {
+          "n": 27,
+          "mae": 0.142
+        },
+        "commercial_bank": {
+          "n": 24,
+          "mae": 0.096
+        },
+        "consumer_staples": {
+          "n": 24,
+          "mae": 0.0854
+        },
+        "packaging": {
+          "n": 21,
+          "mae": 0.1196
+        },
+        "airline": {
+          "n": 18,
+          "mae": 0.1349
+        },
+        "biotech_device": {
+          "n": 18,
+          "mae": 0.1228
+        }
+      }
+    },
+    {
+      "ym": "2024-02",
+      "n": 825,
+      "mae": 0.1552,
+      "by_regime": {
+        "risk_on": {
+          "n": 825,
+          "mae": 0.1552
+        }
+      },
+      "by_horizon": {
+        "90": {
+          "n": 275,
+          "mae": 0.1084
+        },
+        "180": {
+          "n": 275,
+          "mae": 0.1376
+        },
+        "365": {
+          "n": 275,
+          "mae": 0.2195
+        }
+      },
+      "by_tag": {
+        "utility_regulated": {
+          "n": 69,
+          "mae": 0.0711
+        },
+        "pharma": {
+          "n": 36,
+          "mae": 0.1092
+        },
+        "industrial_cong": {
+          "n": 30,
+          "mae": 0.1462
+        },
+        "growth_loss": {
+          "n": 27,
+          "mae": 0.3733
+        },
+        "cloud_saas": {
+          "n": 27,
+          "mae": 0.2118
+        },
+        "pc_insurance": {
+          "n": 27,
+          "mae": 0.0938
+        },
+        "reit": {
+          "n": 27,
+          "mae": 0.1146
+        },
+        "commercial_bank": {
+          "n": 24,
+          "mae": 0.064
+        },
+        "consumer_staples": {
+          "n": 24,
+          "mae": 0.0801
+        },
+        "packaging": {
+          "n": 21,
+          "mae": 0.1272
+        },
+        "airline": {
+          "n": 18,
+          "mae": 0.2336
+        },
+        "biotech_device": {
+          "n": 18,
+          "mae": 0.1293
+        }
+      }
+    },
+    {
+      "ym": "2024-03",
+      "n": 825,
+      "mae": 0.1633,
+      "by_regime": {
+        "risk_on": {
+          "n": 825,
+          "mae": 0.1633
+        }
+      },
+      "by_horizon": {
+        "90": {
+          "n": 275,
+          "mae": 0.1207
+        },
+        "180": {
+          "n": 275,
+          "mae": 0.1496
+        },
+        "365": {
+          "n": 275,
+          "mae": 0.2196
+        }
+      },
+      "by_tag": {
+        "utility_regulated": {
+          "n": 69,
+          "mae": 0.0812
+        },
+        "pharma": {
+          "n": 36,
+          "mae": 0.1326
+        },
+        "industrial_cong": {
+          "n": 30,
+          "mae": 0.149
+        },
+        "growth_loss": {
+          "n": 27,
+          "mae": 0.3378
+        },
+        "cloud_saas": {
+          "n": 27,
+          "mae": 0.1917
+        },
+        "pc_insurance": {
+          "n": 27,
+          "mae": 0.0942
+        },
+        "reit": {
+          "n": 27,
+          "mae": 0.098
+        },
+        "commercial_bank": {
+          "n": 24,
+          "mae": 0.0699
+        },
+        "consumer_staples": {
+          "n": 24,
+          "mae": 0.0637
+        },
+        "packaging": {
+          "n": 21,
+          "mae": 0.137
+        },
+        "airline": {
+          "n": 18,
+          "mae": 0.2425
+        },
+        "biotech_device": {
+          "n": 18,
+          "mae": 0.118
+        }
+      }
+    },
+    {
+      "ym": "2024-04",
+      "n": 825,
+      "mae": 0.1536,
+      "by_regime": {
+        "risk_on": {
+          "n": 825,
+          "mae": 0.1536
+        }
+      },
+      "by_horizon": {
+        "90": {
+          "n": 275,
+          "mae": 0.1015
+        },
+        "180": {
+          "n": 275,
+          "mae": 0.1448
+        },
+        "365": {
+          "n": 275,
+          "mae": 0.2144
+        }
+      },
+      "by_tag": {
+        "utility_regulated": {
+          "n": 69,
+          "mae": 0.0671
+        },
+        "pharma": {
+          "n": 36,
+          "mae": 0.13
+        },
+        "industrial_cong": {
+          "n": 30,
+          "mae": 0.1113
+        },
+        "growth_loss": {
+          "n": 27,
+          "mae": 0.3825
+        },
+        "cloud_saas": {
+          "n": 27,
+          "mae": 0.1483
+        },
+        "pc_insurance": {
+          "n": 27,
+          "mae": 0.0698
+        },
+        "reit": {
+          "n": 27,
+          "mae": 0.0806
+        },
+        "commercial_bank": {
+          "n": 24,
+          "mae": 0.0699
+        },
+        "consumer_staples": {
+          "n": 24,
+          "mae": 0.0761
+        },
+        "packaging": {
+          "n": 21,
+          "mae": 0.1031
+        },
+        "airline": {
+          "n": 18,
+          "mae": 0.1631
+        },
+        "biotech_device": {
+          "n": 18,
+          "mae": 0.1282
+        }
+      }
+    },
+    {
+      "ym": "2024-05",
+      "n": 825,
+      "mae": 0.1567,
+      "by_regime": {
+        "risk_on": {
+          "n": 825,
+          "mae": 0.1567
+        }
+      },
+      "by_horizon": {
+        "90": {
+          "n": 275,
+          "mae": 0.1099
+        },
+        "180": {
+          "n": 275,
+          "mae": 0.1414
+        },
+        "365": {
+          "n": 275,
+          "mae": 0.2189
+        }
+      },
+      "by_tag": {
+        "utility_regulated": {
+          "n": 69,
+          "mae": 0.0705
+        },
+        "pharma": {
+          "n": 36,
+          "mae": 0.1431
+        },
+        "industrial_cong": {
+          "n": 30,
+          "mae": 0.0962
+        },
+        "growth_loss": {
+          "n": 27,
+          "mae": 0.4145
+        },
+        "cloud_saas": {
+          "n": 27,
+          "mae": 0.157
+        },
+        "pc_insurance": {
+          "n": 27,
+          "mae": 0.0844
+        },
+        "reit": {
+          "n": 27,
+          "mae": 0.0701
+        },
+        "commercial_bank": {
+          "n": 24,
+          "mae": 0.0873
+        },
+        "consumer_staples": {
+          "n": 24,
+          "mae": 0.0721
+        },
+        "packaging": {
+          "n": 21,
+          "mae": 0.1193
+        },
+        "airline": {
+          "n": 18,
+          "mae": 0.1458
+        },
+        "biotech_device": {
+          "n": 18,
+          "mae": 0.1241
+        }
+      }
+    },
+    {
+      "ym": "2024-06",
+      "n": 825,
+      "mae": 0.1651,
+      "by_regime": {
+        "risk_on": {
+          "n": 825,
+          "mae": 0.1651
+        }
+      },
+      "by_horizon": {
+        "90": {
+          "n": 275,
+          "mae": 0.113
+        },
+        "180": {
+          "n": 275,
+          "mae": 0.1716
+        },
+        "365": {
+          "n": 275,
+          "mae": 0.2107
+        }
+      },
+      "by_tag": {
+        "utility_regulated": {
+          "n": 69,
+          "mae": 0.0911
+        },
+        "pharma": {
+          "n": 36,
+          "mae": 0.2075
+        },
+        "industrial_cong": {
+          "n": 30,
+          "mae": 0.1112
+        },
+        "growth_loss": {
+          "n": 27,
+          "mae": 0.4529
+        },
+        "cloud_saas": {
+          "n": 27,
+          "mae": 0.1566
+        },
+        "pc_insurance": {
+          "n": 27,
+          "mae": 0.0806
+        },
+        "reit": {
+          "n": 27,
+          "mae": 0.0719
+        },
+        "commercial_bank": {
+          "n": 24,
+          "mae": 0.0815
+        },
+        "consumer_staples": {
+          "n": 24,
+          "mae": 0.079
+        },
+        "packaging": {
+          "n": 21,
+          "mae": 0.1212
+        },
+        "airline": {
+          "n": 18,
+          "mae": 0.125
+        },
+        "biotech_device": {
+          "n": 18,
+          "mae": 0.1139
+        }
+      }
+    },
+    {
+      "ym": "2024-07",
+      "n": 825,
+      "mae": 0.1658,
+      "by_regime": {
+        "risk_on": {
+          "n": 825,
+          "mae": 0.1658
+        }
+      },
+      "by_horizon": {
+        "90": {
+          "n": 275,
+          "mae": 0.125
+        },
+        "180": {
+          "n": 275,
+          "mae": 0.1729
+        },
+        "365": {
+          "n": 275,
+          "mae": 0.1996
+        }
+      },
+      "by_tag": {
+        "utility_regulated": {
+          "n": 69,
+          "mae": 0.0727
+        },
+        "pharma": {
+          "n": 36,
+          "mae": 0.2198
+        },
+        "industrial_cong": {
+          "n": 30,
+          "mae": 0.1054
+        },
+        "growth_loss": {
+          "n": 27,
+          "mae": 0.4464
+        },
+        "cloud_saas": {
+          "n": 27,
+          "mae": 0.1687
+        },
+        "pc_insurance": {
+          "n": 27,
+          "mae": 0.0793
+        },
+        "reit": {
+          "n": 27,
+          "mae": 0.0733
+        },
+        "commercial_bank": {
+          "n": 24,
+          "mae": 0.0814
+        },
+        "consumer_staples": {
+          "n": 24,
+          "mae": 0.0692
+        },
+        "packaging": {
+          "n": 21,
+          "mae": 0.1283
+        },
+        "airline": {
+          "n": 18,
+          "mae": 0.1476
+        },
+        "biotech_device": {
+          "n": 18,
+          "mae": 0.0969
+        }
+      }
+    },
+    {
+      "ym": "2024-08",
+      "n": 825,
+      "mae": 0.161,
+      "by_regime": {
+        "risk_on": {
+          "n": 825,
+          "mae": 0.161
+        }
+      },
+      "by_horizon": {
+        "90": {
+          "n": 275,
+          "mae": 0.1036
+        },
+        "180": {
+          "n": 275,
+          "mae": 0.1667
+        },
+        "365": {
+          "n": 275,
+          "mae": 0.2128
+        }
+      },
+      "by_tag": {
+        "utility_regulated": {
+          "n": 69,
+          "mae": 0.109
+        },
+        "pharma": {
+          "n": 36,
+          "mae": 0.1942
+        },
+        "industrial_cong": {
+          "n": 30,
+          "mae": 0.0995
+        },
+        "growth_loss": {
+          "n": 27,
+          "mae": 0.4463
+        },
+        "cloud_saas": {
+          "n": 27,
+          "mae": 0.1812
+        },
+        "pc_insurance": {
+          "n": 27,
+          "mae": 0.0955
+        },
+        "reit": {
+          "n": 27,
+          "mae": 0.1178
+        },
+        "commercial_bank": {
+          "n": 24,
+          "mae": 0.1192
+        },
+        "consumer_staples": {
+          "n": 24,
+          "mae": 0.095
+        },
+        "packaging": {
+          "n": 21,
+          "mae": 0.1202
+        },
+        "airline": {
+          "n": 18,
+          "mae": 0.2546
+        },
+        "biotech_device": {
+          "n": 18,
+          "mae": 0.0614
+        }
+      }
+    },
+    {
+      "ym": "2024-09",
+      "n": 825,
+      "mae": 0.169,
+      "by_regime": {
+        "risk_on": {
+          "n": 825,
+          "mae": 0.169
+        }
+      },
+      "by_horizon": {
+        "90": {
+          "n": 275,
+          "mae": 0.1285
+        },
+        "180": {
+          "n": 275,
+          "mae": 0.165
+        },
+        "365": {
+          "n": 275,
+          "mae": 0.2134
+        }
+      },
+      "by_tag": {
+        "utility_regulated": {
+          "n": 69,
+          "mae": 0.1065
+        },
+        "pharma": {
+          "n": 36,
+          "mae": 0.2104
+        },
+        "industrial_cong": {
+          "n": 30,
+          "mae": 0.1405
+        },
+        "growth_loss": {
+          "n": 27,
+          "mae": 0.4318
+        },
+        "cloud_saas": {
+          "n": 27,
+          "mae": 0.2274
+        },
+        "pc_insurance": {
+          "n": 27,
+          "mae": 0.0933
+        },
+        "reit": {
+          "n": 27,
+          "mae": 0.1133
+        },
+        "commercial_bank": {
+          "n": 24,
+          "mae": 0.1117
+        },
+        "consumer_staples": {
+          "n": 24,
+          "mae": 0.0863
+        },
+        "packaging": {
+          "n": 21,
+          "mae": 0.1086
+        },
+        "airline": {
+          "n": 18,
+          "mae": 0.233
+        },
+        "biotech_device": {
+          "n": 18,
+          "mae": 0.0869
+        }
+      }
+    },
+    {
+      "ym": "2024-10",
+      "n": 825,
+      "mae": 0.1628,
+      "by_regime": {
+        "risk_on": {
+          "n": 825,
+          "mae": 0.1628
+        }
+      },
+      "by_horizon": {
+        "90": {
+          "n": 275,
+          "mae": 0.1199
+        },
+        "180": {
+          "n": 275,
+          "mae": 0.1537
+        },
+        "365": {
+          "n": 275,
+          "mae": 0.2147
+        }
+      },
+      "by_tag": {
+        "utility_regulated": {
+          "n": 69,
+          "mae": 0.108
+        },
+        "pharma": {
+          "n": 36,
+          "mae": 0.1655
+        },
+        "industrial_cong": {
+          "n": 30,
+          "mae": 0.0961
+        },
+        "growth_loss": {
+          "n": 27,
+          "mae": 0.3834
+        },
+        "cloud_saas": {
+          "n": 27,
+          "mae": 0.2308
+        },
+        "pc_insurance": {
+          "n": 27,
+          "mae": 0.0941
+        },
+        "reit": {
+          "n": 27,
+          "mae": 0.1048
+        },
+        "commercial_bank": {
+          "n": 24,
+          "mae": 0.106
+        },
+        "consumer_staples": {
+          "n": 24,
+          "mae": 0.0756
+        },
+        "packaging": {
+          "n": 21,
+          "mae": 0.1126
+        },
+        "airline": {
+          "n": 18,
+          "mae": 0.1779
+        },
+        "biotech_device": {
+          "n": 18,
+          "mae": 0.0804
+        }
+      }
+    },
+    {
+      "ym": "2024-11",
+      "n": 825,
+      "mae": 0.1663,
+      "by_regime": {
+        "risk_on": {
+          "n": 825,
+          "mae": 0.1663
+        }
+      },
+      "by_horizon": {
+        "90": {
+          "n": 275,
+          "mae": 0.1116
+        },
+        "180": {
+          "n": 275,
+          "mae": 0.1534
+        },
+        "365": {
+          "n": 275,
+          "mae": 0.2338
+        }
+      },
+      "by_tag": {
+        "utility_regulated": {
+          "n": 69,
+          "mae": 0.0965
+        },
+        "pharma": {
+          "n": 36,
+          "mae": 0.1276
+        },
+        "industrial_cong": {
+          "n": 30,
+          "mae": 0.1152
+        },
+        "growth_loss": {
+          "n": 27,
+          "mae": 0.3808
+        },
+        "cloud_saas": {
+          "n": 27,
+          "mae": 0.2372
+        },
+        "pc_insurance": {
+          "n": 27,
+          "mae": 0.0772
+        },
+        "reit": {
+          "n": 27,
+          "mae": 0.0896
+        },
+        "commercial_bank": {
+          "n": 24,
+          "mae": 0.1288
+        },
+        "consumer_staples": {
+          "n": 24,
+          "mae": 0.0803
+        },
+        "packaging": {
+          "n": 21,
+          "mae": 0.1487
+        },
+        "airline": {
+          "n": 18,
+          "mae": 0.1102
+        },
+        "biotech_device": {
+          "n": 18,
+          "mae": 0.0805
+        }
+      }
+    },
+    {
+      "ym": "2024-12",
+      "n": 825,
+      "mae": 0.1645,
+      "by_regime": {
+        "risk_on": {
+          "n": 825,
+          "mae": 0.1645
+        }
+      },
+      "by_horizon": {
+        "90": {
+          "n": 275,
+          "mae": 0.1198
+        },
+        "180": {
+          "n": 275,
+          "mae": 0.1508
+        },
+        "365": {
+          "n": 275,
+          "mae": 0.2231
+        }
+      },
+      "by_tag": {
+        "utility_regulated": {
+          "n": 69,
+          "mae": 0.0973
+        },
+        "pharma": {
+          "n": 36,
+          "mae": 0.1584
+        },
+        "industrial_cong": {
+          "n": 30,
+          "mae": 0.1576
+        },
+        "growth_loss": {
+          "n": 27,
+          "mae": 0.3053
+        },
+        "cloud_saas": {
+          "n": 27,
+          "mae": 0.2043
+        },
+        "pc_insurance": {
+          "n": 27,
+          "mae": 0.0831
+        },
+        "reit": {
+          "n": 27,
+          "mae": 0.1142
+        },
+        "commercial_bank": {
+          "n": 24,
+          "mae": 0.111
+        },
+        "consumer_staples": {
+          "n": 24,
+          "mae": 0.0822
+        },
+        "packaging": {
+          "n": 21,
+          "mae": 0.1214
+        },
+        "airline": {
+          "n": 18,
+          "mae": 0.1294
+        },
+        "biotech_device": {
+          "n": 18,
+          "mae": 0.0905
+        }
+      }
+    }
+  ]
+}
